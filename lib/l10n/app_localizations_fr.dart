@@ -255,26 +255,26 @@ class AppLocalizationsFr extends AppLocalizations {
       'La session n\'est plus active. Reconnecte-toi depuis l\'étape profil.';
 
   @override
-  String get profileSavedApi => 'Profil sauvegardé sur l\'API.';
+  String get profileSavedApi => 'Profil sauvegardé.';
 
   @override
-  String get apiErrorPrefix => 'Erreur API :';
+  String get apiErrorPrefix => 'Erreur :';
 
   @override
   String get apiUnexpectedError =>
-      'Impossible de joindre l\'API pour le moment.';
+      'Service GymFlow indisponible pour le moment.';
 
   @override
   String get requiredBodyCheckInFields => 'Renseigne au minimum ton poids.';
 
   @override
-  String get checkInSavedApi => 'Check-in sauvegardé sur l\'API.';
+  String get checkInSavedApi => 'Check-in sauvegardé.';
 
   @override
   String get requiredGoalFields => 'Renseigne une cible valide.';
 
   @override
-  String get goalSavedApi => 'Objectif sauvegardé sur l\'API.';
+  String get goalSavedApi => 'Objectif sauvegardé.';
 
   @override
   String get createGoal => 'Créer l\'objectif';
@@ -301,7 +301,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get askCoach => 'Envoyer au coach';
 
   @override
-  String get workoutSavedApi => 'Séance sauvegardée sur l\'API.';
+  String get workoutSavedApi => 'Séance sauvegardée.';
 
   @override
   String get bodyProgressTitle => 'Évolution physique';
@@ -411,10 +411,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get coachHeadline => 'Analyse personnelle avec Super Coach';
-
-  @override
-  String get coachPrivacyNote =>
-      'Tes demandes restent liées à ton compte GymFlow et servent uniquement à produire tes conseils sportifs.';
 
   @override
   String get coachUnavailableTitle => 'Super Coach en préparation';

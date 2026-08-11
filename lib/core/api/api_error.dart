@@ -50,7 +50,7 @@ class ApiProblem implements Exception {
 
     return ApiProblem(
       type: _uriOrNull(json['type']),
-      title: json['title']?.toString() ?? 'Erreur API',
+      title: json['title']?.toString() ?? 'Erreur',
       status: _intOrNull(json['status']) ?? fallbackStatus,
       detail: json['detail']?.toString() ?? '',
       instance: _uriOrNull(json['instance']),

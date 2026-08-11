@@ -105,35 +105,6 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
                           ],
                         ),
                         const SizedBox(height: 14),
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: AppColors.gps.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(14),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.verified_user_outlined,
-                                  color: AppColors.gps,
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
-                                    snapshot.hasError
-                                        ? l10n.coachUnavailableBody
-                                        : l10n.coachPrivacyNote,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 14),
                         AppButton.primary(
                           label: _isRequesting
                               ? l10n.saving

@@ -569,19 +569,19 @@ abstract class AppLocalizations {
   /// No description provided for @profileSavedApi.
   ///
   /// In fr, this message translates to:
-  /// **'Profil sauvegardé sur l\'API.'**
+  /// **'Profil sauvegardé.'**
   String get profileSavedApi;
 
   /// No description provided for @apiErrorPrefix.
   ///
   /// In fr, this message translates to:
-  /// **'Erreur API :'**
+  /// **'Erreur :'**
   String get apiErrorPrefix;
 
   /// No description provided for @apiUnexpectedError.
   ///
   /// In fr, this message translates to:
-  /// **'Impossible de joindre l\'API pour le moment.'**
+  /// **'Service GymFlow indisponible pour le moment.'**
   String get apiUnexpectedError;
 
   /// No description provided for @requiredBodyCheckInFields.
@@ -593,7 +593,7 @@ abstract class AppLocalizations {
   /// No description provided for @checkInSavedApi.
   ///
   /// In fr, this message translates to:
-  /// **'Check-in sauvegardé sur l\'API.'**
+  /// **'Check-in sauvegardé.'**
   String get checkInSavedApi;
 
   /// No description provided for @requiredGoalFields.
@@ -605,7 +605,7 @@ abstract class AppLocalizations {
   /// No description provided for @goalSavedApi.
   ///
   /// In fr, this message translates to:
-  /// **'Objectif sauvegardé sur l\'API.'**
+  /// **'Objectif sauvegardé.'**
   String get goalSavedApi;
 
   /// No description provided for @createGoal.
@@ -659,7 +659,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutSavedApi.
   ///
   /// In fr, this message translates to:
-  /// **'Séance sauvegardée sur l\'API.'**
+  /// **'Séance sauvegardée.'**
   String get workoutSavedApi;
 
   /// No description provided for @bodyProgressTitle.
@@ -877,12 +877,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Analyse personnelle avec Super Coach'**
   String get coachHeadline;
-
-  /// No description provided for @coachPrivacyNote.
-  ///
-  /// In fr, this message translates to:
-  /// **'Tes demandes restent liées à ton compte GymFlow et servent uniquement à produire tes conseils sportifs.'**
-  String get coachPrivacyNote;
 
   /// No description provided for @coachUnavailableTitle.
   ///
