@@ -1,5 +1,9 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/api/api_error.dart';
 import '../../../core/api/api_formatters.dart';
@@ -7,7 +11,6 @@ import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
-import '../../../core/ui/app_stat_row.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tracking/models/calorie_estimator.dart';
 import '../../tracking/models/sport_mode.dart';
@@ -30,10 +33,12 @@ class SessionSummaryScreen extends ConsumerStatefulWidget {
 }
 
 class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
+  final _shareCardKey = GlobalKey();
   final _noteController = TextEditingController();
   int _effort = 5;
   _Feeling _feeling = _Feeling.good;
   bool _isSaving = false;
+  bool _isSharing = false;
   late final Future<double?> _weightFuture;
 
   @override
@@ -60,76 +65,27 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppPanel(
-                color: AppColors.dark,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(widget.selectedSport.icon, color: AppColors.accent),
-                    const SizedBox(height: 14),
-                    Text(
-                      widget.selectedSport.label(l10n),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineSmall?.copyWith(color: Colors.white),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      l10n.workoutSavedDraft,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 18),
-              AppStatRow(
-                icon: Icons.timer_outlined,
-                color: AppColors.primary,
-                label: l10n.elapsedTime,
-                value: _formatDuration(widget.track.elapsed),
-              ),
-              const SizedBox(height: 10),
-              AppStatRow(
-                icon: Icons.route_rounded,
-                color: AppColors.gps,
-                label: l10n.distance,
-                value: '${formatKm(widget.track.distanceMeters)} km',
-              ),
-              const SizedBox(height: 10),
               FutureBuilder<double?>(
                 future: _weightFuture,
                 builder: (context, snapshot) {
-                  return AppStatRow(
-                    icon: Icons.local_fire_department_rounded,
-                    color: AppColors.danger,
-                    label: l10n.estimatedCalories,
-                    value: _formatCalories(snapshot.data),
+                  return RepaintBoundary(
+                    key: _shareCardKey,
+                    child: _WorkoutShareCard(
+                      sport: widget.selectedSport,
+                      track: widget.track,
+                      calories: _formatCalories(snapshot.data),
+                      elapsed: _formatDuration(widget.track.elapsed),
+                      distance: '${formatKm(widget.track.distanceMeters)} km',
+                      pace: formatPace(widget.track.paceSecondsPerKm, l10n),
+                      averageSpeed:
+                          '${widget.track.averageSpeedKmh.toStringAsFixed(1)} km/h',
+                      maxSpeed:
+                          '${widget.track.maxSpeedKmh.toStringAsFixed(1)} km/h',
+                      elevation:
+                          '${widget.track.elevationGainMeters.toStringAsFixed(0)} m',
+                    ),
                   );
                 },
-              ),
-              const SizedBox(height: 10),
-              AppStatRow(
-                icon: Icons.speed_rounded,
-                color: AppColors.accent,
-                label: l10n.averageSpeed,
-                value:
-                    '${widget.track.averageSpeedKmh.toStringAsFixed(1)} km/h',
-              ),
-              const SizedBox(height: 10),
-              AppStatRow(
-                icon: Icons.landscape_outlined,
-                color: AppColors.primary,
-                label: l10n.elevation,
-                value:
-                    '${widget.track.elevationGainMeters.toStringAsFixed(0)} m',
-              ),
-              const SizedBox(height: 18),
-              MapPreview(
-                label: l10n.routePreview,
-                isLive: false,
-                routePoints: widget.track.routePoints,
               ),
               const SizedBox(height: 18),
               AppPanel(
@@ -191,6 +147,14 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
                 ),
               ),
               const SizedBox(height: 18),
+              AppButton.secondary(
+                label: _isSharing
+                    ? l10n.sharingWorkoutImage
+                    : l10n.shareWorkoutImage,
+                icon: Icons.ios_share_rounded,
+                onPressed: _isSharing ? null : _shareWorkoutImage,
+              ),
+              const SizedBox(height: 10),
               AppButton.primary(
                 label: _isSaving ? l10n.saving : l10n.saveWorkout,
                 icon: Icons.save_outlined,
@@ -235,6 +199,64 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
     return '~$calories kcal';
   }
 
+  Future<void> _shareWorkoutImage() async {
+    final l10n = AppLocalizations.of(context);
+    setState(() => _isSharing = true);
+
+    try {
+      await WidgetsBinding.instance.endOfFrame;
+      final boundary =
+          _shareCardKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
+      if (boundary == null) {
+        _showMessage(l10n.shareWorkoutUnavailable);
+        return;
+      }
+
+      if (!mounted) return;
+      final pixelRatio = MediaQuery.devicePixelRatioOf(context).clamp(2.0, 3.0);
+      final image = await boundary.toImage(pixelRatio: pixelRatio);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      image.dispose();
+
+      final bytes = byteData?.buffer.asUint8List();
+      if (bytes == null || bytes.isEmpty) {
+        _showMessage(l10n.shareWorkoutUnavailable);
+        return;
+      }
+
+      final fileName = 'gymflow-${_fileStamp(widget.track.startedAt)}.png';
+      await SharePlus.instance.share(
+        ShareParams(
+          title: l10n.shareWorkoutTitle,
+          subject: l10n.shareWorkoutTitle,
+          text: _shareText(l10n),
+          files: [XFile.fromData(bytes, mimeType: 'image/png', name: fileName)],
+          fileNameOverrides: [fileName],
+        ),
+      );
+    } catch (_) {
+      _showMessage(l10n.shareWorkoutUnavailable);
+    } finally {
+      if (mounted) setState(() => _isSharing = false);
+    }
+  }
+
+  String _shareText(AppLocalizations l10n) {
+    return [
+      l10n.shareWorkoutTitle,
+      '${l10n.distance}: ${formatKm(widget.track.distanceMeters)} km',
+      '${l10n.elapsedTime}: ${_formatDuration(widget.track.elapsed)}',
+      '${l10n.pace}: ${formatPace(widget.track.paceSecondsPerKm, l10n)}',
+      '${l10n.averageSpeed}: ${widget.track.averageSpeedKmh.toStringAsFixed(1)} km/h',
+      '${l10n.maxSpeed}: ${widget.track.maxSpeedKmh.toStringAsFixed(1)} km/h',
+    ].join('\n');
+  }
+
+  String _fileStamp(DateTime value) {
+    return value.toLocal().toIso8601String().replaceAll(RegExp(r'[:.]'), '-');
+  }
+
   Future<void> _saveWorkout() async {
     final l10n = AppLocalizations.of(context);
 
@@ -270,6 +292,204 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+class _WorkoutShareCard extends StatelessWidget {
+  const _WorkoutShareCard({
+    required this.sport,
+    required this.track,
+    required this.calories,
+    required this.elapsed,
+    required this.distance,
+    required this.pace,
+    required this.averageSpeed,
+    required this.maxSpeed,
+    required this.elevation,
+  });
+
+  final SportMode sport;
+  final TrackingSessionDraft track;
+  final String calories;
+  final String elapsed;
+  final String distance;
+  final String pace;
+  final String averageSpeed;
+  final String maxSpeed;
+  final String elevation;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(sport.icon, color: AppColors.primary),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.shareWorkoutTitle,
+                        style: theme.textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        sport.label(l10n),
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            MapPreview(
+              label: l10n.routePreview,
+              routePoints: track.routePoints,
+              framed: false,
+              interactive: false,
+              showLocateButton: false,
+            ),
+            const SizedBox(height: 14),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final tileWidth = (constraints.maxWidth - 10) / 2;
+                return Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    _ShareStatTile(
+                      width: tileWidth,
+                      icon: Icons.route_rounded,
+                      label: l10n.distance,
+                      value: distance,
+                      color: AppColors.gps,
+                    ),
+                    _ShareStatTile(
+                      width: tileWidth,
+                      icon: Icons.timer_outlined,
+                      label: l10n.elapsedTime,
+                      value: elapsed,
+                      color: AppColors.primary,
+                    ),
+                    _ShareStatTile(
+                      width: tileWidth,
+                      icon: Icons.speed_rounded,
+                      label: l10n.averageSpeed,
+                      value: averageSpeed,
+                      color: AppColors.accent,
+                    ),
+                    _ShareStatTile(
+                      width: tileWidth,
+                      icon: Icons.bolt_rounded,
+                      label: l10n.maxSpeed,
+                      value: maxSpeed,
+                      color: AppColors.danger,
+                    ),
+                    _ShareStatTile(
+                      width: tileWidth,
+                      icon: Icons.timeline_rounded,
+                      label: l10n.pace,
+                      value: pace,
+                      color: AppColors.primary,
+                    ),
+                    _ShareStatTile(
+                      width: tileWidth,
+                      icon: Icons.local_fire_department_rounded,
+                      label: l10n.estimatedCalories,
+                      value: calories,
+                      color: AppColors.danger,
+                    ),
+                    _ShareStatTile(
+                      width: constraints.maxWidth,
+                      icon: Icons.landscape_outlined,
+                      label: l10n.elevation,
+                      value: elevation,
+                      color: AppColors.accent,
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ShareStatTile extends StatelessWidget {
+  const _ShareStatTile({
+    required this.width,
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final double width;
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return SizedBox(
+      width: width,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: color, size: 20),
+              const SizedBox(height: 8),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(value, style: theme.textTheme.titleMedium),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

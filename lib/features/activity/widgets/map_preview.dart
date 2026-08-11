@@ -15,12 +15,18 @@ class MapPreview extends StatefulWidget {
     this.isLive = false,
     this.routePoints = const [],
     this.currentPosition,
+    this.framed = true,
+    this.interactive = true,
+    this.showLocateButton = true,
   });
 
   final String? label;
   final bool isLive;
   final List<LatLng> routePoints;
   final LatLng? currentPosition;
+  final bool framed;
+  final bool interactive;
+  final bool showLocateButton;
 
   @override
   State<MapPreview> createState() => _MapPreviewState();
@@ -37,7 +43,8 @@ class _MapPreviewState extends State<MapPreview> {
   @override
   void didUpdateWidget(covariant MapPreview oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final latestPoint = widget.currentPosition ?? _lastPoint(widget.routePoints);
+    final latestPoint =
+        widget.currentPosition ?? _lastPoint(widget.routePoints);
     final previousPoint =
         oldWidget.currentPosition ?? _lastPoint(oldWidget.routePoints);
     if (latestPoint != null && latestPoint != previousPoint) {
@@ -64,95 +71,92 @@ class _MapPreviewState extends State<MapPreview> {
     final currentPosition =
         widget.currentPosition ?? _lastPoint(routePoints) ?? _currentPosition;
 
-    return AppPanel(
-      padding: EdgeInsets.zero,
-      child: AspectRatio(
-        aspectRatio: 1.25,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: currentPosition ?? _burkinaCenter,
-              initialZoom: currentPosition == null ? 13 : 15,
-              interactionOptions: const InteractionOptions(
-                flags:
-                    InteractiveFlag.drag |
-                    InteractiveFlag.pinchZoom |
-                    InteractiveFlag.doubleTapZoom,
-              ),
+    final map = AspectRatio(
+      aspectRatio: 1.25,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: FlutterMap(
+          mapController: _mapController,
+          options: MapOptions(
+            initialCenter: currentPosition ?? _burkinaCenter,
+            initialZoom: currentPosition == null ? 13 : 15,
+            interactionOptions: InteractionOptions(
+              flags: widget.interactive
+                  ? InteractiveFlag.drag |
+                        InteractiveFlag.pinchZoom |
+                        InteractiveFlag.doubleTapZoom
+                  : InteractiveFlag.none,
             ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.millogostudio.gymflow',
-              ),
-              PolylineLayer(
-                polylines: [
-                  if (hasRoute)
-                    Polyline(
-                      points: routePoints,
-                      strokeWidth: 6,
-                      color: AppColors.primary,
-                      borderStrokeWidth: 2,
-                      borderColor: Colors.white,
-                    ),
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.millogostudio.gymflow',
+            ),
+            PolylineLayer(
+              polylines: [
+                if (hasRoute)
+                  Polyline(
+                    points: routePoints,
+                    strokeWidth: 6,
+                    color: AppColors.primary,
+                    borderStrokeWidth: 2,
+                    borderColor: Colors.white,
+                  ),
+              ],
+            ),
+            if (currentPosition != null)
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: currentPosition,
+                    width: 42,
+                    height: 42,
+                    child: const _CurrentLocationMarker(),
+                  ),
                 ],
               ),
-              if (currentPosition != null)
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: currentPosition,
-                      width: 42,
-                      height: 42,
-                      child: const _CurrentLocationMarker(),
-                    ),
-                  ],
-                ),
-              if (hasRoute)
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: routePoints.first,
-                      width: 34,
-                      height: 34,
-                      child: const _RouteMarker(color: AppColors.gps),
-                    ),
-                    Marker(
-                      point: routePoints.last,
-                      width: 34,
-                      height: 34,
-                      child: const _RouteMarker(color: AppColors.danger),
-                    ),
-                  ],
-                ),
-              SimpleAttributionWidget(
-                source: Text(
-                  'OpenStreetMap contributors',
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                backgroundColor: attributionColor,
-              ),
-              if (widget.label != null)
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: _MapBadge(
-                      label: widget.label!,
-                      isLive: widget.isLive,
-                    ),
+            if (hasRoute)
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: routePoints.first,
+                    width: 34,
+                    height: 34,
+                    child: const _RouteMarker(color: AppColors.gps),
                   ),
-                ),
+                  Marker(
+                    point: routePoints.last,
+                    width: 34,
+                    height: 34,
+                    child: const _RouteMarker(color: AppColors.danger),
+                  ),
+                ],
+              ),
+            SimpleAttributionWidget(
+              source: Text(
+                'OpenStreetMap contributors',
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+              backgroundColor: attributionColor,
+            ),
+            if (widget.label != null)
               Align(
-                alignment: Alignment.topRight,
+                alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const PulseTrackLogo(size: 34, showWordmark: false),
+                  child: _MapBadge(label: widget.label!, isLive: widget.isLive),
+                ),
+              ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const PulseTrackLogo(size: 34, showWordmark: false),
+                    if (widget.showLocateButton) ...[
                       const SizedBox(height: 10),
                       _LocateButton(
                         tooltip: l10n.currentLocation,
@@ -160,14 +164,18 @@ class _MapPreviewState extends State<MapPreview> {
                         onPressed: _centerOnCurrentPosition,
                       ),
                     ],
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+
+    if (!widget.framed) return map;
+
+    return AppPanel(padding: EdgeInsets.zero, child: map);
   }
 
   Future<void> _centerOnCurrentPosition({bool showError = true}) async {

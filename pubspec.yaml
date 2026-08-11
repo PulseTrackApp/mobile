@@ -51,7 +51,7 @@ dependencies:
   # l'application continue sans rappels : voir FirebasePushService.
   firebase_core: ^4.1.1
   firebase_messaging: ^16.0.2
-
+  share_plus: ^13.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

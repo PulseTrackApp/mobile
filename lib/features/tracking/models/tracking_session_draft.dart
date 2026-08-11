@@ -34,6 +34,17 @@ class TrackingSessionDraft {
     return (distanceMeters / 1000) / hours;
   }
 
+  double get maxSpeedKmh {
+    var maxSpeedMps = 0.0;
+    for (final point in points) {
+      final speed = point.speed;
+      if (speed != null && speed > maxSpeedMps) {
+        maxSpeedMps = speed;
+      }
+    }
+    return maxSpeedMps * 3.6;
+  }
+
   int get paceSecondsPerKm {
     if (distanceMeters <= 0 || elapsed.inSeconds <= 0) return 0;
     return (elapsed.inSeconds / (distanceMeters / 1000)).round();

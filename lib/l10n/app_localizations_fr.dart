@@ -636,8 +636,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get averageSpeed => 'Vitesse moyenne';
 
   @override
+  String get maxSpeed => 'Pic de vitesse';
+
+  @override
+  String get shareWorkoutImage => 'Partager l\'image';
+
+  @override
+  String get sharingWorkoutImage => 'Préparation de l\'image...';
+
+  @override
+  String get shareWorkoutTitle => 'Ma séance GymFlow';
+
+  @override
+  String get shareWorkoutUnavailable =>
+      'Impossible de préparer l\'image pour le moment.';
+
+  @override
   String get notConnectedYet =>
-      'GPS actif. Garde l\'écran ouvert pendant la séance.';
+      'GPS actif. Tu peux mettre en pause, reprendre ou terminer la séance.';
 
   @override
   String get statsThisWeek => 'Cette semaine';

@@ -1292,10 +1292,40 @@ abstract class AppLocalizations {
   /// **'Vitesse moyenne'**
   String get averageSpeed;
 
+  /// No description provided for @maxSpeed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pic de vitesse'**
+  String get maxSpeed;
+
+  /// No description provided for @shareWorkoutImage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partager l\'image'**
+  String get shareWorkoutImage;
+
+  /// No description provided for @sharingWorkoutImage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparation de l\'image...'**
+  String get sharingWorkoutImage;
+
+  /// No description provided for @shareWorkoutTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma séance GymFlow'**
+  String get shareWorkoutTitle;
+
+  /// No description provided for @shareWorkoutUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de préparer l\'image pour le moment.'**
+  String get shareWorkoutUnavailable;
+
   /// No description provided for @notConnectedYet.
   ///
   /// In fr, this message translates to:
-  /// **'GPS actif. Garde l\'écran ouvert pendant la séance.'**
+  /// **'GPS actif. Tu peux mettre en pause, reprendre ou terminer la séance.'**
   String get notConnectedYet;
 
   /// No description provided for @statsThisWeek.
