@@ -155,6 +155,8 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                           ? '-- kg'
                           : '${data!.currentWeightKg!.toStringAsFixed(1)} kg',
                       coachPreview: data?.coachPreview,
+                      coachStatus:
+                          data?.coachStatus ?? CoachPreviewStatus.checking,
                     );
                   },
                 )
@@ -166,6 +168,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
 
   Future<_DashboardData> _loadDashboard(ModuleAccessState moduleAccess) async {
     final api = ref.read(pulseTrackApiProvider);
+    final coachEnabled = moduleAccess.isEnabled(AppModule.coach);
     final results = await Future.wait<Object?>([
       moduleAccess.isEnabled(AppModule.weeklySummary)
           ? api.getWeeklySummary(zone: gymFlowDefaultZone)
@@ -173,14 +176,18 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       moduleAccess.isEnabled(AppModule.bodyCheckins)
           ? api.getBodyProgress()
           : Future<Map<String, dynamic>>.value(const {}),
-      moduleAccess.isEnabled(AppModule.coach)
-          ? api.getLatestCoachMessage()
+      coachEnabled
+          ? _ignoreCoachError(api.getCoachSettings())
+          : Future<Map<String, dynamic>?>.value(null),
+      coachEnabled
+          ? _ignoreCoachError(api.getLatestCoachMessage())
           : Future<Map<String, dynamic>?>.value(null),
     ]);
 
     final summary = results[0] as Map<String, dynamic>;
     final body = results[1] as Map<String, dynamic>;
-    final coach = results[2] as Map<String, dynamic>?;
+    final coachSettings = results[2] as Map<String, dynamic>?;
+    final coach = results[3] as Map<String, dynamic>?;
     final goals = jsonList(summary, 'goals');
     final firstGoal = goals.isEmpty ? null : goals.first;
     final currentValue = firstGoal == null
@@ -206,7 +213,26 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           ? null
           : jsonDouble(body, 'currentWeightKg'),
       coachPreview: jsonString(coach, 'content'),
+      coachStatus: _coachStatus(coachEnabled, coachSettings),
     );
+  }
+
+  Future<Object?> _ignoreCoachError(Future<Object?> request) async {
+    try {
+      return await request;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  CoachPreviewStatus _coachStatus(
+    bool coachEnabled,
+    Map<String, dynamic>? settings,
+  ) {
+    if (!coachEnabled) return CoachPreviewStatus.locked;
+    return jsonBool(settings, 'usable')
+        ? CoachPreviewStatus.ready
+        : CoachPreviewStatus.unavailable;
   }
 
   String _signature(ModuleAccessState moduleAccess) {
@@ -225,6 +251,7 @@ class _DashboardData {
     required this.goalLabel,
     required this.currentWeightKg,
     required this.coachPreview,
+    required this.coachStatus,
   });
 
   final double distanceMeters;
@@ -234,4 +261,5 @@ class _DashboardData {
   final String? goalLabel;
   final double? currentWeightKg;
   final String? coachPreview;
+  final CoachPreviewStatus coachStatus;
 }

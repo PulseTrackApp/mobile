@@ -286,7 +286,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noGoalsYet => 'Aucun objectif actif pour le moment.';
 
   @override
-  String get coachAvailable => 'Coach disponible';
+  String get coachAvailable => 'Super Coach prêt';
 
   @override
   String get requestWeeklyReview => 'Demander le bilan';
@@ -414,14 +414,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get coachPrivacyNote =>
-      'Le mobile ne manipule aucune clé. Il envoie seulement tes demandes à l\'API et affiche les conseils reçus.';
+      'Tes demandes restent liées à ton compte GymFlow et servent uniquement à produire tes conseils sportifs.';
 
   @override
-  String get coachBackendStatusTitle => 'Super Coach connecté à l\'API';
+  String get coachUnavailableTitle => 'Super Coach en préparation';
 
   @override
-  String get coachBackendStatusBody =>
-      'Quand le service est actif, l\'app peut demander un bilan, des alertes d\'effort et des propositions d\'exercices.';
+  String get coachUnavailableBody =>
+      'Les conseils personnalisés ne sont pas encore disponibles. Réessaie un peu plus tard.';
 
   @override
   String get effortWarningTitle => 'Alerte effort insuffisant';
@@ -459,7 +459,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get coachPreviewEmpty =>
-      'Le coach sera disponible lorsque l\'API sera connectée.';
+      'Aucun conseil pour le moment. Demande un bilan pour générer ta première recommandation.';
+
+  @override
+  String get coachPreviewChecking => 'Vérification du Super Coach...';
+
+  @override
+  String get coachPreviewUnavailable =>
+      'Super Coach n\'est pas encore prêt. Réessaie un peu plus tard.';
+
+  @override
+  String get coachPreviewLocked => 'Super Coach est verrouillé sur ce compte.';
 
   @override
   String get openMenu => 'Ouvrir le menu';

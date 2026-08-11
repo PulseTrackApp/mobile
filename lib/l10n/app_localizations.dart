@@ -629,7 +629,7 @@ abstract class AppLocalizations {
   /// No description provided for @coachAvailable.
   ///
   /// In fr, this message translates to:
-  /// **'Coach disponible'**
+  /// **'Super Coach prêt'**
   String get coachAvailable;
 
   /// No description provided for @requestWeeklyReview.
@@ -881,20 +881,20 @@ abstract class AppLocalizations {
   /// No description provided for @coachPrivacyNote.
   ///
   /// In fr, this message translates to:
-  /// **'Le mobile ne manipule aucune clé. Il envoie seulement tes demandes à l\'API et affiche les conseils reçus.'**
+  /// **'Tes demandes restent liées à ton compte GymFlow et servent uniquement à produire tes conseils sportifs.'**
   String get coachPrivacyNote;
 
-  /// No description provided for @coachBackendStatusTitle.
+  /// No description provided for @coachUnavailableTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Super Coach connecté à l\'API'**
-  String get coachBackendStatusTitle;
+  /// **'Super Coach en préparation'**
+  String get coachUnavailableTitle;
 
-  /// No description provided for @coachBackendStatusBody.
+  /// No description provided for @coachUnavailableBody.
   ///
   /// In fr, this message translates to:
-  /// **'Quand le service est actif, l\'app peut demander un bilan, des alertes d\'effort et des propositions d\'exercices.'**
-  String get coachBackendStatusBody;
+  /// **'Les conseils personnalisés ne sont pas encore disponibles. Réessaie un peu plus tard.'**
+  String get coachUnavailableBody;
 
   /// No description provided for @effortWarningTitle.
   ///
@@ -959,8 +959,26 @@ abstract class AppLocalizations {
   /// No description provided for @coachPreviewEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Le coach sera disponible lorsque l\'API sera connectée.'**
+  /// **'Aucun conseil pour le moment. Demande un bilan pour générer ta première recommandation.'**
   String get coachPreviewEmpty;
+
+  /// No description provided for @coachPreviewChecking.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérification du Super Coach...'**
+  String get coachPreviewChecking;
+
+  /// No description provided for @coachPreviewUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Super Coach n\'est pas encore prêt. Réessaie un peu plus tard.'**
+  String get coachPreviewUnavailable;
+
+  /// No description provided for @coachPreviewLocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Super Coach est verrouillé sur ce compte.'**
+  String get coachPreviewLocked;
 
   /// No description provided for @openMenu.
   ///

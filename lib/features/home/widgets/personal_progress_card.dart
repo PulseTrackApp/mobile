@@ -10,11 +10,13 @@ class PersonalProgressCard extends StatelessWidget {
     this.calories = '0 kcal',
     this.currentWeight = '-- kg',
     this.coachPreview,
+    this.coachStatus = CoachPreviewStatus.checking,
   });
 
   final String calories;
   final String currentWeight;
   final String? coachPreview;
+  final CoachPreviewStatus coachStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,7 @@ class PersonalProgressCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          coachPreview ?? l10n.coachPreviewEmpty,
+                          _coachMessage(l10n),
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ],
@@ -98,7 +100,21 @@ class PersonalProgressCard extends StatelessWidget {
       ),
     );
   }
+
+  String _coachMessage(AppLocalizations l10n) {
+    final message = coachPreview?.trim();
+    if (message != null && message.isNotEmpty) return message;
+
+    return switch (coachStatus) {
+      CoachPreviewStatus.checking => l10n.coachPreviewChecking,
+      CoachPreviewStatus.locked => l10n.coachPreviewLocked,
+      CoachPreviewStatus.unavailable => l10n.coachPreviewUnavailable,
+      CoachPreviewStatus.ready => l10n.coachPreviewEmpty,
+    };
+  }
 }
+
+enum CoachPreviewStatus { checking, locked, unavailable, ready }
 
 class _CompactStat extends StatelessWidget {
   const _CompactStat({

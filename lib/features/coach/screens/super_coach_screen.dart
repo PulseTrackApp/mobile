@@ -54,6 +54,7 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
                 future: _future,
                 builder: (context, snapshot) {
                   final data = snapshot.data;
+                  final isUsable = data?.settingsUsable == true;
                   return AppPanel(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,9 +82,9 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    data?.settingsUsable == true
+                                    isUsable
                                         ? l10n.coachAvailable
-                                        : l10n.coachBackendStatusTitle,
+                                        : l10n.coachUnavailableTitle,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.titleMedium,
@@ -91,7 +92,9 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
                                   const SizedBox(height: 6),
                                   Text(
                                     data?.latestMessage ??
-                                        l10n.coachBackendStatusBody,
+                                        (isUsable
+                                            ? l10n.coachPreviewEmpty
+                                            : l10n.coachUnavailableBody),
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodyMedium,
@@ -112,14 +115,14 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
                             child: Row(
                               children: [
                                 const Icon(
-                                  Icons.key_off_outlined,
+                                  Icons.verified_user_outlined,
                                   color: AppColors.gps,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     snapshot.hasError
-                                        ? l10n.apiUnexpectedError
+                                        ? l10n.coachUnavailableBody
                                         : l10n.coachPrivacyNote,
                                     style: Theme.of(
                                       context,
@@ -136,7 +139,7 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
                               ? l10n.saving
                               : l10n.requestWeeklyReview,
                           icon: Icons.insights_rounded,
-                          onPressed: _isRequesting
+                          onPressed: _isRequesting || !isUsable
                               ? null
                               : () => _requestWeeklyReview(refresh: true),
                         ),
@@ -161,10 +164,18 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
                       ),
                     ),
                     const SizedBox(height: 14),
-                    AppButton.secondary(
-                      label: _isRequesting ? l10n.saving : l10n.askCoach,
-                      icon: Icons.send_rounded,
-                      onPressed: _isRequesting ? null : _askCoach,
+                    FutureBuilder<_CoachData>(
+                      future: _future,
+                      builder: (context, snapshot) {
+                        final isUsable = snapshot.data?.settingsUsable == true;
+                        return AppButton.secondary(
+                          label: _isRequesting ? l10n.saving : l10n.askCoach,
+                          icon: Icons.send_rounded,
+                          onPressed: _isRequesting || !isUsable
+                              ? null
+                              : _askCoach,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -199,16 +210,22 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
 
   Future<_CoachData> _loadCoach() async {
     final api = ref.read(pulseTrackApiProvider);
-    final results = await Future.wait<Object?>([
-      api.getCoachSettings(),
-      api.getLatestCoachMessage(),
-    ]);
-    final settings = results[0] as Map<String, dynamic>;
-    final latest = results[1] as Map<String, dynamic>?;
+    final settings = await api.getCoachSettings();
+    final latest = await _ignoreLatestMessageError(api.getLatestCoachMessage());
     return _CoachData(
       settingsUsable: settings['usable'] == true,
       latestMessage: jsonString(latest, 'content'),
     );
+  }
+
+  Future<Map<String, dynamic>?> _ignoreLatestMessageError(
+    Future<Map<String, dynamic>?> request,
+  ) async {
+    try {
+      return await request;
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> _requestWeeklyReview({required bool refresh}) async {

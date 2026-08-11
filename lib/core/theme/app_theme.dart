@@ -94,13 +94,16 @@ abstract final class AppTheme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: card,
+        height: 62,
         indicatorColor: AppColors.primary.withValues(alpha: 0.14),
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
             color: states.contains(WidgetState.selected)
                 ? AppColors.primary
                 : muted,
-            fontSize: 11,
+            fontSize: 10,
+            height: 1,
+            letterSpacing: 0,
             fontWeight: states.contains(WidgetState.selected)
                 ? FontWeight.w700
                 : FontWeight.w600,
