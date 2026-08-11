@@ -66,6 +66,52 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hidePassword => 'Masquer le mot de passe';
 
   @override
+  String get forgotPassword => 'Mot de passe oublié ?';
+
+  @override
+  String get passwordResetTitle => 'Réinitialisation';
+
+  @override
+  String get passwordResetCode => 'Code reçu';
+
+  @override
+  String get passwordResetCodeHint => 'Ex : ABCD1234';
+
+  @override
+  String get newPassword => 'Nouveau mot de passe';
+
+  @override
+  String get requestResetCode => 'Recevoir le code';
+
+  @override
+  String get resetPassword => 'Changer le mot de passe';
+
+  @override
+  String get passwordResetSending => 'Envoi...';
+
+  @override
+  String get passwordResetSubmitting => 'Mise à jour...';
+
+  @override
+  String get passwordResetEmailRequired =>
+      'Renseigne ton e-mail pour recevoir un code.';
+
+  @override
+  String get passwordResetRequiredFields =>
+      'Renseigne l\'e-mail, le code et le nouveau mot de passe.';
+
+  @override
+  String get passwordResetCodeSent =>
+      'Si ce compte existe, un code vient d\'être envoyé.';
+
+  @override
+  String get passwordResetSuccess =>
+      'Mot de passe mis à jour. Tu peux te connecter.';
+
+  @override
+  String get close => 'Fermer';
+
+  @override
   String get existingAccount => 'J\'ai déjà un compte';
 
   @override

@@ -212,6 +212,90 @@ abstract class AppLocalizations {
   /// **'Masquer le mot de passe'**
   String get hidePassword;
 
+  /// No description provided for @forgotPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe oublié ?'**
+  String get forgotPassword;
+
+  /// No description provided for @passwordResetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialisation'**
+  String get passwordResetTitle;
+
+  /// No description provided for @passwordResetCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code reçu'**
+  String get passwordResetCode;
+
+  /// No description provided for @passwordResetCodeHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex : ABCD1234'**
+  String get passwordResetCodeHint;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau mot de passe'**
+  String get newPassword;
+
+  /// No description provided for @requestResetCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recevoir le code'**
+  String get requestResetCode;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le mot de passe'**
+  String get resetPassword;
+
+  /// No description provided for @passwordResetSending.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoi...'**
+  String get passwordResetSending;
+
+  /// No description provided for @passwordResetSubmitting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mise à jour...'**
+  String get passwordResetSubmitting;
+
+  /// No description provided for @passwordResetEmailRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne ton e-mail pour recevoir un code.'**
+  String get passwordResetEmailRequired;
+
+  /// No description provided for @passwordResetRequiredFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne l\'e-mail, le code et le nouveau mot de passe.'**
+  String get passwordResetRequiredFields;
+
+  /// No description provided for @passwordResetCodeSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Si ce compte existe, un code vient d\'être envoyé.'**
+  String get passwordResetCodeSent;
+
+  /// No description provided for @passwordResetSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe mis à jour. Tu peux te connecter.'**
+  String get passwordResetSuccess;
+
+  /// No description provided for @close.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get close;
+
   /// No description provided for @existingAccount.
   ///
   /// In fr, this message translates to:

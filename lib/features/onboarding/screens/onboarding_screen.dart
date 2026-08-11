@@ -98,6 +98,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       onUseExistingAccountChanged: (value) {
                         setState(() => _useExistingAccount = value);
                       },
+                      onForgotPasswordPressed: _openPasswordResetSheet,
                       onFitnessLevelChanged: (level) {
                         setState(() => _fitnessLevel = level);
                       },
@@ -207,6 +208,24 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
+  }
+
+  Future<void> _openPasswordResetSheet() async {
+    final api = ref.read(pulseTrackApiProvider);
+    final completed = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (_) => _PasswordResetSheet(
+        initialEmail: _emailController.text.trim(),
+        onRequestCode: (email) => api.requestPasswordResetCode(email: email),
+        onResetPassword: ({required code, required newPassword}) =>
+            api.resetPassword(code: code, newPassword: newPassword),
+      ),
+    );
+
+    if (!mounted || completed != true) return;
+    _showMessage(AppLocalizations.of(context).passwordResetSuccess);
   }
 
   Map<String, dynamic>? _buildProfilePayload(AppLocalizations l10n) {
@@ -349,6 +368,7 @@ class _ProfilePage extends StatelessWidget {
     required this.fitnessLevel,
     required this.useExistingAccount,
     required this.onUseExistingAccountChanged,
+    required this.onForgotPasswordPressed,
     required this.onFitnessLevelChanged,
   });
 
@@ -361,6 +381,7 @@ class _ProfilePage extends StatelessWidget {
   final FitnessLevelOption fitnessLevel;
   final bool useExistingAccount;
   final ValueChanged<bool> onUseExistingAccountChanged;
+  final VoidCallback onForgotPasswordPressed;
   final ValueChanged<FitnessLevelOption> onFitnessLevelChanged;
 
   @override
@@ -403,6 +424,17 @@ class _ProfilePage extends StatelessWidget {
                   hint: l10n.passwordHint,
                   icon: Icons.lock_outline_rounded,
                 ),
+                if (useExistingAccount) ...[
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: onForgotPasswordPressed,
+                      icon: const Icon(Icons.lock_reset_rounded),
+                      label: Text(l10n.forgotPassword),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 18),
                 _OnboardingField(
                   controller: displayNameController,
@@ -508,6 +540,179 @@ class _BmiPreview extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _PasswordResetSheet extends StatefulWidget {
+  const _PasswordResetSheet({
+    required this.initialEmail,
+    required this.onRequestCode,
+    required this.onResetPassword,
+  });
+
+  final String initialEmail;
+  final Future<void> Function(String email) onRequestCode;
+  final Future<void> Function({
+    required String code,
+    required String newPassword,
+  })
+  onResetPassword;
+
+  @override
+  State<_PasswordResetSheet> createState() => _PasswordResetSheetState();
+}
+
+class _PasswordResetSheetState extends State<_PasswordResetSheet> {
+  late final TextEditingController _emailController;
+  late final TextEditingController _codeController;
+  late final TextEditingController _newPasswordController;
+  bool _codeRequested = false;
+  bool _isRequesting = false;
+  bool _isResetting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController(text: widget.initialEmail);
+    _codeController = TextEditingController();
+    _newPasswordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _codeController.dispose();
+    _newPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 18, 20, 20 + bottomInset),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.passwordResetTitle,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                IconButton(
+                  tooltip: l10n.close,
+                  onPressed: () => Navigator.of(context).pop(false),
+                  icon: const Icon(Icons.close_rounded),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _OnboardingField(
+              controller: _emailController,
+              label: l10n.email,
+              hint: l10n.emailHint,
+              icon: Icons.alternate_email_rounded,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 12),
+            AppButton.secondary(
+              label: _isRequesting
+                  ? l10n.passwordResetSending
+                  : l10n.requestResetCode,
+              icon: Icons.mark_email_read_outlined,
+              onPressed: _isRequesting ? null : _requestCode,
+            ),
+            if (_codeRequested) ...[
+              const SizedBox(height: 18),
+              _OnboardingField(
+                controller: _codeController,
+                label: l10n.passwordResetCode,
+                hint: l10n.passwordResetCodeHint,
+                icon: Icons.pin_outlined,
+                keyboardType: TextInputType.visiblePassword,
+              ),
+              const SizedBox(height: 12),
+              _OnboardingPasswordField(
+                controller: _newPasswordController,
+                label: l10n.newPassword,
+                hint: l10n.passwordHint,
+                icon: Icons.lock_outline_rounded,
+              ),
+              const SizedBox(height: 18),
+              AppButton.primary(
+                label: _isResetting
+                    ? l10n.passwordResetSubmitting
+                    : l10n.resetPassword,
+                icon: Icons.check_rounded,
+                onPressed: _isResetting ? null : _resetPassword,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _requestCode() async {
+    final l10n = AppLocalizations.of(context);
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      _showMessage(l10n.passwordResetEmailRequired);
+      return;
+    }
+
+    setState(() => _isRequesting = true);
+    try {
+      await widget.onRequestCode(email);
+      if (!mounted) return;
+      setState(() => _codeRequested = true);
+      _showMessage(l10n.passwordResetCodeSent);
+    } on ApiProblem catch (problem) {
+      _showMessage('${l10n.apiErrorPrefix} ${problem.message}');
+    } catch (_) {
+      _showMessage(l10n.apiUnexpectedError);
+    } finally {
+      if (mounted) setState(() => _isRequesting = false);
+    }
+  }
+
+  Future<void> _resetPassword() async {
+    final l10n = AppLocalizations.of(context);
+    final code = _codeController.text.trim();
+    final newPassword = _newPasswordController.text;
+    if (_emailController.text.trim().isEmpty ||
+        code.isEmpty ||
+        newPassword.isEmpty) {
+      _showMessage(l10n.passwordResetRequiredFields);
+      return;
+    }
+
+    setState(() => _isResetting = true);
+    try {
+      await widget.onResetPassword(code: code, newPassword: newPassword);
+      if (!mounted) return;
+      Navigator.of(context).pop(true);
+    } on ApiProblem catch (problem) {
+      _showMessage('${l10n.apiErrorPrefix} ${problem.message}');
+    } catch (_) {
+      _showMessage(l10n.apiUnexpectedError);
+    } finally {
+      if (mounted) setState(() => _isResetting = false);
+    }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 

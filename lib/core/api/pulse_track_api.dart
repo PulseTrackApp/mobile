@@ -74,6 +74,28 @@ class PulseTrackApi {
     return session;
   }
 
+  Future<void> requestPasswordResetCode({required String email}) {
+    return _send(
+      () => _dio.post<Object?>('auth/forgot-password', data: {'email': email}),
+      (_) {},
+      retryOnUnauthorized: false,
+    );
+  }
+
+  Future<void> resetPassword({
+    required String code,
+    required String newPassword,
+  }) {
+    return _send(
+      () => _dio.post<Object?>(
+        'auth/reset-password',
+        data: {'code': code, 'newPassword': newPassword},
+      ),
+      (_) {},
+      retryOnUnauthorized: false,
+    );
+  }
+
   Future<AuthSession> refreshSession() async {
     final refreshToken = tokenStore.refreshToken;
     if (refreshToken == null || refreshToken.isEmpty) {

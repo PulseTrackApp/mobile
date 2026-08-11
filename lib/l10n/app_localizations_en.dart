@@ -66,6 +66,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hidePassword => 'Hide password';
 
   @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get passwordResetTitle => 'Password reset';
+
+  @override
+  String get passwordResetCode => 'Received code';
+
+  @override
+  String get passwordResetCodeHint => 'Ex: ABCD1234';
+
+  @override
+  String get newPassword => 'New password';
+
+  @override
+  String get requestResetCode => 'Get code';
+
+  @override
+  String get resetPassword => 'Change password';
+
+  @override
+  String get passwordResetSending => 'Sending...';
+
+  @override
+  String get passwordResetSubmitting => 'Updating...';
+
+  @override
+  String get passwordResetEmailRequired =>
+      'Enter your email to receive a code.';
+
+  @override
+  String get passwordResetRequiredFields =>
+      'Enter the email, code and new password.';
+
+  @override
+  String get passwordResetCodeSent =>
+      'If this account exists, a code has just been sent.';
+
+  @override
+  String get passwordResetSuccess => 'Password updated. You can sign in.';
+
+  @override
+  String get close => 'Close';
+
+  @override
   String get existingAccount => 'I already have an account';
 
   @override
