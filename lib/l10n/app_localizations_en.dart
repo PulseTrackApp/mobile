@@ -60,6 +60,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordHint => '8 characters minimum';
 
   @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
   String get existingAccount => 'I already have an account';
 
   @override

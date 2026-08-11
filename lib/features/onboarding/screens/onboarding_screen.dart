@@ -397,12 +397,11 @@ class _ProfilePage extends StatelessWidget {
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 14),
-                _OnboardingField(
+                _OnboardingPasswordField(
                   controller: passwordController,
                   label: l10n.password,
                   hint: l10n.passwordHint,
                   icon: Icons.lock_outline_rounded,
-                  obscureText: true,
                 ),
                 const SizedBox(height: 18),
                 _OnboardingField(
@@ -634,7 +633,6 @@ class _OnboardingField extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.keyboardType,
-    this.obscureText = false,
   });
 
   final TextEditingController controller;
@@ -642,18 +640,67 @@ class _OnboardingField extends StatelessWidget {
   final String hint;
   final IconData icon;
   final TextInputType? keyboardType;
-  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         prefixIcon: Icon(icon),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+}
+
+class _OnboardingPasswordField extends StatefulWidget {
+  const _OnboardingPasswordField({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    required this.icon,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final IconData icon;
+
+  @override
+  State<_OnboardingPasswordField> createState() =>
+      _OnboardingPasswordFieldState();
+}
+
+class _OnboardingPasswordFieldState extends State<_OnboardingPasswordField> {
+  bool _obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return TextFormField(
+      controller: widget.controller,
+      obscureText: _obscureText,
+      enableSuggestions: false,
+      autocorrect: false,
+      decoration: InputDecoration(
+        labelText: widget.label,
+        hintText: widget.hint,
+        prefixIcon: Icon(widget.icon),
+        suffixIcon: IconButton(
+          tooltip: _obscureText ? l10n.showPassword : l10n.hidePassword,
+          icon: Icon(
+            _obscureText
+                ? Icons.visibility_outlined
+                : Icons.visibility_off_outlined,
+          ),
+          onPressed: () {
+            setState(() => _obscureText = !_obscureText);
+          },
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );

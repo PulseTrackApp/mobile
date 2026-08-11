@@ -60,6 +60,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get passwordHint => '8 caractères minimum';
 
   @override
+  String get showPassword => 'Afficher le mot de passe';
+
+  @override
+  String get hidePassword => 'Masquer le mot de passe';
+
+  @override
   String get existingAccount => 'J\'ai déjà un compte';
 
   @override

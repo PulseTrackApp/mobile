@@ -200,6 +200,18 @@ abstract class AppLocalizations {
   /// **'8 caractères minimum'**
   String get passwordHint;
 
+  /// No description provided for @showPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher le mot de passe'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Masquer le mot de passe'**
+  String get hidePassword;
+
   /// No description provided for @existingAccount.
   ///
   /// In fr, this message translates to:

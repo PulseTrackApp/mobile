@@ -17,6 +17,8 @@
   "emailHint": "you@example.com",
   "password": "Password",
   "passwordHint": "8 characters minimum",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
   "existingAccount": "I already have an account",
   "sexOptional": "Sex (optional)",
   "sexOptionalHint": "Male, female or custom",
