@@ -130,16 +130,16 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
   Future<void> _start() async {
     try {
       await _trackingController.start();
-    } on TrackingException {
-      _showTrackingError();
+    } on TrackingException catch (error) {
+      _showTrackingError(error.issue);
     }
   }
 
   Future<void> _resume() async {
     try {
       await _trackingController.resume();
-    } on TrackingException {
-      _showTrackingError();
+    } on TrackingException catch (error) {
+      _showTrackingError(error.issue);
     }
   }
 
@@ -155,12 +155,18 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     );
   }
 
-  void _showTrackingError() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context).currentLocationUnavailable),
-      ),
-    );
+  void _showTrackingError(TrackingIssue issue) {
+    final l10n = AppLocalizations.of(context);
+    final message = switch (issue) {
+      TrackingIssue.locationDisabled => l10n.currentLocationUnavailable,
+      TrackingIssue.permissionDenied => l10n.locationPermissionDenied,
+      TrackingIssue.backgroundPermissionDenied =>
+        l10n.backgroundLocationPermissionRequired,
+    };
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   String _formatDuration(Duration duration) {

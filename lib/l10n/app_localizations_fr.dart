@@ -500,6 +500,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get currentLocation => 'Ma position';
 
   @override
+  String get locationPermissionDenied =>
+      'Autorise la localisation pour démarrer le tracking.';
+
+  @override
+  String get backgroundLocationPermissionRequired =>
+      'Autorise la localisation en arrière-plan pour garder la trace GPS quand l\'écran s\'éteint.';
+
+  @override
   String get currentLocationUnavailable =>
       'Position indisponible. Vérifie l\'autorisation GPS.';
 

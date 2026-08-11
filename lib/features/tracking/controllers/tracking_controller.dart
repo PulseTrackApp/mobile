@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,9 +12,30 @@ import '../models/tracking_state.dart';
 class TrackingController extends ChangeNotifier {
   TrackingController();
 
-  static const _locationSettings = LocationSettings(
+  static const _fallbackLocationSettings = LocationSettings(
     accuracy: LocationAccuracy.high,
     distanceFilter: 5,
+  );
+  static final _androidLocationSettings = AndroidSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 5,
+    intervalDuration: const Duration(seconds: 2),
+    useMSLAltitude: true,
+    foregroundNotificationConfig: const ForegroundNotificationConfig(
+      notificationTitle: 'GymFlow suit ta seance',
+      notificationText:
+          'Tracking GPS actif pour mesurer distance, allure et denivele.',
+      notificationChannelName: 'Tracking sportif GymFlow',
+      notificationIcon: AndroidResource(name: 'ic_launcher', defType: 'mipmap'),
+      enableWakeLock: true,
+      setOngoing: true,
+      color: Color(0xFF00A676),
+    ),
+  );
+  static final _androidCurrentPositionSettings = AndroidSettings(
+    accuracy: LocationAccuracy.high,
+    intervalDuration: const Duration(seconds: 1),
+    timeLimit: const Duration(seconds: 12),
   );
   static const _maxAcceptedAccuracyMeters = 80.0;
   static const _minAcceptedSegmentMeters = 2.0;
@@ -53,10 +75,7 @@ class TrackingController extends ChangeNotifier {
 
     try {
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 12),
-        ),
+        locationSettings: _currentPositionSettings,
       );
       _recordPosition(position);
     } catch (_) {
@@ -75,10 +94,7 @@ class TrackingController extends ChangeNotifier {
     _positionSubscription?.cancel();
     _positionSubscription = null;
     _lastPoint = null;
-    _state = _state.copyWith(
-      status: TrackingStatus.paused,
-      currentSpeedMps: 0,
-    );
+    _state = _state.copyWith(status: TrackingStatus.paused, currentSpeedMps: 0);
     notifyListeners();
   }
 
@@ -139,12 +155,22 @@ class TrackingController extends ChangeNotifier {
         permission == LocationPermission.deniedForever) {
       throw const TrackingException(TrackingIssue.permissionDenied);
     }
+
+    if (defaultTargetPlatform == TargetPlatform.android &&
+        permission != LocationPermission.always) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.always) {
+        throw const TrackingException(TrackingIssue.backgroundPermissionDenied);
+      }
+    }
   }
 
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      _state = _state.copyWith(elapsed: _state.elapsed + const Duration(seconds: 1));
+      _state = _state.copyWith(
+        elapsed: _state.elapsed + const Duration(seconds: 1),
+      );
       notifyListeners();
     });
   }
@@ -152,7 +178,7 @@ class TrackingController extends ChangeNotifier {
   void _startPositionStream() {
     _positionSubscription?.cancel();
     _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: _locationSettings,
+      locationSettings: _streamLocationSettings,
     ).listen(_recordPosition);
   }
 
@@ -206,7 +232,28 @@ class TrackingController extends ChangeNotifier {
   }
 }
 
-enum TrackingIssue { locationDisabled, permissionDenied }
+LocationSettings get _streamLocationSettings {
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    return TrackingController._androidLocationSettings;
+  }
+  return TrackingController._fallbackLocationSettings;
+}
+
+LocationSettings get _currentPositionSettings {
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    return TrackingController._androidCurrentPositionSettings;
+  }
+  return const LocationSettings(
+    accuracy: LocationAccuracy.high,
+    timeLimit: Duration(seconds: 12),
+  );
+}
+
+enum TrackingIssue {
+  locationDisabled,
+  permissionDenied,
+  backgroundPermissionDenied,
+}
 
 class TrackingException implements Exception {
   const TrackingException(this.issue);
