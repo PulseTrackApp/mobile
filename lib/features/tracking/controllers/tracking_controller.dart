@@ -155,14 +155,6 @@ class TrackingController extends ChangeNotifier {
         permission == LocationPermission.deniedForever) {
       throw const TrackingException(TrackingIssue.permissionDenied);
     }
-
-    if (defaultTargetPlatform == TargetPlatform.android &&
-        permission != LocationPermission.always) {
-      permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.always) {
-        throw const TrackingException(TrackingIssue.backgroundPermissionDenied);
-      }
-    }
   }
 
   void _startTimer() {
@@ -249,11 +241,7 @@ LocationSettings get _currentPositionSettings {
   );
 }
 
-enum TrackingIssue {
-  locationDisabled,
-  permissionDenied,
-  backgroundPermissionDenied,
-}
+enum TrackingIssue { locationDisabled, permissionDenied }
 
 class TrackingException implements Exception {
   const TrackingException(this.issue);

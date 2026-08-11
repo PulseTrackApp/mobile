@@ -14,7 +14,7 @@ void main() {
       expect(manifest, contains('android.permission.ACCESS_COARSE_LOCATION'));
       expect(
         manifest,
-        contains('android.permission.ACCESS_BACKGROUND_LOCATION'),
+        isNot(contains('android.permission.ACCESS_BACKGROUND_LOCATION')),
       );
       expect(manifest, contains('android.permission.FOREGROUND_SERVICE'));
       expect(

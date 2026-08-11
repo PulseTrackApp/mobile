@@ -160,8 +160,6 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     final message = switch (issue) {
       TrackingIssue.locationDisabled => l10n.currentLocationUnavailable,
       TrackingIssue.permissionDenied => l10n.locationPermissionDenied,
-      TrackingIssue.backgroundPermissionDenied =>
-        l10n.backgroundLocationPermissionRequired,
     };
 
     ScaffoldMessenger.of(

@@ -1046,12 +1046,6 @@ abstract class AppLocalizations {
   /// **'Autorise la localisation pour démarrer le tracking.'**
   String get locationPermissionDenied;
 
-  /// No description provided for @backgroundLocationPermissionRequired.
-  ///
-  /// In fr, this message translates to:
-  /// **'Autorise la localisation en arrière-plan pour garder la trace GPS quand l\'écran s\'éteint.'**
-  String get backgroundLocationPermissionRequired;
-
   /// No description provided for @currentLocationUnavailable.
   ///
   /// In fr, this message translates to:

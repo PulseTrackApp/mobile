@@ -175,7 +175,6 @@
   "liveRoute": "Live route",
   "currentLocation": "My location",
   "locationPermissionDenied": "Allow location access to start tracking.",
-  "backgroundLocationPermissionRequired": "Allow background location so GPS tracking keeps running when the screen turns off.",
   "currentLocationUnavailable": "Location unavailable. Check GPS permission.",
   "pause": "Pause",
   "resume": "Resume",
