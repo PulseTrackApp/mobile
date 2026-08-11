@@ -891,20 +891,32 @@ class _OnboardingPasswordFieldState extends State<_OnboardingPasswordField> {
       obscureText: _obscureText,
       enableSuggestions: false,
       autocorrect: false,
+      textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
         labelText: widget.label,
         hintText: widget.hint,
+        contentPadding: const EdgeInsetsDirectional.fromSTEB(12, 16, 8, 16),
         prefixIcon: Icon(widget.icon),
-        suffixIcon: IconButton(
-          tooltip: _obscureText ? l10n.showPassword : l10n.hidePassword,
-          icon: Icon(
-            _obscureText
-                ? Icons.visibility_outlined
-                : Icons.visibility_off_outlined,
+        suffixIconConstraints: const BoxConstraints(
+          minWidth: 48,
+          minHeight: 48,
+        ),
+        suffixIcon: Padding(
+          padding: const EdgeInsetsDirectional.only(end: 4),
+          child: IconButton(
+            tooltip: _obscureText ? l10n.showPassword : l10n.hidePassword,
+            constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+            padding: EdgeInsets.zero,
+            iconSize: 20,
+            icon: Icon(
+              _obscureText
+                  ? Icons.visibility_outlined
+                  : Icons.visibility_off_outlined,
+            ),
+            onPressed: () {
+              setState(() => _obscureText = !_obscureText);
+            },
           ),
-          onPressed: () {
-            setState(() => _obscureText = !_obscureText);
-          },
         ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       ),
