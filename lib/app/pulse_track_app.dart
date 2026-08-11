@@ -1,31 +1,46 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_settings_controller.dart';
+import '../core/api/api_providers.dart';
+import '../core/push/push_providers.dart';
 import '../core/theme/app_theme.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/onboarding/screens/onboarding_screen.dart';
 import '../l10n/app_localizations.dart';
 
-class PulseTrackApp extends StatefulWidget {
+class PulseTrackApp extends ConsumerStatefulWidget {
   const PulseTrackApp({super.key, this.locale, this.showOnboarding = true});
 
   final Locale? locale;
   final bool showOnboarding;
 
   @override
-  State<PulseTrackApp> createState() => _PulseTrackAppState();
+  ConsumerState<PulseTrackApp> createState() => _PulseTrackAppState();
 }
 
-class _PulseTrackAppState extends State<PulseTrackApp> {
+class _PulseTrackAppState extends ConsumerState<PulseTrackApp> {
   late final AppSettingsController _settingsController;
   late bool _showOnboarding;
+  bool _allowGuestHome = false;
 
   @override
   void initState() {
     super.initState();
     _settingsController = AppSettingsController(initialLocale: widget.locale);
     _showOnboarding = widget.showOnboarding;
+
+    // Apres le premier rendu : demander la permission de notifier pendant que
+    // l'ecran se construit ferait apparaitre la boite de dialogue systeme
+    // avant que l'utilisateur ait vu quoi que ce soit de l'application.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        unawaited(ref.read(pushRegistrarProvider).start());
+      }
+    });
   }
 
   @override
@@ -36,13 +51,19 @@ class _PulseTrackAppState extends State<PulseTrackApp> {
 
   @override
   Widget build(BuildContext context) {
+    final tokenStore = ref.watch(authTokenStoreProvider);
+
     return AppSettingsScope(
       controller: _settingsController,
       child: AnimatedBuilder(
         animation: _settingsController,
         builder: (context, _) {
+          final showOnboarding =
+              _showOnboarding ||
+              (!tokenStore.isAuthenticated && !_allowGuestHome);
+
           return MaterialApp(
-            title: 'PulseTrack',
+            title: 'GymFlow',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
@@ -55,10 +76,19 @@ class _PulseTrackAppState extends State<PulseTrackApp> {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
-            home: _showOnboarding
+            home: showOnboarding
                 ? OnboardingScreen(
                     onComplete: () {
-                      setState(() => _showOnboarding = false);
+                      setState(() {
+                        _showOnboarding = false;
+                        _allowGuestHome = false;
+                      });
+                    },
+                    onSkip: () {
+                      setState(() {
+                        _showOnboarding = false;
+                        _allowGuestHome = true;
+                      });
                     },
                   )
                 : const HomeScreen(),

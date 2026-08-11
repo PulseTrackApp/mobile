@@ -1,4 +1,4 @@
-package com.perso.sportmvp.mobile_flutter
+package com.millogostudio.gymflow
 
 import io.flutter.embedding.android.FlutterActivity
 

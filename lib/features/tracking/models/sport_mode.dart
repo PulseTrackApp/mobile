@@ -11,6 +11,23 @@ enum SportMode {
 
   final IconData icon;
 
+  static SportMode? fromApiValue(String? value) {
+    return switch (value) {
+      'RUN' => SportMode.run,
+      'RIDE' => SportMode.ride,
+      'WALK' => SportMode.walk,
+      _ => null,
+    };
+  }
+
+  String get apiValue {
+    return switch (this) {
+      SportMode.run => 'RUN',
+      SportMode.ride => 'RIDE',
+      SportMode.walk => 'WALK',
+    };
+  }
+
   String label(AppLocalizations l10n) {
     return switch (this) {
       SportMode.run => l10n.run,

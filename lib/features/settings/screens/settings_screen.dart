@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app_settings_controller.dart';
+import '../../../core/api/api_providers.dart';
+import '../../../core/push/push_providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tracking/models/sport_mode.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final settings = AppSettingsScope.of(context);
+    final tokenStore = ref.watch(authTokenStoreProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
@@ -157,11 +162,36 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 18),
+              _SettingsSection(
+                title: l10n.settingsAccount,
+                children: [
+                  _AccountTile(
+                    email: tokenStore.email,
+                    onLogout: () => _logout(context, ref),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _logout(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
+    // Avant la deconnexion, pas apres : retirer l'appareil exige un jeton
+    // d'acces valide, que `logout()` efface. Sans cela, le prochain compte
+    // ouvert sur ce telephone recevrait les rappels du precedent.
+    await ref.read(pushRegistrarProvider).unregister();
+    await ref.read(pulseTrackApiProvider).logout();
+
+    messenger.showSnackBar(SnackBar(content: Text(l10n.signedOut)));
+    navigator.popUntil((route) => route.isFirst);
   }
 }
 
@@ -319,6 +349,45 @@ class _WeeklyTargetStepper extends StatelessWidget {
             onPressed: () {
               settings.setWeeklyTargetKm(settings.weeklyTargetKm + 5);
             },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AccountTile extends StatelessWidget {
+  const _AccountTile({required this.email, required this.onLogout});
+
+  final String? email;
+  final VoidCallback onLogout;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final displayEmail = email?.trim();
+
+    return Padding(
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SettingsTileHeader(
+            icon: Icons.account_circle_outlined,
+            title: l10n.account,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            displayEmail == null || displayEmail.isEmpty
+                ? l10n.connectedAccount
+                : l10n.connectedAs(displayEmail),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 14),
+          AppButton.secondary(
+            label: l10n.signOut,
+            icon: Icons.logout_rounded,
+            onPressed: onLogout,
           ),
         ],
       ),

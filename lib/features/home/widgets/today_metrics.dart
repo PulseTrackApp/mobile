@@ -5,7 +5,16 @@ import '../../../core/ui/app_metric_tile.dart';
 import '../../../l10n/app_localizations.dart';
 
 class TodayMetrics extends StatelessWidget {
-  const TodayMetrics({super.key});
+  const TodayMetrics({
+    super.key,
+    this.distanceKm = '0.00',
+    this.movingTime = '0:00',
+    this.pace = '--',
+  });
+
+  final String distanceKm;
+  final String movingTime;
+  final String pace;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +33,7 @@ class TodayMetrics extends StatelessWidget {
               width: halfWidth,
               child: AppMetricTile(
                 label: l10n.distance,
-                value: '0.00',
+                value: distanceKm,
                 unit: l10n.kilometersUnit,
                 color: AppColors.primary,
               ),
@@ -33,8 +42,8 @@ class TodayMetrics extends StatelessWidget {
               width: halfWidth,
               child: AppMetricTile(
                 label: l10n.time,
-                value: l10n.emptyTime,
-                unit: l10n.hoursUnit,
+                value: movingTime,
+                unit: '',
                 color: AppColors.gps,
               ),
             ),
@@ -42,7 +51,7 @@ class TodayMetrics extends StatelessWidget {
               width: constraints.maxWidth,
               child: AppMetricTile(
                 label: l10n.pace,
-                value: l10n.emptyValue,
+                value: pace,
                 unit: l10n.paceUnit,
                 color: AppColors.accent,
               ),

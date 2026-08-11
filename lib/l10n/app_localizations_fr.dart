@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appName => 'PulseTrack';
+  String get appName => 'GymFlow';
 
   @override
   String get settings => 'Paramètres';
@@ -48,6 +48,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get displayNameHint => 'Ex : Jayson';
 
   @override
+  String get email => 'Email';
+
+  @override
+  String get emailHint => 'toi@exemple.com';
+
+  @override
+  String get password => 'Mot de passe';
+
+  @override
+  String get passwordHint => '8 caractères minimum';
+
+  @override
+  String get existingAccount => 'J\'ai déjà un compte';
+
+  @override
   String get sexOptional => 'Sexe (optionnel)';
 
   @override
@@ -63,7 +78,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get heightCm => 'Taille (cm)';
 
   @override
-  String get mainGoal => 'Objectif principal';
+  String get mainGoal => 'Objectifs';
 
   @override
   String get mainGoalHint => 'Ex : perdre du poids';
@@ -73,6 +88,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get fitnessLevelHint => 'Débutant, régulier, avancé';
+
+  @override
+  String get fitnessLevelBeginner => 'Débutant';
+
+  @override
+  String get fitnessLevelIntermediate => 'Régulier';
+
+  @override
+  String get fitnessLevelAdvanced => 'Avancé';
 
   @override
   String get preferredSports => 'Sports principaux';
@@ -85,7 +109,36 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get bmiPreview =>
-      'L\'IMC sera calculé automatiquement quand le profil sera sauvegardé.';
+      'L\'IMC est calculé automatiquement à partir du poids et de la taille.';
+
+  @override
+  String get bmiTitle => 'IMC estimé';
+
+  @override
+  String get bmiWaiting => 'Saisis ton poids et ta taille pour voir ton IMC.';
+
+  @override
+  String bmiValue(String value) {
+    return 'IMC $value';
+  }
+
+  @override
+  String get bmiHelper => 'Repère de suivi, pas un diagnostic médical.';
+
+  @override
+  String get bmiCategory => 'Catégorie';
+
+  @override
+  String get bmiCategoryUnderweight => 'Insuffisance pondérale';
+
+  @override
+  String get bmiCategoryNormal => 'Corpulence normale';
+
+  @override
+  String get bmiCategoryOverweight => 'Surpoids';
+
+  @override
+  String get bmiCategoryObese => 'Obésité';
 
   @override
   String get profileDataNote =>
@@ -93,6 +146,62 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get saveProfile => 'Sauvegarder le profil';
+
+  @override
+  String get saving => 'Sauvegarde...';
+
+  @override
+  String get requiredProfileFields =>
+      'Renseigne au minimum email, mot de passe, pseudo, poids et taille.';
+
+  @override
+  String get profileSavedApi => 'Profil sauvegardé sur l\'API.';
+
+  @override
+  String get apiErrorPrefix => 'Erreur API :';
+
+  @override
+  String get apiUnexpectedError =>
+      'Impossible de joindre l\'API pour le moment.';
+
+  @override
+  String get requiredBodyCheckInFields => 'Renseigne au minimum ton poids.';
+
+  @override
+  String get checkInSavedApi => 'Check-in sauvegardé sur l\'API.';
+
+  @override
+  String get requiredGoalFields => 'Renseigne une cible valide.';
+
+  @override
+  String get goalSavedApi => 'Objectif sauvegardé sur l\'API.';
+
+  @override
+  String get createGoal => 'Créer l\'objectif';
+
+  @override
+  String get goalTargetValue => 'Valeur cible';
+
+  @override
+  String get noGoalsYet => 'Aucun objectif actif pour le moment.';
+
+  @override
+  String get coachAvailable => 'Coach disponible';
+
+  @override
+  String get requestWeeklyReview => 'Demander le bilan';
+
+  @override
+  String get coachQuestion => 'Question au coach';
+
+  @override
+  String get coachQuestionHint => 'Ex : que puis-je faire cette semaine ?';
+
+  @override
+  String get askCoach => 'Envoyer au coach';
+
+  @override
+  String get workoutSavedApi => 'Séance sauvegardée sur l\'API.';
 
   @override
   String get bodyProgressTitle => 'Évolution physique';
@@ -204,24 +313,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get coachHeadline => 'Analyse personnelle avec Gemini';
 
   @override
-  String get geminiApiKey => 'Gemini côté backend';
+  String get geminiApiKey => 'Assistant IA';
 
   @override
-  String get geminiApiKeyHint => 'Variable d\'environnement backend';
+  String get geminiApiKeyHint => 'Géré par l\'API';
 
   @override
   String get geminiPrivacyNote =>
-      'La clé API Gemini est stockée uniquement dans les variables d\'environnement du backend. Le mobile ne l\'affiche pas et ne la sauvegarde jamais.';
+      'Le mobile ne manipule aucune clé. Il envoie seulement tes demandes à l\'API et affiche les conseils reçus.';
 
   @override
-  String get saveGeminiKey => 'Configuration backend';
+  String get saveGeminiKey => 'Statut du coach';
 
   @override
-  String get geminiBackendStatusTitle => 'Clé gérée par l\'API';
+  String get geminiBackendStatusTitle => 'Assistant connecté à l\'API';
 
   @override
   String get geminiBackendStatusBody =>
-      'Flutter appellera le backend pour obtenir les conseils. Le backend utilisera sa variable d\'environnement GEMINI_API_KEY.';
+      'Quand le service est actif, l\'app peut demander un bilan, des alertes d\'effort et des propositions d\'exercices.';
 
   @override
   String get effortWarningTitle => 'Alerte effort insuffisant';
@@ -259,7 +368,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get coachPreviewEmpty =>
-      'Configure Gemini pour recevoir des propositions d\'exercices.';
+      'Le coach sera disponible lorsque l\'API sera connectée.';
 
   @override
   String get openMenu => 'Ouvrir le menu';
@@ -272,7 +381,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get onboardingWelcomeBody =>
-      'PulseTrack reste personnel : pas de réseau social, pas d\'abonnement, juste tes parcours, tes performances et ton évolution.';
+      'GymFlow reste personnel : pas de réseau social, pas d\'abonnement, juste tes parcours, tes performances et ton évolution.';
 
   @override
   String get onboardingProfileTitle => 'Profil de départ';
@@ -300,7 +409,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onboardingNext => 'Suivant';
 
   @override
-  String get onboardingFinish => 'Entrer dans PulseTrack';
+  String get onboardingFinish => 'Entrer dans GymFlow';
 
   @override
   String get onboardingSkip => 'Passer';
@@ -315,7 +424,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onboardingGoalRestart => 'Reprendre le sport';
 
   @override
+  String get onboardingGoalRunFaster => 'Courir plus vite';
+
+  @override
+  String get onboardingGoalGoFurther => 'Faire plus de distance';
+
+  @override
   String get onboardingGoalMaintain => 'Maintenir la forme';
+
+  @override
+  String get onboardingGoalCyclingWalking => 'Progresser en vélo ou marche';
+
+  @override
+  String get onboardingGoalOther => 'Autre';
+
+  @override
+  String get customGoal => 'Précise ton objectif';
+
+  @override
+  String get customGoalHint => 'Ex : préparer un 10 km, mieux récupérer...';
 
   @override
   String get onboardingFavoriteSport => 'Sport favori';
@@ -364,6 +491,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get liveRoute => 'Parcours en direct';
 
   @override
+  String get currentLocation => 'Ma position';
+
+  @override
+  String get currentLocationUnavailable =>
+      'Position indisponible. Vérifie l\'autorisation GPS.';
+
+  @override
   String get pause => 'Pause';
 
   @override
@@ -377,7 +511,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get workoutSavedDraft =>
-      'Séance prête à sauvegarder quand l\'API sera branchée.';
+      'Vérifie les métriques, ajoute ton ressenti, puis sauvegarde la séance.';
 
   @override
   String get perceivedEffort => 'Effort perçu';
@@ -401,7 +535,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get averageSpeed => 'Vitesse moyenne';
 
   @override
-  String get notConnectedYet => 'Pas encore branché au GPS réel';
+  String get notConnectedYet =>
+      'GPS actif. Garde l\'écran ouvert pendant la séance.';
 
   @override
   String get statsThisWeek => 'Cette semaine';
@@ -623,6 +758,26 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get privateActivitiesDescription =>
       'Garde les sessions visibles seulement par toi.';
+
+  @override
+  String get settingsAccount => 'Compte';
+
+  @override
+  String get account => 'Compte connecté';
+
+  @override
+  String get connectedAccount => 'Compte connecté à GymFlow.';
+
+  @override
+  String connectedAs(String email) {
+    return 'Connecté avec $email';
+  }
+
+  @override
+  String get signOut => 'Déconnexion';
+
+  @override
+  String get signedOut => 'Tu es déconnecté.';
 
   @override
   String get decrease => 'Diminuer';

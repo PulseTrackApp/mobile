@@ -100,8 +100,10 @@ abstract final class AppTheme {
             color: states.contains(WidgetState.selected)
                 ? AppColors.primary
                 : muted,
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
+            fontSize: 11,
+            fontWeight: states.contains(WidgetState.selected)
+                ? FontWeight.w700
+                : FontWeight.w600,
           ),
         ),
       ),

@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'PulseTrack';
+  String get appName => 'GymFlow';
 
   @override
   String get settings => 'Settings';
@@ -48,6 +48,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get displayNameHint => 'Ex: Jayson';
 
   @override
+  String get email => 'Email';
+
+  @override
+  String get emailHint => 'you@example.com';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordHint => '8 characters minimum';
+
+  @override
+  String get existingAccount => 'I already have an account';
+
+  @override
   String get sexOptional => 'Sex (optional)';
 
   @override
@@ -63,7 +78,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get heightCm => 'Height (cm)';
 
   @override
-  String get mainGoal => 'Main goal';
+  String get mainGoal => 'Goals';
 
   @override
   String get mainGoalHint => 'Ex: lose weight';
@@ -73,6 +88,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fitnessLevelHint => 'Beginner, regular, advanced';
+
+  @override
+  String get fitnessLevelBeginner => 'Beginner';
+
+  @override
+  String get fitnessLevelIntermediate => 'Regular';
+
+  @override
+  String get fitnessLevelAdvanced => 'Advanced';
 
   @override
   String get preferredSports => 'Main sports';
@@ -85,7 +109,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bmiPreview =>
-      'BMI will be calculated automatically once the profile is saved.';
+      'BMI is calculated automatically from weight and height.';
+
+  @override
+  String get bmiTitle => 'Estimated BMI';
+
+  @override
+  String get bmiWaiting => 'Enter your weight and height to see your BMI.';
+
+  @override
+  String bmiValue(String value) {
+    return 'BMI $value';
+  }
+
+  @override
+  String get bmiHelper => 'Tracking reference, not a medical diagnosis.';
+
+  @override
+  String get bmiCategory => 'Category';
+
+  @override
+  String get bmiCategoryUnderweight => 'Underweight';
+
+  @override
+  String get bmiCategoryNormal => 'Normal range';
+
+  @override
+  String get bmiCategoryOverweight => 'Overweight';
+
+  @override
+  String get bmiCategoryObese => 'Obesity';
 
   @override
   String get profileDataNote =>
@@ -93,6 +146,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveProfile => 'Save profile';
+
+  @override
+  String get saving => 'Saving...';
+
+  @override
+  String get requiredProfileFields =>
+      'Enter at least email, password, nickname, weight and height.';
+
+  @override
+  String get profileSavedApi => 'Profile saved to the API.';
+
+  @override
+  String get apiErrorPrefix => 'API error:';
+
+  @override
+  String get apiUnexpectedError => 'Unable to reach the API for now.';
+
+  @override
+  String get requiredBodyCheckInFields => 'Enter at least your weight.';
+
+  @override
+  String get checkInSavedApi => 'Check-in saved to the API.';
+
+  @override
+  String get requiredGoalFields => 'Enter a valid target.';
+
+  @override
+  String get goalSavedApi => 'Goal saved to the API.';
+
+  @override
+  String get createGoal => 'Create goal';
+
+  @override
+  String get goalTargetValue => 'Target value';
+
+  @override
+  String get noGoalsYet => 'No active goal yet.';
+
+  @override
+  String get coachAvailable => 'Coach available';
+
+  @override
+  String get requestWeeklyReview => 'Request review';
+
+  @override
+  String get coachQuestion => 'Question for the coach';
+
+  @override
+  String get coachQuestionHint => 'Ex: what can I do this week?';
+
+  @override
+  String get askCoach => 'Send to coach';
+
+  @override
+  String get workoutSavedApi => 'Workout saved to the API.';
 
   @override
   String get bodyProgressTitle => 'Body progress';
@@ -203,24 +311,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coachHeadline => 'Personal analysis with Gemini';
 
   @override
-  String get geminiApiKey => 'Backend Gemini';
+  String get geminiApiKey => 'AI assistant';
 
   @override
-  String get geminiApiKeyHint => 'Backend environment variable';
+  String get geminiApiKeyHint => 'Managed by the API';
 
   @override
   String get geminiPrivacyNote =>
-      'The Gemini API key is stored only in backend environment variables. The mobile app never displays or saves it.';
+      'The mobile app never handles any key. It only sends your requests to the API and displays the advice it receives.';
 
   @override
-  String get saveGeminiKey => 'Backend configuration';
+  String get saveGeminiKey => 'Coach status';
 
   @override
-  String get geminiBackendStatusTitle => 'Key managed by the API';
+  String get geminiBackendStatusTitle => 'Assistant connected to the API';
 
   @override
   String get geminiBackendStatusBody =>
-      'Flutter will call the backend for coaching advice. The backend will use its GEMINI_API_KEY environment variable.';
+      'When the service is active, the app can request a review, effort alerts and exercise suggestions.';
 
   @override
   String get effortWarningTitle => 'Insufficient effort alert';
@@ -258,7 +366,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coachPreviewEmpty =>
-      'Configure Gemini to receive exercise suggestions.';
+      'The coach will be available once the API is connected.';
 
   @override
   String get openMenu => 'Open menu';
@@ -271,7 +379,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingWelcomeBody =>
-      'PulseTrack stays personal: no social network, no subscription, just your routes, performance and progress.';
+      'GymFlow stays personal: no social network, no subscription, just your routes, performance and progress.';
 
   @override
   String get onboardingProfileTitle => 'Starting profile';
@@ -299,7 +407,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingNext => 'Next';
 
   @override
-  String get onboardingFinish => 'Enter PulseTrack';
+  String get onboardingFinish => 'Enter GymFlow';
 
   @override
   String get onboardingSkip => 'Skip';
@@ -314,7 +422,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingGoalRestart => 'Restart training';
 
   @override
+  String get onboardingGoalRunFaster => 'Run faster';
+
+  @override
+  String get onboardingGoalGoFurther => 'Go further';
+
+  @override
   String get onboardingGoalMaintain => 'Stay fit';
+
+  @override
+  String get onboardingGoalCyclingWalking => 'Improve cycling or walking';
+
+  @override
+  String get onboardingGoalOther => 'Other';
+
+  @override
+  String get customGoal => 'Describe your goal';
+
+  @override
+  String get customGoalHint => 'Ex: prepare a 10K, recover better...';
 
   @override
   String get onboardingFavoriteSport => 'Favorite sport';
@@ -363,6 +489,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get liveRoute => 'Live route';
 
   @override
+  String get currentLocation => 'My location';
+
+  @override
+  String get currentLocationUnavailable =>
+      'Location unavailable. Check GPS permission.';
+
+  @override
   String get pause => 'Pause';
 
   @override
@@ -376,7 +509,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutSavedDraft =>
-      'Workout ready to save once the API is connected.';
+      'Review the metrics, add how it felt, then save the workout.';
 
   @override
   String get perceivedEffort => 'Perceived effort';
@@ -400,7 +533,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get averageSpeed => 'Average speed';
 
   @override
-  String get notConnectedYet => 'Not connected to real GPS yet';
+  String get notConnectedYet =>
+      'GPS is active. Keep the screen open during the workout.';
 
   @override
   String get statsThisWeek => 'This week';
@@ -621,6 +755,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get privateActivitiesDescription =>
       'Keeps sessions visible only to you.';
+
+  @override
+  String get settingsAccount => 'Account';
+
+  @override
+  String get account => 'Connected account';
+
+  @override
+  String get connectedAccount => 'Account connected to GymFlow.';
+
+  @override
+  String connectedAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get signedOut => 'You are signed out.';
 
   @override
   String get decrease => 'Decrease';

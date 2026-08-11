@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/api/api_formatters.dart';
+import '../../../core/api/api_providers.dart';
 import '../../../core/ui/app_top_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../menu/screens/menu_screen.dart';
@@ -10,7 +13,7 @@ import 'start_workout_card.dart';
 import 'today_metrics.dart';
 import 'weekly_target_card.dart';
 
-class DashboardView extends StatelessWidget {
+class DashboardView extends ConsumerStatefulWidget {
   const DashboardView({
     super.key,
     required this.selectedSport,
@@ -23,8 +26,22 @@ class DashboardView extends StatelessWidget {
   final VoidCallback onStartWorkout;
 
   @override
+  ConsumerState<DashboardView> createState() => _DashboardViewState();
+}
+
+class _DashboardViewState extends ConsumerState<DashboardView> {
+  Future<_DashboardData>? _future;
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final tokenStore = ref.watch(authTokenStoreProvider);
+    final isAuthenticated = tokenStore.isAuthenticated;
+    if (isAuthenticated) {
+      _future ??= _loadDashboard();
+    } else {
+      _future = null;
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -52,20 +69,141 @@ class DashboardView extends StatelessWidget {
             style: Theme.of(context).textTheme.displaySmall,
           ),
           const SizedBox(height: 18),
-          SportPicker(selectedSport: selectedSport, onChanged: onSportChanged),
-          const SizedBox(height: 18),
-          StartWorkoutCard(
-            selectedSport: selectedSport,
-            onStartWorkout: onStartWorkout,
+          SportPicker(
+            selectedSport: widget.selectedSport,
+            onChanged: widget.onSportChanged,
           ),
           const SizedBox(height: 18),
-          const TodayMetrics(),
+          StartWorkoutCard(
+            selectedSport: widget.selectedSport,
+            onStartWorkout: widget.onStartWorkout,
+          ),
           const SizedBox(height: 18),
-          const WeeklyTargetCard(),
+          if (!isAuthenticated)
+            const TodayMetrics()
+          else
+            FutureBuilder<_DashboardData>(
+              future: _future,
+              builder: (context, snapshot) {
+                final data = snapshot.data;
+                return Column(
+                  children: [
+                    TodayMetrics(
+                      distanceKm: formatKm(data?.distanceMeters ?? 0),
+                      movingTime: formatDurationShort(
+                        data?.movingDurationSeconds ?? 0,
+                        l10n,
+                      ),
+                      pace: data == null || data.distanceMeters <= 0
+                          ? l10n.emptyPace
+                          : formatPace(
+                              (data.movingDurationSeconds /
+                                      (data.distanceMeters / 1000))
+                                  .round(),
+                              l10n,
+                            ),
+                    ),
+                    if (snapshot.hasError) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        l10n.apiUnexpectedError,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ],
+                );
+              },
+            ),
           const SizedBox(height: 18),
-          const PersonalProgressCard(),
+          isAuthenticated
+              ? FutureBuilder<_DashboardData>(
+                  future: _future,
+                  builder: (context, snapshot) {
+                    final data = snapshot.data;
+                    return WeeklyTargetCard(
+                      progressLabel: data?.goalLabel,
+                      progress: data?.goalProgress ?? 0,
+                    );
+                  },
+                )
+              : const WeeklyTargetCard(),
+          const SizedBox(height: 18),
+          isAuthenticated
+              ? FutureBuilder<_DashboardData>(
+                  future: _future,
+                  builder: (context, snapshot) {
+                    final data = snapshot.data;
+                    return PersonalProgressCard(
+                      calories: '${data?.caloriesBurned ?? 0} kcal',
+                      currentWeight: data?.currentWeightKg == null
+                          ? '-- kg'
+                          : '${data!.currentWeightKg!.toStringAsFixed(1)} kg',
+                      coachPreview: data?.coachPreview,
+                    );
+                  },
+                )
+              : const PersonalProgressCard(),
         ],
       ),
     );
   }
+
+  Future<_DashboardData> _loadDashboard() async {
+    final api = ref.read(pulseTrackApiProvider);
+    final results = await Future.wait<Object?>([
+      api.getWeeklySummary(zone: gymFlowDefaultZone),
+      api.getBodyProgress(),
+      api.getLatestCoachMessage(),
+    ]);
+
+    final summary = results[0] as Map<String, dynamic>;
+    final body = results[1] as Map<String, dynamic>;
+    final coach = results[2] as Map<String, dynamic>?;
+    final goals = jsonList(summary, 'goals');
+    final firstGoal = goals.isEmpty ? null : goals.first;
+    final currentValue = firstGoal == null
+        ? 0.0
+        : jsonDouble(firstGoal, 'currentValue');
+    final targetValue = firstGoal == null
+        ? 0.0
+        : jsonDouble(firstGoal, 'targetValue');
+    final unit = jsonString(firstGoal, 'unit') ?? '';
+    final completionPercent = firstGoal == null
+        ? 0.0
+        : jsonDouble(firstGoal, 'completionPercent') / 100;
+
+    return _DashboardData(
+      distanceMeters: jsonDouble(summary, 'distanceMeters'),
+      movingDurationSeconds: jsonInt(summary, 'movingDurationSeconds'),
+      caloriesBurned: jsonInt(summary, 'caloriesBurned'),
+      goalProgress: completionPercent,
+      goalLabel: firstGoal == null
+          ? null
+          : '${currentValue.toStringAsFixed(1)} / ${targetValue.toStringAsFixed(1)} $unit',
+      currentWeightKg: jsonDouble(body, 'currentWeightKg') == 0
+          ? null
+          : jsonDouble(body, 'currentWeightKg'),
+      coachPreview: jsonString(coach, 'content'),
+    );
+  }
+}
+
+class _DashboardData {
+  const _DashboardData({
+    required this.distanceMeters,
+    required this.movingDurationSeconds,
+    required this.caloriesBurned,
+    required this.goalProgress,
+    required this.goalLabel,
+    required this.currentWeightKg,
+    required this.coachPreview,
+  });
+
+  final double distanceMeters;
+  final int movingDurationSeconds;
+  final int caloriesBurned;
+  final double goalProgress;
+  final String? goalLabel;
+  final double? currentWeightKg;
+  final String? coachPreview;
 }

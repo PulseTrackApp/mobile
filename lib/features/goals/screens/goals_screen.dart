@@ -1,11 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/api/api_error.dart';
+import '../../../core/api/api_formatters.dart';
+import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
 import '../../../l10n/app_localizations.dart';
 
-class GoalsScreen extends StatelessWidget {
+class GoalsScreen extends ConsumerStatefulWidget {
   const GoalsScreen({super.key});
+
+  @override
+  ConsumerState<GoalsScreen> createState() => _GoalsScreenState();
+}
+
+class _GoalsScreenState extends ConsumerState<GoalsScreen> {
+  final _targetController = TextEditingController(text: '20');
+  _GoalType _goalType = _GoalType.weeklyDistance;
+  Future<List<Map<String, dynamic>>>? _future;
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _loadGoals();
+  }
+
+  @override
+  void dispose() {
+    _targetController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,52 +51,93 @@ class GoalsScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.displaySmall,
               ),
               const SizedBox(height: 18),
-              _GoalCard(
-                icon: Icons.route_rounded,
-                color: AppColors.primary,
-                title: l10n.weeklyDistanceTarget,
-                value: '20 km',
-                progress: 0,
+              AppPanel(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownButtonFormField<_GoalType>(
+                      initialValue: _goalType,
+                      decoration: InputDecoration(
+                        labelText: l10n.goalsTitle,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      items: _GoalType.values.map((type) {
+                        return DropdownMenuItem<_GoalType>(
+                          value: type,
+                          child: Text(type.label(l10n)),
+                        );
+                      }).toList(),
+                      onChanged: (type) {
+                        if (type != null) setState(() => _goalType = type);
+                      },
+                    ),
+                    const SizedBox(height: 14),
+                    TextFormField(
+                      controller: _targetController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: l10n.goalTargetValue,
+                        suffixText: _goalType.unit,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    AppButton.primary(
+                      label: _isSaving ? l10n.saving : l10n.createGoal,
+                      icon: Icons.add_rounded,
+                      onPressed: _isSaving ? null : _createGoal,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
-              _GoalCard(
-                icon: Icons.calendar_month_rounded,
-                color: AppColors.gps,
-                title: l10n.weeklySessionsTarget,
-                value: '0 / 4',
-                progress: 0,
-              ),
-              const SizedBox(height: 10),
-              _GoalCard(
-                icon: Icons.local_fire_department_rounded,
-                color: AppColors.danger,
-                title: l10n.weeklyCaloriesTarget,
-                value: '0 / 1800 kcal',
-                progress: 0,
-              ),
-              const SizedBox(height: 10),
-              _GoalCard(
-                icon: Icons.timer_outlined,
-                color: AppColors.gps,
-                title: l10n.weeklyTrainingTimeTarget,
-                value: '0 / 4 h',
-                progress: 0,
-              ),
-              const SizedBox(height: 10),
-              _GoalCard(
-                icon: Icons.monitor_weight_outlined,
-                color: AppColors.accent,
-                title: l10n.weightTarget,
-                value: '-- kg',
-                progress: 0,
-              ),
-              const SizedBox(height: 10),
-              _GoalCard(
-                icon: Icons.speed_rounded,
-                color: AppColors.primary,
-                title: l10n.performanceTarget,
-                value: '5 km',
-                progress: 0,
+              const SizedBox(height: 18),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return AppPanel(
+                      child: Text(
+                        l10n.apiUnexpectedError,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    );
+                  }
+
+                  final goals = snapshot.data ?? const [];
+                  if (goals.isEmpty) {
+                    return AppPanel(
+                      child: Text(
+                        l10n.noGoalsYet,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children: goals.map((goal) {
+                      final type = jsonString(goal, 'type') ?? '';
+                      final value = jsonDouble(goal, 'targetValue');
+                      final unit = jsonString(goal, 'unit') ?? '';
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _GoalCard(
+                          icon: _goalIcon(type),
+                          color: _goalColor(type),
+                          title: goalTitle(type, l10n),
+                          value: '${value.toStringAsFixed(1)} $unit',
+                          progress: 0,
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
               ),
             ],
           ),
@@ -77,6 +145,80 @@ class GoalsScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<List<Map<String, dynamic>>> _loadGoals() {
+    return ref.read(pulseTrackApiProvider).getGoals();
+  }
+
+  Future<void> _createGoal() async {
+    final l10n = AppLocalizations.of(context);
+    final targetValue = parseLocalizedDouble(_targetController.text);
+    if (targetValue <= 0) {
+      _showMessage(l10n.requiredGoalFields);
+      return;
+    }
+
+    setState(() => _isSaving = true);
+    try {
+      await ref.read(pulseTrackApiProvider).createGoal({
+        'type': _goalType.apiValue,
+        'targetValue': targetValue,
+        'startDate': todayIsoDate(),
+      });
+      setState(() => _future = _loadGoals());
+      _showMessage(l10n.goalSavedApi);
+    } on ApiProblem catch (problem) {
+      _showMessage('${l10n.apiErrorPrefix} ${problem.message}');
+    } catch (_) {
+      _showMessage(l10n.apiUnexpectedError);
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+enum _GoalType {
+  weeklyDistance('WEEKLY_DISTANCE', 'km'),
+  weeklySessions('WEEKLY_SESSIONS', 'seances'),
+  weeklyDuration('WEEKLY_DURATION', 'min'),
+  weeklyCalories('WEEKLY_CALORIES', 'kcal'),
+  targetWeight('TARGET_WEIGHT', 'kg');
+
+  const _GoalType(this.apiValue, this.unit);
+
+  final String apiValue;
+  final String unit;
+
+  String label(AppLocalizations l10n) => goalTitle(apiValue, l10n);
+}
+
+IconData _goalIcon(String type) {
+  return switch (type) {
+    'WEEKLY_DISTANCE' => Icons.route_rounded,
+    'WEEKLY_SESSIONS' => Icons.calendar_month_rounded,
+    'WEEKLY_CALORIES' => Icons.local_fire_department_rounded,
+    'WEEKLY_DURATION' => Icons.timer_outlined,
+    'TARGET_WEIGHT' => Icons.monitor_weight_outlined,
+    _ => Icons.flag_rounded,
+  };
+}
+
+Color _goalColor(String type) {
+  return switch (type) {
+    'WEEKLY_DISTANCE' => AppColors.primary,
+    'WEEKLY_SESSIONS' => AppColors.gps,
+    'WEEKLY_CALORIES' => AppColors.danger,
+    'WEEKLY_DURATION' => AppColors.gps,
+    'TARGET_WEIGHT' => AppColors.accent,
+    _ => AppColors.primary,
+  };
 }
 
 class _GoalCard extends StatelessWidget {

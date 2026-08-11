@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_flutter/app/pulse_track_app.dart';
 
 void main() {
-  testWidgets('PulseTrack onboarding can be skipped', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(const PulseTrackApp(locale: Locale('fr')));
+  testWidgets('GymFlow onboarding can be skipped', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: PulseTrackApp(locale: Locale('fr'))),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Ton sport, tes stats, tes objectifs'), findsOneWidget);
@@ -17,13 +18,16 @@ void main() {
     expect(find.text('Démarrer une session'), findsOneWidget);
   });
 
-  testWidgets('PulseTrack home renders', (WidgetTester tester) async {
+  testWidgets('GymFlow home renders', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const PulseTrackApp(locale: Locale('fr'), showOnboarding: false),
+      const ProviderScope(child: PulseTrackApp(locale: Locale('fr'))),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('PulseTrack'), findsOneWidget);
+    await tester.tap(find.text('Passer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('GymFlow'), findsOneWidget);
     expect(find.text('Démarrer une session'), findsOneWidget);
     expect(find.text('Objectif semaine'), findsOneWidget);
 

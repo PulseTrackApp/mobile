@@ -30,7 +30,7 @@ class PulseTrackLogo extends StatelessWidget {
       children: [
         icon,
         const SizedBox(width: 10),
-        Text('PulseTrack', style: Theme.of(context).textTheme.titleLarge),
+        Text('GymFlow', style: Theme.of(context).textTheme.titleLarge),
       ],
     );
   }

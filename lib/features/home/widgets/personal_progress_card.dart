@@ -5,7 +5,16 @@ import '../../../core/ui/app_panel.dart';
 import '../../../l10n/app_localizations.dart';
 
 class PersonalProgressCard extends StatelessWidget {
-  const PersonalProgressCard({super.key});
+  const PersonalProgressCard({
+    super.key,
+    this.calories = '0 kcal',
+    this.currentWeight = '-- kg',
+    this.coachPreview,
+  });
+
+  final String calories;
+  final String currentWeight;
+  final String? coachPreview;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +47,7 @@ class PersonalProgressCard extends StatelessWidget {
               Expanded(
                 child: _CompactStat(
                   label: l10n.caloriesThisWeek,
-                  value: '0 kcal',
+                  value: calories,
                   color: AppColors.danger,
                 ),
               ),
@@ -46,7 +55,7 @@ class PersonalProgressCard extends StatelessWidget {
               Expanded(
                 child: _CompactStat(
                   label: l10n.currentWeight,
-                  value: '-- kg',
+                  value: currentWeight,
                   color: AppColors.primary,
                 ),
               ),
@@ -75,7 +84,7 @@ class PersonalProgressCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          l10n.coachPreviewEmpty,
+                          coachPreview ?? l10n.coachPreviewEmpty,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ],

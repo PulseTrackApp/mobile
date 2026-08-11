@@ -44,6 +44,13 @@ dependencies:
   go_router: ^17.4.0
   flutter_riverpod: ^2.6.1
   dio: ^5.11.0
+  flutter_secure_storage: 10.0.0
+  # Notifications push. `firebase_core` initialise le SDK, `firebase_messaging`
+  # fournit le jeton d'appareil transmis au serveur. Tant que
+  # `android/app/google-services.json` est absent, l'initialisation echoue et
+  # l'application continue sans rappels : voir FirebasePushService.
+  firebase_core: ^4.1.1
+  firebase_messaging: ^16.0.2
 
 dev_dependencies:
   flutter_test:

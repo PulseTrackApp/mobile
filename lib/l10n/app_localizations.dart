@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In fr, this message translates to:
-  /// **'PulseTrack'**
+  /// **'GymFlow'**
   String get appName;
 
   /// No description provided for @settings.
@@ -176,6 +176,36 @@ abstract class AppLocalizations {
   /// **'Ex : Jayson'**
   String get displayNameHint;
 
+  /// No description provided for @email.
+  ///
+  /// In fr, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'toi@exemple.com'**
+  String get emailHint;
+
+  /// No description provided for @password.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get password;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'8 caractères minimum'**
+  String get passwordHint;
+
+  /// No description provided for @existingAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'J\'ai déjà un compte'**
+  String get existingAccount;
+
   /// No description provided for @sexOptional.
   ///
   /// In fr, this message translates to:
@@ -209,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @mainGoal.
   ///
   /// In fr, this message translates to:
-  /// **'Objectif principal'**
+  /// **'Objectifs'**
   String get mainGoal;
 
   /// No description provided for @mainGoalHint.
@@ -229,6 +259,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Débutant, régulier, avancé'**
   String get fitnessLevelHint;
+
+  /// No description provided for @fitnessLevelBeginner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Débutant'**
+  String get fitnessLevelBeginner;
+
+  /// No description provided for @fitnessLevelIntermediate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régulier'**
+  String get fitnessLevelIntermediate;
+
+  /// No description provided for @fitnessLevelAdvanced.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avancé'**
+  String get fitnessLevelAdvanced;
 
   /// No description provided for @preferredSports.
   ///
@@ -251,8 +299,62 @@ abstract class AppLocalizations {
   /// No description provided for @bmiPreview.
   ///
   /// In fr, this message translates to:
-  /// **'L\'IMC sera calculé automatiquement quand le profil sera sauvegardé.'**
+  /// **'L\'IMC est calculé automatiquement à partir du poids et de la taille.'**
   String get bmiPreview;
+
+  /// No description provided for @bmiTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'IMC estimé'**
+  String get bmiTitle;
+
+  /// No description provided for @bmiWaiting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisis ton poids et ta taille pour voir ton IMC.'**
+  String get bmiWaiting;
+
+  /// No description provided for @bmiValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'IMC {value}'**
+  String bmiValue(String value);
+
+  /// No description provided for @bmiHelper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repère de suivi, pas un diagnostic médical.'**
+  String get bmiHelper;
+
+  /// No description provided for @bmiCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get bmiCategory;
+
+  /// No description provided for @bmiCategoryUnderweight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Insuffisance pondérale'**
+  String get bmiCategoryUnderweight;
+
+  /// No description provided for @bmiCategoryNormal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Corpulence normale'**
+  String get bmiCategoryNormal;
+
+  /// No description provided for @bmiCategoryOverweight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surpoids'**
+  String get bmiCategoryOverweight;
+
+  /// No description provided for @bmiCategoryObese.
+  ///
+  /// In fr, this message translates to:
+  /// **'Obésité'**
+  String get bmiCategoryObese;
 
   /// No description provided for @profileDataNote.
   ///
@@ -265,6 +367,114 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Sauvegarder le profil'**
   String get saveProfile;
+
+  /// No description provided for @saving.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde...'**
+  String get saving;
+
+  /// No description provided for @requiredProfileFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne au minimum email, mot de passe, pseudo, poids et taille.'**
+  String get requiredProfileFields;
+
+  /// No description provided for @profileSavedApi.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil sauvegardé sur l\'API.'**
+  String get profileSavedApi;
+
+  /// No description provided for @apiErrorPrefix.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur API :'**
+  String get apiErrorPrefix;
+
+  /// No description provided for @apiUnexpectedError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de joindre l\'API pour le moment.'**
+  String get apiUnexpectedError;
+
+  /// No description provided for @requiredBodyCheckInFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne au minimum ton poids.'**
+  String get requiredBodyCheckInFields;
+
+  /// No description provided for @checkInSavedApi.
+  ///
+  /// In fr, this message translates to:
+  /// **'Check-in sauvegardé sur l\'API.'**
+  String get checkInSavedApi;
+
+  /// No description provided for @requiredGoalFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne une cible valide.'**
+  String get requiredGoalFields;
+
+  /// No description provided for @goalSavedApi.
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectif sauvegardé sur l\'API.'**
+  String get goalSavedApi;
+
+  /// No description provided for @createGoal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer l\'objectif'**
+  String get createGoal;
+
+  /// No description provided for @goalTargetValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur cible'**
+  String get goalTargetValue;
+
+  /// No description provided for @noGoalsYet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun objectif actif pour le moment.'**
+  String get noGoalsYet;
+
+  /// No description provided for @coachAvailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coach disponible'**
+  String get coachAvailable;
+
+  /// No description provided for @requestWeeklyReview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander le bilan'**
+  String get requestWeeklyReview;
+
+  /// No description provided for @coachQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Question au coach'**
+  String get coachQuestion;
+
+  /// No description provided for @coachQuestionHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex : que puis-je faire cette semaine ?'**
+  String get coachQuestionHint;
+
+  /// No description provided for @askCoach.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer au coach'**
+  String get askCoach;
+
+  /// No description provided for @workoutSavedApi.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séance sauvegardée sur l\'API.'**
+  String get workoutSavedApi;
 
   /// No description provided for @bodyProgressTitle.
   ///
@@ -485,37 +695,37 @@ abstract class AppLocalizations {
   /// No description provided for @geminiApiKey.
   ///
   /// In fr, this message translates to:
-  /// **'Gemini côté backend'**
+  /// **'Assistant IA'**
   String get geminiApiKey;
 
   /// No description provided for @geminiApiKeyHint.
   ///
   /// In fr, this message translates to:
-  /// **'Variable d\'environnement backend'**
+  /// **'Géré par l\'API'**
   String get geminiApiKeyHint;
 
   /// No description provided for @geminiPrivacyNote.
   ///
   /// In fr, this message translates to:
-  /// **'La clé API Gemini est stockée uniquement dans les variables d\'environnement du backend. Le mobile ne l\'affiche pas et ne la sauvegarde jamais.'**
+  /// **'Le mobile ne manipule aucune clé. Il envoie seulement tes demandes à l\'API et affiche les conseils reçus.'**
   String get geminiPrivacyNote;
 
   /// No description provided for @saveGeminiKey.
   ///
   /// In fr, this message translates to:
-  /// **'Configuration backend'**
+  /// **'Statut du coach'**
   String get saveGeminiKey;
 
   /// No description provided for @geminiBackendStatusTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Clé gérée par l\'API'**
+  /// **'Assistant connecté à l\'API'**
   String get geminiBackendStatusTitle;
 
   /// No description provided for @geminiBackendStatusBody.
   ///
   /// In fr, this message translates to:
-  /// **'Flutter appellera le backend pour obtenir les conseils. Le backend utilisera sa variable d\'environnement GEMINI_API_KEY.'**
+  /// **'Quand le service est actif, l\'app peut demander un bilan, des alertes d\'effort et des propositions d\'exercices.'**
   String get geminiBackendStatusBody;
 
   /// No description provided for @effortWarningTitle.
@@ -581,7 +791,7 @@ abstract class AppLocalizations {
   /// No description provided for @coachPreviewEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Configure Gemini pour recevoir des propositions d\'exercices.'**
+  /// **'Le coach sera disponible lorsque l\'API sera connectée.'**
   String get coachPreviewEmpty;
 
   /// No description provided for @openMenu.
@@ -605,7 +815,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeBody.
   ///
   /// In fr, this message translates to:
-  /// **'PulseTrack reste personnel : pas de réseau social, pas d\'abonnement, juste tes parcours, tes performances et ton évolution.'**
+  /// **'GymFlow reste personnel : pas de réseau social, pas d\'abonnement, juste tes parcours, tes performances et ton évolution.'**
   String get onboardingWelcomeBody;
 
   /// No description provided for @onboardingProfileTitle.
@@ -653,7 +863,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingFinish.
   ///
   /// In fr, this message translates to:
-  /// **'Entrer dans PulseTrack'**
+  /// **'Entrer dans GymFlow'**
   String get onboardingFinish;
 
   /// No description provided for @onboardingSkip.
@@ -680,11 +890,47 @@ abstract class AppLocalizations {
   /// **'Reprendre le sport'**
   String get onboardingGoalRestart;
 
+  /// No description provided for @onboardingGoalRunFaster.
+  ///
+  /// In fr, this message translates to:
+  /// **'Courir plus vite'**
+  String get onboardingGoalRunFaster;
+
+  /// No description provided for @onboardingGoalGoFurther.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire plus de distance'**
+  String get onboardingGoalGoFurther;
+
   /// No description provided for @onboardingGoalMaintain.
   ///
   /// In fr, this message translates to:
   /// **'Maintenir la forme'**
   String get onboardingGoalMaintain;
+
+  /// No description provided for @onboardingGoalCyclingWalking.
+  ///
+  /// In fr, this message translates to:
+  /// **'Progresser en vélo ou marche'**
+  String get onboardingGoalCyclingWalking;
+
+  /// No description provided for @onboardingGoalOther.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autre'**
+  String get onboardingGoalOther;
+
+  /// No description provided for @customGoal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précise ton objectif'**
+  String get customGoal;
+
+  /// No description provided for @customGoalHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex : préparer un 10 km, mieux récupérer...'**
+  String get customGoalHint;
 
   /// No description provided for @onboardingFavoriteSport.
   ///
@@ -776,6 +1022,18 @@ abstract class AppLocalizations {
   /// **'Parcours en direct'**
   String get liveRoute;
 
+  /// No description provided for @currentLocation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma position'**
+  String get currentLocation;
+
+  /// No description provided for @currentLocationUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Position indisponible. Vérifie l\'autorisation GPS.'**
+  String get currentLocationUnavailable;
+
   /// No description provided for @pause.
   ///
   /// In fr, this message translates to:
@@ -803,7 +1061,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutSavedDraft.
   ///
   /// In fr, this message translates to:
-  /// **'Séance prête à sauvegarder quand l\'API sera branchée.'**
+  /// **'Vérifie les métriques, ajoute ton ressenti, puis sauvegarde la séance.'**
   String get workoutSavedDraft;
 
   /// No description provided for @perceivedEffort.
@@ -851,7 +1109,7 @@ abstract class AppLocalizations {
   /// No description provided for @notConnectedYet.
   ///
   /// In fr, this message translates to:
-  /// **'Pas encore branché au GPS réel'**
+  /// **'GPS actif. Garde l\'écran ouvert pendant la séance.'**
   String get notConnectedYet;
 
   /// No description provided for @statsThisWeek.
@@ -1279,6 +1537,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Garde les sessions visibles seulement par toi.'**
   String get privateActivitiesDescription;
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte'**
+  String get settingsAccount;
+
+  /// No description provided for @account.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte connecté'**
+  String get account;
+
+  /// No description provided for @connectedAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte connecté à GymFlow.'**
+  String get connectedAccount;
+
+  /// No description provided for @connectedAs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté avec {email}'**
+  String connectedAs(String email);
+
+  /// No description provided for @signOut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déconnexion'**
+  String get signOut;
+
+  /// No description provided for @signedOut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu es déconnecté.'**
+  String get signedOut;
 
   /// No description provided for @decrease.
   ///
