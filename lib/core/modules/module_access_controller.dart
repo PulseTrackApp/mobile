@@ -15,6 +15,13 @@ class ModuleAccessState {
     this.error,
   });
 
+  factory ModuleAccessState.allLocked({bool isLoading = false}) {
+    return ModuleAccessState(
+      isLoading: isLoading,
+      modules: {for (final module in AppModule.values) module: false},
+    );
+  }
+
   factory ModuleAccessState.allEnabled({bool isLoading = false}) {
     return ModuleAccessState(
       isLoading: isLoading,
@@ -26,7 +33,7 @@ class ModuleAccessState {
   final bool isLoading;
   final Object? error;
 
-  bool isEnabled(AppModule module) => modules[module] ?? true;
+  bool isEnabled(AppModule module) => modules[module] ?? false;
 
   ModuleAccessState copyWith({
     Map<AppModule, bool>? modules,
@@ -51,24 +58,31 @@ class ModuleAccessController extends ChangeNotifier {
   final AuthTokenStore tokenStore;
 
   ModuleAccessState _state = ModuleAccessState.allEnabled();
+  bool _wasAuthenticated = false;
 
   ModuleAccessState get state => _state;
 
   bool isEnabled(AppModule module) => _state.isEnabled(module);
 
   Future<void> refresh() async {
-    if (!tokenStore.isAuthenticated) {
+    final isAuthenticated = tokenStore.isAuthenticated;
+    if (!isAuthenticated) {
+      _wasAuthenticated = false;
       _state = ModuleAccessState.allEnabled();
       notifyListeners();
       return;
     }
 
-    _state = _state.copyWith(isLoading: true);
+    final sessionJustOpened = !_wasAuthenticated;
+    _wasAuthenticated = true;
+    _state = sessionJustOpened
+        ? ModuleAccessState.allLocked(isLoading: true)
+        : _state.copyWith(isLoading: true);
     notifyListeners();
 
     try {
       final rows = await api.getModules();
-      final modules = {for (final module in AppModule.values) module: true};
+      final modules = {for (final module in AppModule.values) module: false};
 
       for (final row in rows) {
         final module = AppModule.fromApiValue(row['module']);
