@@ -22,11 +22,15 @@ class PushRegistrar {
     required this._pushService,
     required this._api,
     required this._tokenStore,
-  });
+    bool Function()? canRegister,
+    this.accessListenable,
+  }) : _canRegister = canRegister ?? _alwaysRegister;
 
   final PushService _pushService;
   final PulseTrackApi _api;
   final AuthTokenStore _tokenStore;
+  final bool Function() _canRegister;
+  final Listenable? accessListenable;
 
   StreamSubscription<String>? _refreshSubscription;
   String? _deviceToken;
@@ -59,6 +63,7 @@ class PushRegistrar {
     });
 
     _tokenStore.addListener(_onAuthenticationChanged);
+    accessListenable?.addListener(_onAuthenticationChanged);
 
     _deviceToken = await _pushService.obtainToken();
     await _synchronize();
@@ -87,6 +92,7 @@ class PushRegistrar {
 
   void dispose() {
     _tokenStore.removeListener(_onAuthenticationChanged);
+    accessListenable?.removeListener(_onAuthenticationChanged);
     unawaited(_refreshSubscription?.cancel());
     _refreshSubscription = null;
   }
@@ -98,6 +104,9 @@ class PushRegistrar {
     final userId = _tokenStore.userId;
 
     if (token == null || !_tokenStore.isAuthenticated || userId == null) {
+      return;
+    }
+    if (!_canRegister()) {
       return;
     }
     if (_registeredToken == token && _registeredForUserId == userId) {
@@ -118,3 +127,5 @@ class PushRegistrar {
     }
   }
 }
+
+bool _alwaysRegister() => true;

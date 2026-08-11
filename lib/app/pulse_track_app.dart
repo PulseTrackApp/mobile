@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_settings_controller.dart';
 import '../core/api/api_providers.dart';
+import '../core/modules/module_providers.dart';
 import '../core/push/push_providers.dart';
 import '../core/theme/app_theme.dart';
 import '../features/home/screens/home_screen.dart';
@@ -22,7 +23,8 @@ class PulseTrackApp extends ConsumerStatefulWidget {
   ConsumerState<PulseTrackApp> createState() => _PulseTrackAppState();
 }
 
-class _PulseTrackAppState extends ConsumerState<PulseTrackApp> {
+class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
+    with WidgetsBindingObserver {
   late final AppSettingsController _settingsController;
   late bool _showOnboarding;
   bool _allowGuestHome = false;
@@ -30,6 +32,7 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _settingsController = AppSettingsController(initialLocale: widget.locale);
     _showOnboarding = widget.showOnboarding;
 
@@ -45,8 +48,16 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _settingsController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(ref.read(moduleAccessControllerProvider).refresh());
+    }
   }
 
   @override

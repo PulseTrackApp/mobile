@@ -11,10 +11,12 @@ class StartWorkoutCard extends StatelessWidget {
     super.key,
     required this.selectedSport,
     required this.onStartWorkout,
+    this.locked = false,
   });
 
   final SportMode selectedSport;
-  final VoidCallback onStartWorkout;
+  final VoidCallback? onStartWorkout;
+  final bool locked;
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +43,33 @@ class StartWorkoutCard extends StatelessWidget {
             ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
           ),
           const SizedBox(height: 18),
+          if (locked) ...[
+            Row(
+              children: [
+                const Icon(
+                  Icons.lock_outline_rounded,
+                  color: Colors.white70,
+                  size: 18,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.moduleLockedShort,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
           AppButton.primary(
             label: l10n.startWorkout,
-            icon: Icons.play_arrow_rounded,
-            onPressed: onStartWorkout,
+            icon: locked
+                ? Icons.lock_outline_rounded
+                : Icons.play_arrow_rounded,
+            onPressed: locked ? null : onStartWorkout,
           ),
         ],
       ),

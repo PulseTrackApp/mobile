@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/modules/app_module.dart';
+import '../../../core/modules/module_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_menu_tile.dart';
 import '../../../core/ui/app_panel.dart';
@@ -12,14 +15,15 @@ import '../../history/screens/workout_history_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import '../../settings/screens/settings_screen.dart';
 
-class MenuScreen extends StatelessWidget {
+class MenuScreen extends ConsumerWidget {
   const MenuScreen({super.key, this.showCloseButton = false});
 
   final bool showCloseButton;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final moduleAccess = ref.watch(moduleAccessControllerProvider).state;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -57,7 +61,10 @@ class MenuScreen extends StatelessWidget {
                   title: l10n.bodyProgressTitle,
                   subtitle: l10n.bodyProgressSubtitle,
                   color: AppColors.accent,
-                  onTap: () => _push(context, const BodyProgressScreen()),
+                  locked: !moduleAccess.isEnabled(AppModule.bodyCheckins),
+                  onTap: moduleAccess.isEnabled(AppModule.bodyCheckins)
+                      ? () => _push(context, const BodyProgressScreen())
+                      : null,
                 ),
                 const _MenuDivider(),
                 AppMenuTile(
@@ -65,7 +72,10 @@ class MenuScreen extends StatelessWidget {
                   title: l10n.workoutHistoryTitle,
                   subtitle: l10n.workoutHistorySubtitle,
                   color: AppColors.gps,
-                  onTap: () => _push(context, const WorkoutHistoryScreen()),
+                  locked: !moduleAccess.isEnabled(AppModule.workouts),
+                  onTap: moduleAccess.isEnabled(AppModule.workouts)
+                      ? () => _push(context, const WorkoutHistoryScreen())
+                      : null,
                 ),
                 const _MenuDivider(),
                 AppMenuTile(
@@ -73,7 +83,10 @@ class MenuScreen extends StatelessWidget {
                   title: l10n.goalsTitle,
                   subtitle: l10n.goalsSubtitle,
                   color: AppColors.primary,
-                  onTap: () => _push(context, const GoalsScreen()),
+                  locked: !moduleAccess.isEnabled(AppModule.goals),
+                  onTap: moduleAccess.isEnabled(AppModule.goals)
+                      ? () => _push(context, const GoalsScreen())
+                      : null,
                 ),
                 const _MenuDivider(),
                 AppMenuTile(
@@ -81,7 +94,10 @@ class MenuScreen extends StatelessWidget {
                   title: l10n.coachTitle,
                   subtitle: l10n.coachSubtitle,
                   color: AppColors.danger,
-                  onTap: () => _push(context, const GeminiCoachScreen()),
+                  locked: !moduleAccess.isEnabled(AppModule.coach),
+                  onTap: moduleAccess.isEnabled(AppModule.coach)
+                      ? () => _push(context, const GeminiCoachScreen())
+                      : null,
                 ),
                 const _MenuDivider(),
                 AppMenuTile(

@@ -33,6 +33,24 @@
   "passwordResetCodeSent": "If this account exists, a code has just been sent.",
   "passwordResetSuccess": "Password updated. You can sign in.",
   "close": "Close",
+  "moduleLockedTitle": "Module locked",
+  "moduleLockedShort": "Feature locked",
+  "moduleLockedBody": "The {module} module is not active on this account. An administrator can enable it from the desktop app.",
+  "@moduleLockedBody": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleWorkouts": "Workouts and routes",
+  "moduleBodyCheckins": "Body progress",
+  "moduleGoals": "Goals",
+  "moduleStats": "Statistics",
+  "moduleWeeklySummary": "Weekly summary",
+  "moduleCoach": "Gemini coach",
+  "moduleExport": "Data export",
+  "modulePush": "Notifications",
   "existingAccount": "I already have an account",
   "sexOptional": "Sex (optional)",
   "sexOptionalHint": "Male, female or custom",

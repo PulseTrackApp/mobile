@@ -296,6 +296,72 @@ abstract class AppLocalizations {
   /// **'Fermer'**
   String get close;
 
+  /// No description provided for @moduleLockedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Module verrouillé'**
+  String get moduleLockedTitle;
+
+  /// No description provided for @moduleLockedShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fonctionnalité verrouillée'**
+  String get moduleLockedShort;
+
+  /// No description provided for @moduleLockedBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le module {module} n\'est pas actif sur ce compte. Un administrateur peut l\'activer depuis l\'application desktop.'**
+  String moduleLockedBody(String module);
+
+  /// No description provided for @moduleWorkouts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séances et parcours'**
+  String get moduleWorkouts;
+
+  /// No description provided for @moduleBodyCheckins.
+  ///
+  /// In fr, this message translates to:
+  /// **'Évolution physique'**
+  String get moduleBodyCheckins;
+
+  /// No description provided for @moduleGoals.
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectifs'**
+  String get moduleGoals;
+
+  /// No description provided for @moduleStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statistiques'**
+  String get moduleStats;
+
+  /// No description provided for @moduleWeeklySummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bilan hebdomadaire'**
+  String get moduleWeeklySummary;
+
+  /// No description provided for @moduleCoach.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coach Gemini'**
+  String get moduleCoach;
+
+  /// No description provided for @moduleExport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Export des données'**
+  String get moduleExport;
+
+  /// No description provided for @modulePush.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications'**
+  String get modulePush;
+
   /// No description provided for @existingAccount.
   ///
   /// In fr, this message translates to:

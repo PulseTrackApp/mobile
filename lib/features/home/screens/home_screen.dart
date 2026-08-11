@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/modules/app_module.dart';
+import '../../../core/ui/module_gate.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../activity/screens/activity_screen.dart';
 import '../../menu/screens/menu_screen.dart';
@@ -7,14 +10,14 @@ import '../../stats/screens/stats_screen.dart';
 import '../../tracking/models/sport_mode.dart';
 import '../widgets/dashboard_view.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   SportMode _selectedSport = SportMode.run;
   int _selectedTab = 0;
 
@@ -27,8 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
         onSportChanged: (sport) => setState(() => _selectedSport = sport),
         onStartWorkout: () => setState(() => _selectedTab = 1),
       ),
-      ActivityScreen(selectedSport: _selectedSport),
-      const StatsScreen(),
+      ModuleGate(
+        module: AppModule.workouts,
+        child: ActivityScreen(selectedSport: _selectedSport),
+      ),
+      const ModuleGate(module: AppModule.stats, child: StatsScreen()),
       const MenuScreen(),
     ];
 

@@ -23,6 +23,14 @@ String? jsonString(Map<String, dynamic>? json, String key) {
   return json?[key]?.toString();
 }
 
+bool jsonBool(Map<String, dynamic>? json, String key) {
+  final value = json?[key];
+  if (value is bool) return value;
+  if (value is num) return value != 0;
+  if (value is String) return value.toLowerCase() == 'true';
+  return false;
+}
+
 Map<String, dynamic>? jsonMap(Map<String, dynamic>? json, String key) {
   final value = json?[key];
   if (value is Map<String, dynamic>) return value;

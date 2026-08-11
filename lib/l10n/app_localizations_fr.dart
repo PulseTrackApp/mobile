@@ -112,6 +112,41 @@ class AppLocalizationsFr extends AppLocalizations {
   String get close => 'Fermer';
 
   @override
+  String get moduleLockedTitle => 'Module verrouillé';
+
+  @override
+  String get moduleLockedShort => 'Fonctionnalité verrouillée';
+
+  @override
+  String moduleLockedBody(String module) {
+    return 'Le module $module n\'est pas actif sur ce compte. Un administrateur peut l\'activer depuis l\'application desktop.';
+  }
+
+  @override
+  String get moduleWorkouts => 'Séances et parcours';
+
+  @override
+  String get moduleBodyCheckins => 'Évolution physique';
+
+  @override
+  String get moduleGoals => 'Objectifs';
+
+  @override
+  String get moduleStats => 'Statistiques';
+
+  @override
+  String get moduleWeeklySummary => 'Bilan hebdomadaire';
+
+  @override
+  String get moduleCoach => 'Coach Gemini';
+
+  @override
+  String get moduleExport => 'Export des données';
+
+  @override
+  String get modulePush => 'Notifications';
+
+  @override
   String get existingAccount => 'J\'ai déjà un compte';
 
   @override

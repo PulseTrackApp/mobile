@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_formatters.dart';
 import '../../../core/api/api_providers.dart';
+import '../../../core/modules/app_module.dart';
+import '../../../core/modules/module_access_controller.dart';
+import '../../../core/modules/module_providers.dart';
 import '../../../core/ui/app_top_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../menu/screens/menu_screen.dart';
@@ -31,17 +34,26 @@ class DashboardView extends ConsumerStatefulWidget {
 
 class _DashboardViewState extends ConsumerState<DashboardView> {
   Future<_DashboardData>? _future;
+  String? _moduleAccessSignature;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final tokenStore = ref.watch(authTokenStoreProvider);
+    final moduleAccess = ref.watch(moduleAccessControllerProvider).state;
     final isAuthenticated = tokenStore.isAuthenticated;
-    if (isAuthenticated) {
-      _future ??= _loadDashboard();
+    if (isAuthenticated && !moduleAccess.isLoading) {
+      final signature = _signature(moduleAccess);
+      if (_moduleAccessSignature != signature) {
+        _moduleAccessSignature = signature;
+        _future = null;
+      }
+      _future ??= _loadDashboard(moduleAccess);
     } else {
+      _moduleAccessSignature = null;
       _future = null;
     }
+    final workoutsEnabled = moduleAccess.isEnabled(AppModule.workouts);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -76,7 +88,8 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           const SizedBox(height: 18),
           StartWorkoutCard(
             selectedSport: widget.selectedSport,
-            onStartWorkout: widget.onStartWorkout,
+            locked: !workoutsEnabled,
+            onStartWorkout: workoutsEnabled ? widget.onStartWorkout : null,
           ),
           const SizedBox(height: 18),
           if (!isAuthenticated)
@@ -148,12 +161,18 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     );
   }
 
-  Future<_DashboardData> _loadDashboard() async {
+  Future<_DashboardData> _loadDashboard(ModuleAccessState moduleAccess) async {
     final api = ref.read(pulseTrackApiProvider);
     final results = await Future.wait<Object?>([
-      api.getWeeklySummary(zone: gymFlowDefaultZone),
-      api.getBodyProgress(),
-      api.getLatestCoachMessage(),
+      moduleAccess.isEnabled(AppModule.weeklySummary)
+          ? api.getWeeklySummary(zone: gymFlowDefaultZone)
+          : Future<Map<String, dynamic>>.value(const {}),
+      moduleAccess.isEnabled(AppModule.bodyCheckins)
+          ? api.getBodyProgress()
+          : Future<Map<String, dynamic>>.value(const {}),
+      moduleAccess.isEnabled(AppModule.coach)
+          ? api.getLatestCoachMessage()
+          : Future<Map<String, dynamic>?>.value(null),
     ]);
 
     final summary = results[0] as Map<String, dynamic>;
@@ -185,6 +204,12 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           : jsonDouble(body, 'currentWeightKg'),
       coachPreview: jsonString(coach, 'content'),
     );
+  }
+
+  String _signature(ModuleAccessState moduleAccess) {
+    return AppModule.values
+        .map((module) => '${module.apiValue}:${moduleAccess.isEnabled(module)}')
+        .join('|');
   }
 }
 

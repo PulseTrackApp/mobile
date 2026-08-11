@@ -7,6 +7,7 @@ class ApiProblem implements Exception {
     this.status,
     required this.detail,
     this.instance,
+    this.module,
     this.fieldErrors = const {},
   });
 
@@ -53,6 +54,7 @@ class ApiProblem implements Exception {
       status: _intOrNull(json['status']) ?? fallbackStatus,
       detail: json['detail']?.toString() ?? '',
       instance: _uriOrNull(json['instance']),
+      module: json['module']?.toString(),
       fieldErrors: fieldErrors,
     );
   }
@@ -62,9 +64,13 @@ class ApiProblem implements Exception {
   final int? status;
   final String detail;
   final Uri? instance;
+  final String? module;
   final Map<String, String> fieldErrors;
 
   bool get isUnauthorized => status == 401;
+
+  bool get isModuleLocked =>
+      status == 403 && type?.path.endsWith('/module-locked') == true;
 
   String get message => detail.isNotEmpty ? detail : title;
 

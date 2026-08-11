@@ -111,6 +111,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get close => 'Close';
 
   @override
+  String get moduleLockedTitle => 'Module locked';
+
+  @override
+  String get moduleLockedShort => 'Feature locked';
+
+  @override
+  String moduleLockedBody(String module) {
+    return 'The $module module is not active on this account. An administrator can enable it from the desktop app.';
+  }
+
+  @override
+  String get moduleWorkouts => 'Workouts and routes';
+
+  @override
+  String get moduleBodyCheckins => 'Body progress';
+
+  @override
+  String get moduleGoals => 'Goals';
+
+  @override
+  String get moduleStats => 'Statistics';
+
+  @override
+  String get moduleWeeklySummary => 'Weekly summary';
+
+  @override
+  String get moduleCoach => 'Gemini coach';
+
+  @override
+  String get moduleExport => 'Data export';
+
+  @override
+  String get modulePush => 'Notifications';
+
+  @override
   String get existingAccount => 'I already have an account';
 
   @override

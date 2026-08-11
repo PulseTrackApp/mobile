@@ -33,6 +33,24 @@
   "passwordResetCodeSent": "Si ce compte existe, un code vient d'être envoyé.",
   "passwordResetSuccess": "Mot de passe mis à jour. Tu peux te connecter.",
   "close": "Fermer",
+  "moduleLockedTitle": "Module verrouillé",
+  "moduleLockedShort": "Fonctionnalité verrouillée",
+  "moduleLockedBody": "Le module {module} n'est pas actif sur ce compte. Un administrateur peut l'activer depuis l'application desktop.",
+  "@moduleLockedBody": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleWorkouts": "Séances et parcours",
+  "moduleBodyCheckins": "Évolution physique",
+  "moduleGoals": "Objectifs",
+  "moduleStats": "Statistiques",
+  "moduleWeeklySummary": "Bilan hebdomadaire",
+  "moduleCoach": "Coach Gemini",
+  "moduleExport": "Export des données",
+  "modulePush": "Notifications",
   "existingAccount": "J'ai déjà un compte",
   "sexOptional": "Sexe (optionnel)",
   "sexOptionalHint": "Homme, femme ou libre",

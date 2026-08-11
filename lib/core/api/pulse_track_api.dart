@@ -183,6 +183,13 @@ class PulseTrackApi {
     return _putJson('me/profile', data: profile);
   }
 
+  Future<List<JsonMap>> getModules() {
+    return _send(
+      () => _dio.get<Object?>('me/modules'),
+      (response) => _asJsonPageOrPayloadList(response.data, 'modules'),
+    );
+  }
+
   Future<JsonMap> createWorkout(JsonMap workout) {
     return _postJson('workouts', data: workout);
   }
@@ -444,6 +451,17 @@ List<JsonMap> _asJsonPageContent(Object? data) {
     if (content is List) return _asJsonList(content);
   }
   throw FormatException('Page JSON inattendue: ${data.runtimeType}');
+}
+
+List<JsonMap> _asJsonPageOrPayloadList(Object? data, String key) {
+  if (data is List) return _asJsonList(data);
+  if (data is Map) {
+    final payload = data[key];
+    if (payload is List) return _asJsonList(payload);
+    final content = data['content'];
+    if (content is List) return _asJsonList(content);
+  }
+  throw FormatException('Liste JSON inattendue: ${data.runtimeType}');
 }
 
 Map<String, dynamic>? _cleanQuery(Map<String, dynamic>? queryParameters) {
