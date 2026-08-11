@@ -27,7 +27,6 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
     with WidgetsBindingObserver {
   late final AppSettingsController _settingsController;
   late bool _showOnboarding;
-  bool _allowGuestHome = false;
 
   @override
   void initState() {
@@ -71,7 +70,8 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
         builder: (context, _) {
           final showOnboarding =
               _showOnboarding ||
-              (!tokenStore.isAuthenticated && !_allowGuestHome);
+              !tokenStore.isAuthenticated ||
+              !tokenStore.profileCompleted;
 
           return MaterialApp(
             title: 'GymFlow',
@@ -92,13 +92,6 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
                     onComplete: () {
                       setState(() {
                         _showOnboarding = false;
-                        _allowGuestHome = false;
-                      });
-                    },
-                    onSkip: () {
-                      setState(() {
-                        _showOnboarding = false;
-                        _allowGuestHome = true;
                       });
                     },
                   )

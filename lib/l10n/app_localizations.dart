@@ -371,14 +371,26 @@ abstract class AppLocalizations {
   /// No description provided for @sexOptional.
   ///
   /// In fr, this message translates to:
-  /// **'Sexe (optionnel)'**
+  /// **'Sexe'**
   String get sexOptional;
 
   /// No description provided for @sexOptionalHint.
   ///
   /// In fr, this message translates to:
-  /// **'Homme, femme ou libre'**
+  /// **'Homme ou femme'**
   String get sexOptionalHint;
+
+  /// No description provided for @sexMale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Homme'**
+  String get sexMale;
+
+  /// No description provided for @sexFemale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Femme'**
+  String get sexFemale;
 
   /// No description provided for @ageOptional.
   ///
@@ -539,8 +551,20 @@ abstract class AppLocalizations {
   /// No description provided for @requiredProfileFields.
   ///
   /// In fr, this message translates to:
-  /// **'Renseigne au minimum email, mot de passe, pseudo, poids et taille.'**
+  /// **'Renseigne au minimum ton pseudo, ton poids et ta taille.'**
   String get requiredProfileFields;
+
+  /// No description provided for @requiredLoginFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne ton e-mail et ton mot de passe.'**
+  String get requiredLoginFields;
+
+  /// No description provided for @existingAccountSessionMissing.
+  ///
+  /// In fr, this message translates to:
+  /// **'La session n\'est plus active. Reconnecte-toi depuis l\'étape profil.'**
+  String get existingAccountSessionMissing;
 
   /// No description provided for @profileSavedApi.
   ///
@@ -1717,6 +1741,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Compte connecté'**
   String get account;
+
+  /// No description provided for @userGreeting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonjour, {name}'**
+  String userGreeting(String name);
 
   /// No description provided for @connectedAccount.
   ///

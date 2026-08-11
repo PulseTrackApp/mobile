@@ -149,10 +149,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get existingAccount => 'I already have an account';
 
   @override
-  String get sexOptional => 'Sex (optional)';
+  String get sexOptional => 'Sex';
 
   @override
-  String get sexOptionalHint => 'Male, female or custom';
+  String get sexOptionalHint => 'Male or female';
+
+  @override
+  String get sexMale => 'Male';
+
+  @override
+  String get sexFemale => 'Female';
 
   @override
   String get ageOptional => 'Age (optional)';
@@ -238,7 +244,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requiredProfileFields =>
-      'Enter at least email, password, nickname, weight and height.';
+      'Enter at least your nickname, weight and height.';
+
+  @override
+  String get requiredLoginFields => 'Enter your email and password.';
+
+  @override
+  String get existingAccountSessionMissing =>
+      'The session is no longer active. Sign in again from the profile step.';
 
   @override
   String get profileSavedApi => 'Profile saved to the API.';
@@ -851,6 +864,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get account => 'Connected account';
+
+  @override
+  String userGreeting(String name) {
+    return 'Hi, $name';
+  }
 
   @override
   String get connectedAccount => 'Account connected to GymFlow.';

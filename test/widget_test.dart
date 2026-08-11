@@ -1,50 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_flutter/app/pulse_track_app.dart';
+import 'package:mobile_flutter/core/api/api_providers.dart';
+import 'package:mobile_flutter/core/api/auth_token_store.dart';
 
 void main() {
-  testWidgets('GymFlow onboarding can be skipped', (WidgetTester tester) async {
+  testWidgets('GymFlow bloque la Home sans onboarding termine', (
+    WidgetTester tester,
+  ) async {
+    FlutterSecureStorage.setMockInitialValues({});
+    final tokenStore = AuthTokenStore();
+    await tokenStore.restore();
+
     await tester.pumpWidget(
-      const ProviderScope(child: PulseTrackApp(locale: Locale('fr'))),
+      ProviderScope(
+        overrides: [authTokenStoreProvider.overrideWith((ref) => tokenStore)],
+        child: const PulseTrackApp(locale: Locale('fr'), showOnboarding: false),
+      ),
     );
     await tester.pumpAndSettle();
 
     expect(find.text('Ton sport, tes stats, tes objectifs'), findsOneWidget);
-
-    await tester.tap(find.text('Passer'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Démarrer une session'), findsOneWidget);
-  });
-
-  testWidgets('GymFlow home renders', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(child: PulseTrackApp(locale: Locale('fr'))),
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Passer'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('GymFlow'), findsOneWidget);
-    expect(find.text('Démarrer une session'), findsOneWidget);
-    expect(find.text('Objectif semaine'), findsOneWidget);
-
-    await tester.tap(find.byTooltip('Ouvrir le menu'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Profil initial'), findsOneWidget);
-    expect(find.text('Évolution physique'), findsOneWidget);
-    expect(find.text('Coach Gemini'), findsOneWidget);
-
-    await tester.scrollUntilVisible(find.text('Paramètres'), 200);
-    await tester.tap(find.text('Paramètres'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Apparence'), findsOneWidget);
-    expect(find.text('Sport'), findsOneWidget);
-    expect(find.text('Tracking'), findsOneWidget);
-    expect(find.text('Confidentialité'), findsOneWidget);
+    expect(find.text('Passer'), findsNothing);
+    expect(find.text('Demarrer une session'), findsNothing);
   });
 }

@@ -7,6 +7,7 @@ import '../../../core/modules/app_module.dart';
 import '../../../core/modules/module_access_controller.dart';
 import '../../../core/modules/module_providers.dart';
 import '../../../core/ui/app_top_bar.dart';
+import '../../../core/ui/current_user_summary.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../menu/screens/menu_screen.dart';
 import '../../tracking/models/sport_mode.dart';
@@ -75,7 +76,9 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
               icon: const Icon(Icons.menu_rounded),
             ),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 18),
+          const CurrentUserSummary(),
+          const SizedBox(height: 24),
           Text(
             l10n.readyForNextSession,
             style: Theme.of(context).textTheme.displaySmall,

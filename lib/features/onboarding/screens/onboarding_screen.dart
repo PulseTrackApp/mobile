@@ -8,15 +8,15 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
 import '../../../core/ui/pulse_track_logo.dart';
+import '../../../core/user/current_user_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../profile/widgets/profile_choice_fields.dart';
 import '../../tracking/models/sport_mode.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
-  const OnboardingScreen({super.key, required this.onComplete, this.onSkip});
+  const OnboardingScreen({super.key, required this.onComplete});
 
   final VoidCallback onComplete;
-  final VoidCallback? onSkip;
 
   @override
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -33,6 +33,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _heightController = TextEditingController();
   final _customGoalController = TextEditingController();
   int _currentPage = 0;
+  SexOption _sex = SexOption.male;
   FitnessLevelOption _fitnessLevel = FitnessLevelOption.beginner;
   final Set<GoalOption> _selectedGoals = {GoalOption.loseWeight};
   SportMode _favoriteSport = SportMode.run;
@@ -61,15 +62,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const Expanded(child: PulseTrackLogo()),
-                  TextButton(
-                    onPressed: widget.onSkip ?? widget.onComplete,
-                    child: Text(l10n.onboardingSkip),
-                  ),
-                ],
-              ),
+              Row(children: [const Expanded(child: PulseTrackLogo())]),
               const SizedBox(height: 18),
               _StepIndicator(
                 currentPage: _currentPage,
@@ -93,12 +86,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       displayNameController: _displayNameController,
                       weightController: _weightController,
                       heightController: _heightController,
+                      sex: _sex,
                       fitnessLevel: _fitnessLevel,
                       useExistingAccount: _useExistingAccount,
                       onUseExistingAccountChanged: (value) {
                         setState(() => _useExistingAccount = value);
                       },
                       onForgotPasswordPressed: _openPasswordResetSheet,
+                      onSexChanged: (sex) {
+                        setState(() => _sex = sex);
+                      },
                       onFitnessLevelChanged: (level) {
                         setState(() => _fitnessLevel = level);
                       },
@@ -141,7 +138,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           ? null
                           : _currentPage == _totalPages - 1
                           ? _completeOnboarding
-                          : _goNext,
+                          : _handleNext,
                     ),
                   ),
                 ],
@@ -151,6 +148,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleNext() async {
+    if (_currentPage == 1) {
+      if (_useExistingAccount) {
+        await _verifyExistingAccountBeforeTargets();
+        return;
+      }
+
+      final l10n = AppLocalizations.of(context);
+      if (!_hasRequiredLoginFields(l10n) || !_hasRequiredProfileFields(l10n)) {
+        return;
+      }
+
+      _goNext();
+      return;
+    }
+
+    _goNext();
   }
 
   void _goNext() {
@@ -165,6 +181,30 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       duration: const Duration(milliseconds: 220),
       curve: Curves.easeOut,
     );
+  }
+
+  Future<void> _verifyExistingAccountBeforeTargets() async {
+    final l10n = AppLocalizations.of(context);
+    if (!_hasRequiredLoginFields(l10n)) return;
+
+    setState(() => _isSubmitting = true);
+
+    try {
+      final api = ref.read(pulseTrackApiProvider);
+      await api.login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+      await _prefillExistingProfile();
+      if (!mounted) return;
+      _goNext();
+    } on ApiProblem catch (problem) {
+      _showMessage('${l10n.apiErrorPrefix} ${problem.message}');
+    } catch (_) {
+      _showMessage(l10n.apiUnexpectedError);
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   void _toggleGoal(GoalOption goal) {
@@ -188,17 +228,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     try {
       final api = ref.read(pulseTrackApiProvider);
       if (_useExistingAccount) {
-        await api.login(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
+        if (!ref.read(authTokenStoreProvider).isAuthenticated) {
+          _showMessage(l10n.existingAccountSessionMissing);
+          await _pageController.animateToPage(
+            1,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOut,
+          );
+          return;
+        }
       } else {
+        if (!_hasRequiredLoginFields(l10n)) return;
         await api.register(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
       }
       await api.saveProfile(profile);
+      await ref
+          .read(authTokenStoreProvider)
+          .markProfileCompleted(displayName: _displayNameController.text);
+      ref.invalidate(currentUserProvider);
       if (!mounted) return;
       widget.onComplete();
     } on ApiProblem catch (problem) {
@@ -228,20 +278,84 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     _showMessage(AppLocalizations.of(context).passwordResetSuccess);
   }
 
-  Map<String, dynamic>? _buildProfilePayload(AppLocalizations l10n) {
+  bool _hasRequiredLoginFields(AppLocalizations l10n) {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage(l10n.requiredLoginFields);
+      return false;
+    }
+    return true;
+  }
+
+  bool _hasRequiredProfileFields(AppLocalizations l10n) {
     final displayName = _displayNameController.text.trim();
     final weight = double.tryParse(
       _weightController.text.trim().replaceAll(',', '.'),
     );
     final height = int.tryParse(_heightController.text.trim());
 
-    if (email.isEmpty ||
-        password.isEmpty ||
-        displayName.isEmpty ||
-        weight == null ||
-        height == null) {
+    if (displayName.isEmpty || weight == null || height == null) {
+      _showMessage(l10n.requiredProfileFields);
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _prefillExistingProfile() async {
+    try {
+      final profile = await ref.read(pulseTrackApiProvider).getProfile();
+      if (!mounted) return;
+      setState(() => _applyExistingProfile(profile));
+    } on ApiProblem catch (problem) {
+      if (problem.status == 404) return;
+      rethrow;
+    }
+  }
+
+  void _applyExistingProfile(Map<String, dynamic> profile) {
+    final displayName = jsonString(profile, 'displayName');
+    if (displayName != null && displayName.isNotEmpty) {
+      _displayNameController.text = displayName;
+    }
+
+    final weight = jsonDouble(profile, 'currentWeightKg');
+    if (weight > 0) {
+      _weightController.text = weight.toStringAsFixed(1);
+    }
+
+    final height = jsonInt(profile, 'heightCm');
+    if (height > 0) {
+      _heightController.text = height.toString();
+    }
+
+    _sex = SexOption.fromApiValue(jsonString(profile, 'sex'));
+    _fitnessLevel = FitnessLevelOption.fromApiValue(
+      jsonString(profile, 'fitnessLevel'),
+    );
+
+    final primaryGoal = GoalOption.fromApiPrimaryGoalValue(
+      jsonString(profile, 'primaryGoal'),
+    );
+    _selectedGoals
+      ..clear()
+      ..add(primaryGoal);
+
+    final sports = profile['preferredSports'];
+    if (sports is List && sports.isNotEmpty) {
+      _favoriteSport =
+          SportMode.fromApiValue(sports.first?.toString()) ?? _favoriteSport;
+    }
+  }
+
+  Map<String, dynamic>? _buildProfilePayload(AppLocalizations l10n) {
+    final displayName = _displayNameController.text.trim();
+    final weight = double.tryParse(
+      _weightController.text.trim().replaceAll(',', '.'),
+    );
+    final height = int.tryParse(_heightController.text.trim());
+
+    if (displayName.isEmpty || weight == null || height == null) {
       _showMessage(l10n.requiredProfileFields);
       return null;
     }
@@ -255,6 +369,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       'displayName': displayName,
       'heightCm': height,
       'currentWeightKg': weight,
+      'sex': _sex.apiValue,
       'primaryGoal': primaryGoal.apiPrimaryGoalValue,
       'fitnessLevel': _fitnessLevel.apiValue,
       'preferredSports': [_favoriteSport.apiValue],
@@ -365,10 +480,12 @@ class _ProfilePage extends StatelessWidget {
     required this.displayNameController,
     required this.weightController,
     required this.heightController,
+    required this.sex,
     required this.fitnessLevel,
     required this.useExistingAccount,
     required this.onUseExistingAccountChanged,
     required this.onForgotPasswordPressed,
+    required this.onSexChanged,
     required this.onFitnessLevelChanged,
   });
 
@@ -378,10 +495,12 @@ class _ProfilePage extends StatelessWidget {
   final TextEditingController displayNameController;
   final TextEditingController weightController;
   final TextEditingController heightController;
+  final SexOption sex;
   final FitnessLevelOption fitnessLevel;
   final bool useExistingAccount;
   final ValueChanged<bool> onUseExistingAccountChanged;
   final VoidCallback onForgotPasswordPressed;
+  final ValueChanged<SexOption> onSexChanged;
   final ValueChanged<FitnessLevelOption> onFitnessLevelChanged;
 
   @override
@@ -442,6 +561,8 @@ class _ProfilePage extends StatelessWidget {
                   hint: l10n.displayNameHint,
                   icon: Icons.badge_outlined,
                 ),
+                const SizedBox(height: 14),
+                SexSelect(value: sex, onChanged: onSexChanged),
                 const SizedBox(height: 14),
                 Row(
                   children: [

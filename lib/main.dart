@@ -14,7 +14,10 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [authTokenStoreProvider.overrideWith((ref) => tokenStore)],
-      child: PulseTrackApp(showOnboarding: !tokenStore.isAuthenticated),
+      child: PulseTrackApp(
+        showOnboarding:
+            !tokenStore.isAuthenticated || !tokenStore.profileCompleted,
+      ),
     ),
   );
 }

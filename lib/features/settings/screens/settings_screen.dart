@@ -5,6 +5,7 @@ import '../../../app/app_settings_controller.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/push/push_providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/user/current_user_provider.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
 import '../../../l10n/app_localizations.dart';
@@ -18,6 +19,7 @@ class SettingsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final settings = AppSettingsScope.of(context);
     final tokenStore = ref.watch(authTokenStoreProvider);
+    final currentUser = ref.watch(currentUserProvider).valueOrNull;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
@@ -167,6 +169,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: l10n.settingsAccount,
                 children: [
                   _AccountTile(
+                    displayName: currentUser?.displayName,
                     email: tokenStore.email,
                     onLogout: () => _logout(context, ref),
                   ),
@@ -357,15 +360,22 @@ class _WeeklyTargetStepper extends StatelessWidget {
 }
 
 class _AccountTile extends StatelessWidget {
-  const _AccountTile({required this.email, required this.onLogout});
+  const _AccountTile({
+    required this.displayName,
+    required this.email,
+    required this.onLogout,
+  });
 
+  final String? displayName;
   final String? email;
   final VoidCallback onLogout;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final name = displayName?.trim();
     final displayEmail = email?.trim();
+    final hasName = name != null && name.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.all(14),
@@ -378,11 +388,16 @@ class _AccountTile extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            displayEmail == null || displayEmail.isEmpty
-                ? l10n.connectedAccount
-                : l10n.connectedAs(displayEmail),
-            style: Theme.of(context).textTheme.bodyMedium,
+            hasName ? name : l10n.connectedAccount,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
+          if (displayEmail != null && displayEmail.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              l10n.connectedAs(displayEmail),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
           const SizedBox(height: 14),
           AppButton.secondary(
             label: l10n.signOut,

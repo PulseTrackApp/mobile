@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_metric_tile.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/user/current_user_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tracking/models/sport_mode.dart';
 import '../widgets/profile_choice_fields.dart';
@@ -24,6 +25,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final _weightController = TextEditingController();
   final _heightController = TextEditingController();
   final _customGoalController = TextEditingController();
+  SexOption _sex = SexOption.male;
   FitnessLevelOption _fitnessLevel = FitnessLevelOption.beginner;
   final Set<GoalOption> _selectedGoals = {GoalOption.loseWeight};
   final Set<SportMode> _preferredSports = {SportMode.run};
@@ -78,10 +80,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: _ProfileField(
-                            label: l10n.sexOptional,
-                            hint: l10n.sexOptionalHint,
-                            icon: Icons.person_search_outlined,
+                          child: SexSelect(
+                            value: _sex,
+                            onChanged: (sex) {
+                              setState(() => _sex = sex);
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -202,12 +205,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     setState(() => _isSaving = true);
 
     try {
-      final savedProfile = await ref.read(pulseTrackApiProvider).saveProfile(
-        profile,
-      );
+      final savedProfile = await ref
+          .read(pulseTrackApiProvider)
+          .saveProfile(profile);
       if (mounted) {
         setState(() => _applyProfile(savedProfile, updateFields: false));
       }
+      await ref
+          .read(authTokenStoreProvider)
+          .markProfileCompleted(displayName: _displayNameController.text);
+      ref.invalidate(currentUserProvider);
       _showMessage(l10n.profileSavedApi);
     } on ApiProblem catch (problem) {
       _showMessage('${l10n.apiErrorPrefix} ${problem.message}');
@@ -231,10 +238,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
-  void _applyProfile(
-    Map<String, dynamic> profile, {
-    bool updateFields = true,
-  }) {
+  void _applyProfile(Map<String, dynamic> profile, {bool updateFields = true}) {
     _profile = profile;
 
     if (!updateFields) return;
@@ -248,6 +252,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _fitnessLevel = FitnessLevelOption.fromApiValue(
       jsonString(profile, 'fitnessLevel'),
     );
+    _sex = SexOption.fromApiValue(jsonString(profile, 'sex'));
 
     final primaryGoal = GoalOption.fromApiPrimaryGoalValue(
       jsonString(profile, 'primaryGoal'),
@@ -315,6 +320,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       'displayName': displayName,
       'heightCm': height,
       'currentWeightKg': weight,
+      'sex': _sex.apiValue,
       'primaryGoal': primaryGoal.apiPrimaryGoalValue,
       'fitnessLevel': _fitnessLevel.apiValue,
       'preferredSports': _preferredSports

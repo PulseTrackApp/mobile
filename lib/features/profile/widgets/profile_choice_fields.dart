@@ -32,6 +32,32 @@ enum FitnessLevelOption {
   }
 }
 
+enum SexOption {
+  male,
+  female;
+
+  static SexOption fromApiValue(String? value) {
+    return switch (value) {
+      'FEMALE' => SexOption.female,
+      _ => SexOption.male,
+    };
+  }
+
+  String label(AppLocalizations l10n) {
+    return switch (this) {
+      SexOption.male => l10n.sexMale,
+      SexOption.female => l10n.sexFemale,
+    };
+  }
+
+  String get apiValue {
+    return switch (this) {
+      SexOption.male => 'MALE',
+      SexOption.female => 'FEMALE',
+    };
+  }
+}
+
 enum GoalOption {
   loseWeight,
   endurance,
@@ -79,6 +105,36 @@ enum GoalOption {
       GoalOption.cyclingWalking => 'PROGRESS_CYCLING_WALKING',
       GoalOption.other => 'MAINTAIN_FITNESS',
     };
+  }
+}
+
+class SexSelect extends StatelessWidget {
+  const SexSelect({super.key, required this.value, required this.onChanged});
+
+  final SexOption value;
+  final ValueChanged<SexOption> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return DropdownButtonFormField<SexOption>(
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: l10n.sexOptional,
+        prefixIcon: const Icon(Icons.wc_rounded),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      items: SexOption.values.map((sex) {
+        return DropdownMenuItem<SexOption>(
+          value: sex,
+          child: Text(sex.label(l10n)),
+        );
+      }).toList(),
+      onChanged: (sex) {
+        if (sex != null) onChanged(sex);
+      },
+    );
   }
 }
 

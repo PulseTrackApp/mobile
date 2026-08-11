@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_menu_tile.dart';
 import '../../../core/ui/app_panel.dart';
 import '../../../core/ui/app_top_bar.dart';
+import '../../../core/ui/current_user_summary.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../body/screens/body_progress_screen.dart';
 import '../../coach/screens/gemini_coach_screen.dart';
@@ -41,7 +42,9 @@ class MenuScreen extends ConsumerWidget {
                   )
                 : null,
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 18),
+          const CurrentUserSummary(compact: true),
+          const SizedBox(height: 24),
           Text(l10n.menuTitle, style: Theme.of(context).textTheme.displaySmall),
           const SizedBox(height: 18),
           AppPanel(

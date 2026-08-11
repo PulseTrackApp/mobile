@@ -52,8 +52,10 @@
   "moduleExport": "Export des données",
   "modulePush": "Notifications",
   "existingAccount": "J'ai déjà un compte",
-  "sexOptional": "Sexe (optionnel)",
-  "sexOptionalHint": "Homme, femme ou libre",
+  "sexOptional": "Sexe",
+  "sexOptionalHint": "Homme ou femme",
+  "sexMale": "Homme",
+  "sexFemale": "Femme",
   "ageOptional": "Âge (optionnel)",
   "weightKg": "Poids (kg)",
   "heightCm": "Taille (cm)",
@@ -87,7 +89,9 @@
   "profileDataNote": "Ces données servent aux calories, objectifs et conseils Gemini.",
   "saveProfile": "Sauvegarder le profil",
   "saving": "Sauvegarde...",
-  "requiredProfileFields": "Renseigne au minimum email, mot de passe, pseudo, poids et taille.",
+  "requiredProfileFields": "Renseigne au minimum ton pseudo, ton poids et ta taille.",
+  "requiredLoginFields": "Renseigne ton e-mail et ton mot de passe.",
+  "existingAccountSessionMissing": "La session n'est plus active. Reconnecte-toi depuis l'étape profil.",
   "profileSavedApi": "Profil sauvegardé sur l'API.",
   "apiErrorPrefix": "Erreur API :",
   "apiUnexpectedError": "Impossible de joindre l'API pour le moment.",
@@ -301,6 +305,14 @@
   "privateActivitiesDescription": "Garde les sessions visibles seulement par toi.",
   "settingsAccount": "Compte",
   "account": "Compte connecté",
+  "userGreeting": "Bonjour, {name}",
+  "@userGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "connectedAccount": "Compte connecté à GymFlow.",
   "connectedAs": "Connecté avec {email}",
   "@connectedAs": {
