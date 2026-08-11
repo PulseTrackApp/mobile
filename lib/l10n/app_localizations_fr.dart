@@ -138,7 +138,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get moduleWeeklySummary => 'Bilan hebdomadaire';
 
   @override
-  String get moduleCoach => 'Coach Gemini';
+  String get moduleCoach => 'Super Coach';
 
   @override
   String get moduleExport => 'Export des données';
@@ -235,7 +235,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get profileDataNote =>
-      'Ces données servent aux calories, objectifs et conseils Gemini.';
+      'Ces données servent aux calories, objectifs et conseils du Super Coach.';
 
   @override
   String get saveProfile => 'Sauvegarder le profil';
@@ -404,32 +404,23 @@ class AppLocalizationsFr extends AppLocalizations {
   String get performanceTarget => 'Performance cible';
 
   @override
-  String get coachTitle => 'Coach Gemini';
+  String get coachTitle => 'Super Coach';
 
   @override
   String get coachSubtitle => 'Conseils, alertes et exercices';
 
   @override
-  String get coachHeadline => 'Analyse personnelle avec Gemini';
+  String get coachHeadline => 'Analyse personnelle avec Super Coach';
 
   @override
-  String get geminiApiKey => 'Assistant IA';
-
-  @override
-  String get geminiApiKeyHint => 'Géré par l\'API';
-
-  @override
-  String get geminiPrivacyNote =>
+  String get coachPrivacyNote =>
       'Le mobile ne manipule aucune clé. Il envoie seulement tes demandes à l\'API et affiche les conseils reçus.';
 
   @override
-  String get saveGeminiKey => 'Statut du coach';
+  String get coachBackendStatusTitle => 'Super Coach connecté à l\'API';
 
   @override
-  String get geminiBackendStatusTitle => 'Assistant connecté à l\'API';
-
-  @override
-  String get geminiBackendStatusBody =>
+  String get coachBackendStatusBody =>
       'Quand le service est actif, l\'app peut demander un bilan, des alertes d\'effort et des propositions d\'exercices.';
 
   @override
@@ -444,7 +435,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get exerciseSuggestionsBody =>
-      'Gemini pourra proposer une sortie facile, une marche rapide ou du renforcement selon ton niveau.';
+      'Le Super Coach pourra proposer une sortie facile, une marche rapide ou du renforcement selon ton niveau.';
 
   @override
   String get weeklyReviewTitle => 'Bilan hebdomadaire';
@@ -495,7 +486,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get onboardingTargetsBody =>
-      'Définis ton objectif principal. Gemini pourra ensuite proposer des exercices et signaler les semaines trop faibles.';
+      'Définis ton objectif principal. Le Super Coach pourra ensuite proposer des exercices et signaler les semaines trop faibles.';
 
   @override
   String onboardingStep(int current, int total) {

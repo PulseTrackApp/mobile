@@ -347,7 +347,7 @@ abstract class AppLocalizations {
   /// No description provided for @moduleCoach.
   ///
   /// In fr, this message translates to:
-  /// **'Coach Gemini'**
+  /// **'Super Coach'**
   String get moduleCoach;
 
   /// No description provided for @moduleExport.
@@ -533,7 +533,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileDataNote.
   ///
   /// In fr, this message translates to:
-  /// **'Ces données servent aux calories, objectifs et conseils Gemini.'**
+  /// **'Ces données servent aux calories, objectifs et conseils du Super Coach.'**
   String get profileDataNote;
 
   /// No description provided for @saveProfile.
@@ -863,7 +863,7 @@ abstract class AppLocalizations {
   /// No description provided for @coachTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Coach Gemini'**
+  /// **'Super Coach'**
   String get coachTitle;
 
   /// No description provided for @coachSubtitle.
@@ -875,44 +875,26 @@ abstract class AppLocalizations {
   /// No description provided for @coachHeadline.
   ///
   /// In fr, this message translates to:
-  /// **'Analyse personnelle avec Gemini'**
+  /// **'Analyse personnelle avec Super Coach'**
   String get coachHeadline;
 
-  /// No description provided for @geminiApiKey.
-  ///
-  /// In fr, this message translates to:
-  /// **'Assistant IA'**
-  String get geminiApiKey;
-
-  /// No description provided for @geminiApiKeyHint.
-  ///
-  /// In fr, this message translates to:
-  /// **'Géré par l\'API'**
-  String get geminiApiKeyHint;
-
-  /// No description provided for @geminiPrivacyNote.
+  /// No description provided for @coachPrivacyNote.
   ///
   /// In fr, this message translates to:
   /// **'Le mobile ne manipule aucune clé. Il envoie seulement tes demandes à l\'API et affiche les conseils reçus.'**
-  String get geminiPrivacyNote;
+  String get coachPrivacyNote;
 
-  /// No description provided for @saveGeminiKey.
+  /// No description provided for @coachBackendStatusTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Statut du coach'**
-  String get saveGeminiKey;
+  /// **'Super Coach connecté à l\'API'**
+  String get coachBackendStatusTitle;
 
-  /// No description provided for @geminiBackendStatusTitle.
-  ///
-  /// In fr, this message translates to:
-  /// **'Assistant connecté à l\'API'**
-  String get geminiBackendStatusTitle;
-
-  /// No description provided for @geminiBackendStatusBody.
+  /// No description provided for @coachBackendStatusBody.
   ///
   /// In fr, this message translates to:
   /// **'Quand le service est actif, l\'app peut demander un bilan, des alertes d\'effort et des propositions d\'exercices.'**
-  String get geminiBackendStatusBody;
+  String get coachBackendStatusBody;
 
   /// No description provided for @effortWarningTitle.
   ///
@@ -935,7 +917,7 @@ abstract class AppLocalizations {
   /// No description provided for @exerciseSuggestionsBody.
   ///
   /// In fr, this message translates to:
-  /// **'Gemini pourra proposer une sortie facile, une marche rapide ou du renforcement selon ton niveau.'**
+  /// **'Le Super Coach pourra proposer une sortie facile, une marche rapide ou du renforcement selon ton niveau.'**
   String get exerciseSuggestionsBody;
 
   /// No description provided for @weeklyReviewTitle.
@@ -1025,7 +1007,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTargetsBody.
   ///
   /// In fr, this message translates to:
-  /// **'Définis ton objectif principal. Gemini pourra ensuite proposer des exercices et signaler les semaines trop faibles.'**
+  /// **'Définis ton objectif principal. Le Super Coach pourra ensuite proposer des exercices et signaler les semaines trop faibles.'**
   String get onboardingTargetsBody;
 
   /// No description provided for @onboardingStep.

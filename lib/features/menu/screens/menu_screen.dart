@@ -10,7 +10,7 @@ import '../../../core/ui/app_top_bar.dart';
 import '../../../core/ui/current_user_summary.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../body/screens/body_progress_screen.dart';
-import '../../coach/screens/gemini_coach_screen.dart';
+import '../../coach/screens/super_coach_screen.dart';
 import '../../goals/screens/goals_screen.dart';
 import '../../history/screens/workout_history_screen.dart';
 import '../../profile/screens/profile_screen.dart';
@@ -99,7 +99,7 @@ class MenuScreen extends ConsumerWidget {
                   color: AppColors.danger,
                   locked: !moduleAccess.isEnabled(AppModule.coach),
                   onTap: moduleAccess.isEnabled(AppModule.coach)
-                      ? () => _push(context, const GeminiCoachScreen())
+                      ? () => _push(context, const SuperCoachScreen())
                       : null,
                 ),
                 const _MenuDivider(),

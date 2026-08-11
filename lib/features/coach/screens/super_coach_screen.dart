@@ -9,14 +9,14 @@ import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
 import '../../../l10n/app_localizations.dart';
 
-class GeminiCoachScreen extends ConsumerStatefulWidget {
-  const GeminiCoachScreen({super.key});
+class SuperCoachScreen extends ConsumerStatefulWidget {
+  const SuperCoachScreen({super.key});
 
   @override
-  ConsumerState<GeminiCoachScreen> createState() => _GeminiCoachScreenState();
+  ConsumerState<SuperCoachScreen> createState() => _SuperCoachScreenState();
 }
 
-class _GeminiCoachScreenState extends ConsumerState<GeminiCoachScreen> {
+class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
   final _questionController = TextEditingController();
   Future<_CoachData>? _future;
   bool _isRequesting = false;
@@ -83,7 +83,7 @@ class _GeminiCoachScreenState extends ConsumerState<GeminiCoachScreen> {
                                   Text(
                                     data?.settingsUsable == true
                                         ? l10n.coachAvailable
-                                        : l10n.geminiBackendStatusTitle,
+                                        : l10n.coachBackendStatusTitle,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.titleMedium,
@@ -91,7 +91,7 @@ class _GeminiCoachScreenState extends ConsumerState<GeminiCoachScreen> {
                                   const SizedBox(height: 6),
                                   Text(
                                     data?.latestMessage ??
-                                        l10n.geminiBackendStatusBody,
+                                        l10n.coachBackendStatusBody,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodyMedium,
@@ -120,7 +120,7 @@ class _GeminiCoachScreenState extends ConsumerState<GeminiCoachScreen> {
                                   child: Text(
                                     snapshot.hasError
                                         ? l10n.apiUnexpectedError
-                                        : l10n.geminiPrivacyNote,
+                                        : l10n.coachPrivacyNote,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodyMedium,

@@ -399,7 +399,7 @@ class _AccountTile extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 14),
-          AppButton.secondary(
+          AppButton.danger(
             label: l10n.signOut,
             icon: Icons.logout_rounded,
             onPressed: onLogout,
