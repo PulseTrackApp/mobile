@@ -242,6 +242,12 @@ abstract class AppLocalizations {
   /// **'Nouveau mot de passe'**
   String get newPassword;
 
+  /// No description provided for @currentPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe actuel'**
+  String get currentPassword;
+
   /// No description provided for @requestResetCode.
   ///
   /// In fr, this message translates to:
@@ -289,6 +295,132 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mot de passe mis à jour. Tu peux te connecter.'**
   String get passwordResetSuccess;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le mot de passe'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le mot de passe'**
+  String get changePassword;
+
+  /// No description provided for @changePasswordSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe changé. La session a été sécurisée.'**
+  String get changePasswordSuccess;
+
+  /// No description provided for @changePasswordRequiredFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne le mot de passe actuel et le nouveau mot de passe.'**
+  String get changePasswordRequiredFields;
+
+  /// No description provided for @emailVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse e-mail confirmée'**
+  String get emailVerified;
+
+  /// No description provided for @emailNotVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse e-mail non confirmée'**
+  String get emailNotVerified;
+
+  /// No description provided for @emailVerificationTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer l\'adresse e-mail'**
+  String get emailVerificationTitle;
+
+  /// No description provided for @emailVerificationBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisis le code reçu par e-mail pour confirmer ton adresse.'**
+  String get emailVerificationBody;
+
+  /// No description provided for @verificationCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de confirmation'**
+  String get verificationCode;
+
+  /// No description provided for @resendVerificationCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renvoyer le code'**
+  String get resendVerificationCode;
+
+  /// No description provided for @verifyEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer l\'adresse'**
+  String get verifyEmail;
+
+  /// No description provided for @emailVerificationCodeSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Si l\'adresse existe, un code vient d\'être envoyé.'**
+  String get emailVerificationCodeSent;
+
+  /// No description provided for @emailVerificationSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse e-mail confirmée.'**
+  String get emailVerificationSuccess;
+
+  /// No description provided for @emailVerificationRequiredFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne le code reçu par e-mail.'**
+  String get emailVerificationRequiredFields;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le compte'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le compte'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action efface définitivement le profil, les séances, les parcours, les objectifs et les données de suivi.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteAccountConfirmLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Je comprends que cette action est définitive.'**
+  String get deleteAccountConfirmLabel;
+
+  /// No description provided for @deleteAccountFinalButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer définitivement'**
+  String get deleteAccountFinalButton;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte supprimé.'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @deleteAccountRequiredFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne ton mot de passe et confirme l\'action.'**
+  String get deleteAccountRequiredFields;
 
   /// No description provided for @close.
   ///
@@ -800,6 +932,126 @@ abstract class AppLocalizations {
   /// **'Aucune séance enregistrée pour le moment.'**
   String get noSessionsYet;
 
+  /// No description provided for @openWorkoutDetails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le parcours et les moments forts'**
+  String get openWorkoutDetails;
+
+  /// No description provided for @workoutDetailTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail séance'**
+  String get workoutDetailTitle;
+
+  /// No description provided for @loadingWorkout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement de la séance...'**
+  String get loadingWorkout;
+
+  /// No description provided for @routeReplay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcours enregistré'**
+  String get routeReplay;
+
+  /// No description provided for @workoutHighlights.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moments forts'**
+  String get workoutHighlights;
+
+  /// No description provided for @routeTimeline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repères du parcours'**
+  String get routeTimeline;
+
+  /// No description provided for @startedAtLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Départ'**
+  String get startedAtLabel;
+
+  /// No description provided for @midRouteLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mi-parcours'**
+  String get midRouteLabel;
+
+  /// No description provided for @endedAtLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrivée'**
+  String get endedAtLabel;
+
+  /// No description provided for @workoutDetails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Données de séance'**
+  String get workoutDetails;
+
+  /// No description provided for @gpsTraceMissing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune trace GPS enregistrée pour cette séance.'**
+  String get gpsTraceMissing;
+
+  /// No description provided for @shareSavedWorkout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partager la séance'**
+  String get shareSavedWorkout;
+
+  /// No description provided for @fastestMoment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pic de vitesse'**
+  String get fastestMoment;
+
+  /// No description provided for @speedPeakMarker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pic'**
+  String get speedPeakMarker;
+
+  /// No description provided for @midRouteMarker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mi-parcours'**
+  String get midRouteMarker;
+
+  /// No description provided for @fastestMomentAt.
+  ///
+  /// In fr, this message translates to:
+  /// **'À {time}'**
+  String fastestMomentAt(String time);
+
+  /// No description provided for @workoutNoteEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune note pour cette séance.'**
+  String get workoutNoteEmpty;
+
+  /// No description provided for @routePointCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} points'**
+  String routePointCount(int count);
+
+  /// No description provided for @effortValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{value}/10'**
+  String effortValue(int value);
+
+  /// No description provided for @routeDistanceAt.
+  ///
+  /// In fr, this message translates to:
+  /// **'{distance} depuis le départ'**
+  String routeDistanceAt(String distance);
+
   /// No description provided for @filters.
   ///
   /// In fr, this message translates to:
@@ -1262,6 +1514,36 @@ abstract class AppLocalizations {
   /// **'Ressenti'**
   String get feeling;
 
+  /// No description provided for @feelingGreat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Excellent'**
+  String get feelingGreat;
+
+  /// No description provided for @feelingGood.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon'**
+  String get feelingGood;
+
+  /// No description provided for @feelingOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Correct'**
+  String get feelingOk;
+
+  /// No description provided for @feelingTired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fatigué'**
+  String get feelingTired;
+
+  /// No description provided for @feelingExhausted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épuisé'**
+  String get feelingExhausted;
+
   /// No description provided for @sessionNote.
   ///
   /// In fr, this message translates to:
@@ -1315,6 +1597,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ma séance GymFlow'**
   String get shareWorkoutTitle;
+
+  /// No description provided for @shareWorkoutChoiceTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Que veux-tu partager ?'**
+  String get shareWorkoutChoiceTitle;
+
+  /// No description provided for @shareRouteOnlyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carte seule'**
+  String get shareRouteOnlyTitle;
+
+  /// No description provided for @shareRouteOnlySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le parcours, les repères et les pics de vitesse.'**
+  String get shareRouteOnlySubtitle;
+
+  /// No description provided for @shareRouteWithDataTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carte + données'**
+  String get shareRouteWithDataTitle;
+
+  /// No description provided for @shareRouteWithDataSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcours, distance, chrono, allure et vitesse.'**
+  String get shareRouteWithDataSubtitle;
+
+  /// No description provided for @shareRouteOnlyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon parcours GymFlow'**
+  String get shareRouteOnlyText;
 
   /// No description provided for @shareWorkoutUnavailable.
   ///

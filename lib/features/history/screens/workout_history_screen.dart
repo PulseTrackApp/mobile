@@ -6,9 +6,11 @@ import '../../../core/api/api_formatters.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/ui/app_refresh_scroll_view.dart';
 import '../../../core/ui/app_stat_row.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tracking/models/sport_mode.dart';
+import 'workout_detail_screen.dart';
 
 class WorkoutHistoryScreen extends ConsumerStatefulWidget {
   const WorkoutHistoryScreen({super.key});
@@ -35,7 +37,8 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.workoutHistoryTitle)),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: AppRefreshScrollView(
+          onRefresh: _refresh,
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +152,10 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                               )
                             else
                               ...sessions.map((workout) {
-                                return _WorkoutListItem(workout: workout);
+                                return _WorkoutListItem(
+                                  workout: workout,
+                                  onTap: () => _openWorkoutDetails(workout),
+                                );
                               }),
                           ],
                         ),
@@ -176,12 +182,33 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                 ),
         );
   }
+
+  Future<void> _refresh() async {
+    final future = _loadWorkouts();
+    setState(() => _future = future);
+
+    try {
+      await future;
+    } catch (_) {}
+  }
+
+  void _openWorkoutDetails(Map<String, dynamic> workout) {
+    final id = jsonString(workout, 'id');
+    if (id == null || id.isEmpty) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => WorkoutDetailScreen(workoutId: id),
+      ),
+    );
+  }
 }
 
 class _WorkoutListItem extends StatelessWidget {
-  const _WorkoutListItem({required this.workout});
+  const _WorkoutListItem({required this.workout, required this.onTap});
 
   final Map<String, dynamic> workout;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -190,27 +217,63 @@ class _WorkoutListItem extends StatelessWidget {
     final startedAt = jsonString(workout, 'startedAt') ?? '';
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.directions_run_rounded, color: AppColors.primary),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(sport, style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: 2),
-                Text(startedAt, style: Theme.of(context).textTheme.bodySmall),
+                const Icon(
+                  Icons.directions_run_rounded,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        sport,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        startedAt,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        l10n.openWorkoutDetails,
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(color: AppColors.primary),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      formatMetersAsKm(
+                        jsonDouble(workout, 'distanceMeters'),
+                        l10n,
+                      ),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 4),
+                    const Icon(Icons.chevron_right_rounded),
+                  ],
+                ),
               ],
             ),
           ),
-          Text(
-            formatMetersAsKm(jsonDouble(workout, 'distanceMeters'), l10n),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ],
+        ),
       ),
     );
   }

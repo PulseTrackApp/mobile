@@ -8,6 +8,7 @@ class AuthSession {
     required this.userId,
     required this.email,
     required this.profileCompleted,
+    required this.emailVerified,
   });
 
   factory AuthSession.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class AuthSession {
       userId: json['userId']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       profileCompleted: _boolOrFalse(json['profileCompleted']),
+      emailVerified: _boolOrFalse(json['emailVerified']),
     );
   }
 
@@ -33,6 +35,7 @@ class AuthSession {
   final String userId;
   final String email;
   final bool profileCompleted;
+  final bool emailVerified;
 }
 
 int _intOrZero(Object? value) {

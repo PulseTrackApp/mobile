@@ -23,11 +23,8 @@ void main() {
     tokenStore = AuthTokenStore();
   });
 
-  PushRegistrar registrar() => PushRegistrar(
-    pushService: pushService,
-    api: api,
-    tokenStore: tokenStore,
-  );
+  PushRegistrar registrar() =>
+      PushRegistrar(pushService: pushService, api: api, tokenStore: tokenStore);
 
   test('enregistre l appareil quand une session est deja ouverte', () async {
     await tokenStore.save(_session());
@@ -161,6 +158,7 @@ AuthSession _session({String userId = 'utilisateur-1'}) {
     userId: userId,
     email: 'nicolas@gymflow.test',
     profileCompleted: true,
+    emailVerified: true,
   );
 }
 

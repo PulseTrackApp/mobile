@@ -81,6 +81,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get newPassword => 'Nouveau mot de passe';
 
   @override
+  String get currentPassword => 'Mot de passe actuel';
+
+  @override
   String get requestResetCode => 'Recevoir le code';
 
   @override
@@ -107,6 +110,77 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get passwordResetSuccess =>
       'Mot de passe mis à jour. Tu peux te connecter.';
+
+  @override
+  String get changePasswordTitle => 'Changer le mot de passe';
+
+  @override
+  String get changePassword => 'Changer le mot de passe';
+
+  @override
+  String get changePasswordSuccess =>
+      'Mot de passe changé. La session a été sécurisée.';
+
+  @override
+  String get changePasswordRequiredFields =>
+      'Renseigne le mot de passe actuel et le nouveau mot de passe.';
+
+  @override
+  String get emailVerified => 'Adresse e-mail confirmée';
+
+  @override
+  String get emailNotVerified => 'Adresse e-mail non confirmée';
+
+  @override
+  String get emailVerificationTitle => 'Confirmer l\'adresse e-mail';
+
+  @override
+  String get emailVerificationBody =>
+      'Saisis le code reçu par e-mail pour confirmer ton adresse.';
+
+  @override
+  String get verificationCode => 'Code de confirmation';
+
+  @override
+  String get resendVerificationCode => 'Renvoyer le code';
+
+  @override
+  String get verifyEmail => 'Confirmer l\'adresse';
+
+  @override
+  String get emailVerificationCodeSent =>
+      'Si l\'adresse existe, un code vient d\'être envoyé.';
+
+  @override
+  String get emailVerificationSuccess => 'Adresse e-mail confirmée.';
+
+  @override
+  String get emailVerificationRequiredFields =>
+      'Renseigne le code reçu par e-mail.';
+
+  @override
+  String get deleteAccount => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountTitle => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountBody =>
+      'Cette action efface définitivement le profil, les séances, les parcours, les objectifs et les données de suivi.';
+
+  @override
+  String get deleteAccountConfirmLabel =>
+      'Je comprends que cette action est définitive.';
+
+  @override
+  String get deleteAccountFinalButton => 'Supprimer définitivement';
+
+  @override
+  String get deleteAccountSuccess => 'Compte supprimé.';
+
+  @override
+  String get deleteAccountRequiredFields =>
+      'Renseigne ton mot de passe et confirme l\'action.';
 
   @override
   String get close => 'Fermer';
@@ -374,6 +448,75 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noSessionsYet => 'Aucune séance enregistrée pour le moment.';
 
   @override
+  String get openWorkoutDetails => 'Voir le parcours et les moments forts';
+
+  @override
+  String get workoutDetailTitle => 'Détail séance';
+
+  @override
+  String get loadingWorkout => 'Chargement de la séance...';
+
+  @override
+  String get routeReplay => 'Parcours enregistré';
+
+  @override
+  String get workoutHighlights => 'Moments forts';
+
+  @override
+  String get routeTimeline => 'Repères du parcours';
+
+  @override
+  String get startedAtLabel => 'Départ';
+
+  @override
+  String get midRouteLabel => 'Mi-parcours';
+
+  @override
+  String get endedAtLabel => 'Arrivée';
+
+  @override
+  String get workoutDetails => 'Données de séance';
+
+  @override
+  String get gpsTraceMissing =>
+      'Aucune trace GPS enregistrée pour cette séance.';
+
+  @override
+  String get shareSavedWorkout => 'Partager la séance';
+
+  @override
+  String get fastestMoment => 'Pic de vitesse';
+
+  @override
+  String get speedPeakMarker => 'Pic';
+
+  @override
+  String get midRouteMarker => 'Mi-parcours';
+
+  @override
+  String fastestMomentAt(String time) {
+    return 'À $time';
+  }
+
+  @override
+  String get workoutNoteEmpty => 'Aucune note pour cette séance.';
+
+  @override
+  String routePointCount(int count) {
+    return '$count points';
+  }
+
+  @override
+  String effortValue(int value) {
+    return '$value/10';
+  }
+
+  @override
+  String routeDistanceAt(String distance) {
+    return '$distance depuis le départ';
+  }
+
+  @override
   String get filters => 'Filtres';
 
   @override
@@ -621,6 +764,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get feeling => 'Ressenti';
 
   @override
+  String get feelingGreat => 'Excellent';
+
+  @override
+  String get feelingGood => 'Bon';
+
+  @override
+  String get feelingOk => 'Correct';
+
+  @override
+  String get feelingTired => 'Fatigué';
+
+  @override
+  String get feelingExhausted => 'Épuisé';
+
+  @override
   String get sessionNote => 'Note de séance';
 
   @override
@@ -646,6 +804,26 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shareWorkoutTitle => 'Ma séance GymFlow';
+
+  @override
+  String get shareWorkoutChoiceTitle => 'Que veux-tu partager ?';
+
+  @override
+  String get shareRouteOnlyTitle => 'Carte seule';
+
+  @override
+  String get shareRouteOnlySubtitle =>
+      'Le parcours, les repères et les pics de vitesse.';
+
+  @override
+  String get shareRouteWithDataTitle => 'Carte + données';
+
+  @override
+  String get shareRouteWithDataSubtitle =>
+      'Parcours, distance, chrono, allure et vitesse.';
+
+  @override
+  String get shareRouteOnlyText => 'Mon parcours GymFlow';
 
   @override
   String get shareWorkoutUnavailable =>

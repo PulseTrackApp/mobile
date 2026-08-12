@@ -7,6 +7,7 @@ import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_metric_tile.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/ui/app_refresh_scroll_view.dart';
 import '../../../core/ui/app_stat_row.dart';
 import '../../../core/ui/app_top_bar.dart';
 import '../../../l10n/app_localizations.dart';
@@ -32,7 +33,8 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return SingleChildScrollView(
+    return AppRefreshScrollView(
+      onRefresh: _refresh,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,6 +163,15 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     return ref
         .read(pulseTrackApiProvider)
         .getStats(period: _period.apiPeriod, zone: gymFlowDefaultZone);
+  }
+
+  Future<void> _refresh() async {
+    final future = _loadStats();
+    setState(() => _future = future);
+
+    try {
+      await future;
+    } catch (_) {}
   }
 
   String _periodTitle(AppLocalizations l10n) {

@@ -21,12 +21,9 @@ class TrackingSessionDraft {
   final List<TrackingPoint> points;
   final bool hasPause;
 
-  bool get canUploadGpsTrack => points.length >= 2 && !hasPause;
+  bool get canUploadGpsTrack => points.length >= 2;
 
-  DateTime get apiEndedAt {
-    if (canUploadGpsTrack) return endedAt;
-    return startedAt.add(elapsed);
-  }
+  DateTime get apiEndedAt => startedAt.add(elapsed);
 
   double get averageSpeedKmh {
     final hours = elapsed.inSeconds / 3600;
@@ -35,14 +32,35 @@ class TrackingSessionDraft {
   }
 
   double get maxSpeedKmh {
+    final fastest = fastestPoint;
+    if (fastest?.speed == null) return 0;
+    return fastest!.speed! * 3.6;
+  }
+
+  TrackingPoint? get fastestPoint {
+    TrackingPoint? fastest;
     var maxSpeedMps = 0.0;
-    for (final point in points) {
-      final speed = point.speed;
-      if (speed != null && speed > maxSpeedMps) {
+    final distance = Distance();
+    for (var index = 0; index < points.length; index++) {
+      final point = points[index];
+      var speed = point.speed ?? 0;
+      if (index > 0) {
+        final previous = points[index - 1];
+        final seconds = point.recordedAt
+            .difference(previous.recordedAt)
+            .inSeconds;
+        if (seconds > 0) {
+          final segmentSpeed =
+              distance(previous.latLng, point.latLng) / seconds;
+          if (segmentSpeed > speed) speed = segmentSpeed;
+        }
+      }
+      if (speed > maxSpeedMps) {
         maxSpeedMps = speed;
+        fastest = point;
       }
     }
-    return maxSpeedMps * 3.6;
+    return fastest;
   }
 
   int get paceSecondsPerKm {

@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_metric_tile.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/ui/app_refresh_scroll_view.dart';
 import '../../../l10n/app_localizations.dart';
 
 class BodyProgressScreen extends ConsumerStatefulWidget {
@@ -53,7 +54,8 @@ class _BodyProgressScreenState extends ConsumerState<BodyProgressScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.bodyProgressTitle)),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: AppRefreshScrollView(
+          onRefresh: _refresh,
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,8 +70,7 @@ class _BodyProgressScreenState extends ConsumerState<BodyProgressScreen> {
                 builder: (context, snapshot) {
                   final progress = snapshot.data;
                   final hasCheckIns = jsonInt(progress, 'checkInCount') > 0;
-                  final hasChange =
-                      progress?['changeSincePreviousKg'] != null;
+                  final hasChange = progress?['changeSincePreviousKg'] != null;
                   final bmi = jsonDouble(progress, 'currentBmi');
                   final category = bmiCategoryLabel(
                     jsonString(progress, 'bmiCategory'),
@@ -219,6 +220,15 @@ class _BodyProgressScreenState extends ConsumerState<BodyProgressScreen> {
 
   Future<Map<String, dynamic>> _loadProgress() {
     return ref.read(pulseTrackApiProvider).getBodyProgress();
+  }
+
+  Future<void> _refresh() async {
+    final future = _loadProgress();
+    setState(() => _future = future);
+
+    try {
+      await future;
+    } catch (_) {}
   }
 
   Future<void> _saveCheckIn() async {

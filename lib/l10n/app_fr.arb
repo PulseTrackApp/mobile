@@ -24,6 +24,7 @@
   "passwordResetCode": "Code reçu",
   "passwordResetCodeHint": "Ex : ABCD1234",
   "newPassword": "Nouveau mot de passe",
+  "currentPassword": "Mot de passe actuel",
   "requestResetCode": "Recevoir le code",
   "resetPassword": "Changer le mot de passe",
   "passwordResetSending": "Envoi...",
@@ -32,6 +33,27 @@
   "passwordResetRequiredFields": "Renseigne l'e-mail, le code et le nouveau mot de passe.",
   "passwordResetCodeSent": "Si ce compte existe, un code vient d'être envoyé.",
   "passwordResetSuccess": "Mot de passe mis à jour. Tu peux te connecter.",
+  "changePasswordTitle": "Changer le mot de passe",
+  "changePassword": "Changer le mot de passe",
+  "changePasswordSuccess": "Mot de passe changé. La session a été sécurisée.",
+  "changePasswordRequiredFields": "Renseigne le mot de passe actuel et le nouveau mot de passe.",
+  "emailVerified": "Adresse e-mail confirmée",
+  "emailNotVerified": "Adresse e-mail non confirmée",
+  "emailVerificationTitle": "Confirmer l'adresse e-mail",
+  "emailVerificationBody": "Saisis le code reçu par e-mail pour confirmer ton adresse.",
+  "verificationCode": "Code de confirmation",
+  "resendVerificationCode": "Renvoyer le code",
+  "verifyEmail": "Confirmer l'adresse",
+  "emailVerificationCodeSent": "Si l'adresse existe, un code vient d'être envoyé.",
+  "emailVerificationSuccess": "Adresse e-mail confirmée.",
+  "emailVerificationRequiredFields": "Renseigne le code reçu par e-mail.",
+  "deleteAccount": "Supprimer le compte",
+  "deleteAccountTitle": "Supprimer le compte",
+  "deleteAccountBody": "Cette action efface définitivement le profil, les séances, les parcours, les objectifs et les données de suivi.",
+  "deleteAccountConfirmLabel": "Je comprends que cette action est définitive.",
+  "deleteAccountFinalButton": "Supprimer définitivement",
+  "deleteAccountSuccess": "Compte supprimé.",
+  "deleteAccountRequiredFields": "Renseigne ton mot de passe et confirme l'action.",
   "close": "Fermer",
   "moduleLockedTitle": "Module verrouillé",
   "moduleLockedShort": "Fonctionnalité verrouillée",
@@ -131,6 +153,54 @@
   "movingTime": "Temps actif",
   "recentSessions": "Séances récentes",
   "noSessionsYet": "Aucune séance enregistrée pour le moment.",
+  "openWorkoutDetails": "Voir le parcours et les moments forts",
+  "workoutDetailTitle": "Détail séance",
+  "loadingWorkout": "Chargement de la séance...",
+  "routeReplay": "Parcours enregistré",
+  "workoutHighlights": "Moments forts",
+  "routeTimeline": "Repères du parcours",
+  "startedAtLabel": "Départ",
+  "midRouteLabel": "Mi-parcours",
+  "endedAtLabel": "Arrivée",
+  "workoutDetails": "Données de séance",
+  "gpsTraceMissing": "Aucune trace GPS enregistrée pour cette séance.",
+  "shareSavedWorkout": "Partager la séance",
+  "fastestMoment": "Pic de vitesse",
+  "speedPeakMarker": "Pic",
+  "midRouteMarker": "Mi-parcours",
+  "fastestMomentAt": "À {time}",
+  "@fastestMomentAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutNoteEmpty": "Aucune note pour cette séance.",
+  "routePointCount": "{count} points",
+  "@routePointCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "effortValue": "{value}/10",
+  "@effortValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "routeDistanceAt": "{distance} depuis le départ",
+  "@routeDistanceAt": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
   "filters": "Filtres",
   "goalsTitle": "Targets",
   "goalsSubtitle": "Objectifs semaine et performance",
@@ -218,6 +288,11 @@
   "workoutSavedDraft": "Vérifie les métriques, ajoute ton ressenti, puis sauvegarde la séance.",
   "perceivedEffort": "Effort perçu",
   "feeling": "Ressenti",
+  "feelingGreat": "Excellent",
+  "feelingGood": "Bon",
+  "feelingOk": "Correct",
+  "feelingTired": "Fatigué",
+  "feelingExhausted": "Épuisé",
   "sessionNote": "Note de séance",
   "sessionNotesHint": "Comment tu t'es senti ?",
   "saveWorkout": "Sauvegarder la séance",
@@ -227,6 +302,12 @@
   "shareWorkoutImage": "Partager l'image",
   "sharingWorkoutImage": "Préparation de l'image...",
   "shareWorkoutTitle": "Ma séance GymFlow",
+  "shareWorkoutChoiceTitle": "Que veux-tu partager ?",
+  "shareRouteOnlyTitle": "Carte seule",
+  "shareRouteOnlySubtitle": "Le parcours, les repères et les pics de vitesse.",
+  "shareRouteWithDataTitle": "Carte + données",
+  "shareRouteWithDataSubtitle": "Parcours, distance, chrono, allure et vitesse.",
+  "shareRouteOnlyText": "Mon parcours GymFlow",
   "shareWorkoutUnavailable": "Impossible de préparer l'image pour le moment.",
   "notConnectedYet": "GPS actif. Tu peux mettre en pause, reprendre ou terminer la séance.",
   "statsThisWeek": "Cette semaine",

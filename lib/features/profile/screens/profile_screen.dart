@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_metric_tile.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/ui/app_refresh_scroll_view.dart';
 import '../../../core/user/current_user_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tracking/models/sport_mode.dart';
@@ -57,7 +58,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.profileTitle)),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: AppRefreshScrollView(
+          onRefresh: _refresh,
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,6 +238,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       if (problem.status == 404) return null;
       rethrow;
     }
+  }
+
+  Future<void> _refresh() async {
+    if (!ref.read(authTokenStoreProvider).isAuthenticated) return;
+
+    final future = _loadProfile();
+    setState(() => _profileFuture = future);
+
+    try {
+      await future;
+    } catch (_) {}
   }
 
   void _applyProfile(Map<String, dynamic> profile, {bool updateFields = true}) {

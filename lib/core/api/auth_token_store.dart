@@ -13,6 +13,7 @@ class AuthTokenStore extends ChangeNotifier {
   static const _userIdKey = 'gymflow_user_id';
   static const _displayNameKey = 'gymflow_display_name';
   static const _profileCompletedKey = 'gymflow_profile_completed';
+  static const _emailVerifiedKey = 'gymflow_email_verified';
 
   final FlutterSecureStorage _storage;
 
@@ -22,6 +23,7 @@ class AuthTokenStore extends ChangeNotifier {
   String? _userId;
   String? _displayName;
   bool _profileCompleted = false;
+  bool _emailVerified = false;
 
   String? get accessToken => _accessToken;
 
@@ -35,6 +37,8 @@ class AuthTokenStore extends ChangeNotifier {
 
   bool get profileCompleted => _profileCompleted;
 
+  bool get emailVerified => _emailVerified;
+
   bool get isAuthenticated => _accessToken != null && _accessToken!.isNotEmpty;
 
   Future<void> restore() async {
@@ -45,6 +49,7 @@ class AuthTokenStore extends ChangeNotifier {
     _displayName = await _storage.read(key: _displayNameKey);
     _profileCompleted =
         (await _storage.read(key: _profileCompletedKey)) == 'true';
+    _emailVerified = (await _storage.read(key: _emailVerifiedKey)) == 'true';
   }
 
   Future<void> save(AuthSession session) async {
@@ -53,6 +58,7 @@ class AuthTokenStore extends ChangeNotifier {
     _email = session.email;
     _userId = session.userId;
     _profileCompleted = session.profileCompleted;
+    _emailVerified = session.emailVerified;
 
     await Future.wait([
       _storage.write(key: _accessTokenKey, value: session.accessToken),
@@ -62,6 +68,10 @@ class AuthTokenStore extends ChangeNotifier {
       _storage.write(
         key: _profileCompletedKey,
         value: session.profileCompleted.toString(),
+      ),
+      _storage.write(
+        key: _emailVerifiedKey,
+        value: session.emailVerified.toString(),
       ),
     ]);
     notifyListeners();
@@ -92,6 +102,13 @@ class AuthTokenStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> markEmailVerified() async {
+    if (_emailVerified) return;
+    _emailVerified = true;
+    await _storage.write(key: _emailVerifiedKey, value: 'true');
+    notifyListeners();
+  }
+
   Future<void> clear() async {
     _accessToken = null;
     _refreshToken = null;
@@ -99,6 +116,7 @@ class AuthTokenStore extends ChangeNotifier {
     _userId = null;
     _displayName = null;
     _profileCompleted = false;
+    _emailVerified = false;
 
     await Future.wait([
       _storage.delete(key: _accessTokenKey),
@@ -107,6 +125,7 @@ class AuthTokenStore extends ChangeNotifier {
       _storage.delete(key: _userIdKey),
       _storage.delete(key: _displayNameKey),
       _storage.delete(key: _profileCompletedKey),
+      _storage.delete(key: _emailVerifiedKey),
     ]);
     notifyListeners();
   }

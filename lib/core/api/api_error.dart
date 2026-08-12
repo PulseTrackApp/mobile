@@ -72,6 +72,9 @@ class ApiProblem implements Exception {
   bool get isModuleLocked =>
       status == 403 && type?.path.endsWith('/module-locked') == true;
 
+  bool get isEmailNotVerified =>
+      status == 403 && type?.path.endsWith('/email-not-verified') == true;
+
   String get message => detail.isNotEmpty ? detail : title;
 
   @override

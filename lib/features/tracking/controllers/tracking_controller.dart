@@ -48,6 +48,8 @@ class TrackingController extends ChangeNotifier {
   Timer? _timer;
   StreamSubscription<Position>? _positionSubscription;
   DateTime? _startedAt;
+  DateTime? _pauseStartedAt;
+  Duration _pausedDuration = Duration.zero;
   TrackingPoint? _lastPoint;
   bool _hasPause = false;
 
@@ -68,6 +70,8 @@ class TrackingController extends ChangeNotifier {
     }
 
     _startedAt = DateTime.now().toUtc();
+    _pauseStartedAt = null;
+    _pausedDuration = Duration.zero;
     _lastPoint = null;
     _hasPause = false;
     _state = TrackingState.idle().copyWith(status: TrackingStatus.running);
@@ -90,6 +94,7 @@ class TrackingController extends ChangeNotifier {
     if (_state.status != TrackingStatus.running) return;
 
     _hasPause = true;
+    _pauseStartedAt = DateTime.now().toUtc();
     _timer?.cancel();
     _positionSubscription?.cancel();
     _positionSubscription = null;
@@ -102,6 +107,11 @@ class TrackingController extends ChangeNotifier {
     if (_state.status != TrackingStatus.paused) return;
 
     await _ensureLocationReady();
+    final pauseStartedAt = _pauseStartedAt;
+    if (pauseStartedAt != null) {
+      _pausedDuration += DateTime.now().toUtc().difference(pauseStartedAt);
+      _pauseStartedAt = null;
+    }
     _lastPoint = null;
     _state = _state.copyWith(status: TrackingStatus.running);
     notifyListeners();
@@ -111,6 +121,10 @@ class TrackingController extends ChangeNotifier {
 
   TrackingSessionDraft finish() {
     final endedAt = DateTime.now().toUtc();
+    final pauseStartedAt = _pauseStartedAt;
+    if (pauseStartedAt != null) {
+      _pausedDuration += endedAt.difference(pauseStartedAt);
+    }
     final startedAt = _startedAt ?? endedAt.subtract(_state.elapsed);
     final draft = TrackingSessionDraft(
       startedAt: startedAt,
@@ -126,6 +140,8 @@ class TrackingController extends ChangeNotifier {
     _positionSubscription?.cancel();
     _positionSubscription = null;
     _startedAt = null;
+    _pauseStartedAt = null;
+    _pausedDuration = Duration.zero;
     _lastPoint = null;
     _hasPause = false;
     _state = TrackingState.idle();
@@ -181,7 +197,10 @@ class TrackingController extends ChangeNotifier {
       return;
     }
 
-    final point = TrackingPoint.fromPosition(position);
+    final rawPoint = TrackingPoint.fromPosition(position);
+    final point = rawPoint.copyWith(
+      recordedAt: rawPoint.recordedAt.subtract(_pausedDuration),
+    );
     final points = [..._state.points, point];
     var distanceMeters = _state.distanceMeters;
     var elevationGainMeters = _state.elevationGainMeters;

@@ -81,6 +81,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newPassword => 'New password';
 
   @override
+  String get currentPassword => 'Current password';
+
+  @override
   String get requestResetCode => 'Get code';
 
   @override
@@ -106,6 +109,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordResetSuccess => 'Password updated. You can sign in.';
+
+  @override
+  String get changePasswordTitle => 'Change password';
+
+  @override
+  String get changePassword => 'Change password';
+
+  @override
+  String get changePasswordSuccess =>
+      'Password changed. The session was secured.';
+
+  @override
+  String get changePasswordRequiredFields =>
+      'Enter the current password and the new password.';
+
+  @override
+  String get emailVerified => 'Email address confirmed';
+
+  @override
+  String get emailNotVerified => 'Email address not confirmed';
+
+  @override
+  String get emailVerificationTitle => 'Confirm email address';
+
+  @override
+  String get emailVerificationBody =>
+      'Enter the code received by email to confirm your address.';
+
+  @override
+  String get verificationCode => 'Confirmation code';
+
+  @override
+  String get resendVerificationCode => 'Resend code';
+
+  @override
+  String get verifyEmail => 'Confirm address';
+
+  @override
+  String get emailVerificationCodeSent =>
+      'If the address exists, a code has just been sent.';
+
+  @override
+  String get emailVerificationSuccess => 'Email address confirmed.';
+
+  @override
+  String get emailVerificationRequiredFields =>
+      'Enter the code received by email.';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountTitle => 'Delete account';
+
+  @override
+  String get deleteAccountBody =>
+      'This action permanently deletes the profile, workouts, routes, goals and tracking data.';
+
+  @override
+  String get deleteAccountConfirmLabel =>
+      'I understand this action is permanent.';
+
+  @override
+  String get deleteAccountFinalButton => 'Delete permanently';
+
+  @override
+  String get deleteAccountSuccess => 'Account deleted.';
+
+  @override
+  String get deleteAccountRequiredFields =>
+      'Enter your password and confirm the action.';
 
   @override
   String get close => 'Close';
@@ -371,6 +445,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSessionsYet => 'No workout saved yet.';
 
   @override
+  String get openWorkoutDetails => 'View route and highlights';
+
+  @override
+  String get workoutDetailTitle => 'Workout details';
+
+  @override
+  String get loadingWorkout => 'Loading workout...';
+
+  @override
+  String get routeReplay => 'Saved route';
+
+  @override
+  String get workoutHighlights => 'Highlights';
+
+  @override
+  String get routeTimeline => 'Route markers';
+
+  @override
+  String get startedAtLabel => 'Start';
+
+  @override
+  String get midRouteLabel => 'Mid-route';
+
+  @override
+  String get endedAtLabel => 'Finish';
+
+  @override
+  String get workoutDetails => 'Workout data';
+
+  @override
+  String get gpsTraceMissing => 'No GPS trace was saved for this workout.';
+
+  @override
+  String get shareSavedWorkout => 'Share workout';
+
+  @override
+  String get fastestMoment => 'Peak speed';
+
+  @override
+  String get speedPeakMarker => 'Peak';
+
+  @override
+  String get midRouteMarker => 'Mid-route';
+
+  @override
+  String fastestMomentAt(String time) {
+    return 'At $time';
+  }
+
+  @override
+  String get workoutNoteEmpty => 'No note for this workout.';
+
+  @override
+  String routePointCount(int count) {
+    return '$count points';
+  }
+
+  @override
+  String effortValue(int value) {
+    return '$value/10';
+  }
+
+  @override
+  String routeDistanceAt(String distance) {
+    return '$distance from start';
+  }
+
+  @override
   String get filters => 'Filters';
 
   @override
@@ -618,6 +760,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feeling => 'Feeling';
 
   @override
+  String get feelingGreat => 'Great';
+
+  @override
+  String get feelingGood => 'Good';
+
+  @override
+  String get feelingOk => 'OK';
+
+  @override
+  String get feelingTired => 'Tired';
+
+  @override
+  String get feelingExhausted => 'Exhausted';
+
+  @override
   String get sessionNote => 'Workout note';
 
   @override
@@ -643,6 +800,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareWorkoutTitle => 'My GymFlow workout';
+
+  @override
+  String get shareWorkoutChoiceTitle => 'What do you want to share?';
+
+  @override
+  String get shareRouteOnlyTitle => 'Map only';
+
+  @override
+  String get shareRouteOnlySubtitle => 'The route, markers and speed peaks.';
+
+  @override
+  String get shareRouteWithDataTitle => 'Map + data';
+
+  @override
+  String get shareRouteWithDataSubtitle =>
+      'Route, distance, timer, pace and speed.';
+
+  @override
+  String get shareRouteOnlyText => 'My GymFlow route';
 
   @override
   String get shareWorkoutUnavailable => 'Unable to prepare the image for now.';

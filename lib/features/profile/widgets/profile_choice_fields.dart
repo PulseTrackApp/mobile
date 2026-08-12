@@ -119,6 +119,7 @@ class SexSelect extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return DropdownButtonFormField<SexOption>(
+      isExpanded: true,
       initialValue: value,
       decoration: InputDecoration(
         labelText: l10n.sexOptional,
@@ -128,7 +129,7 @@ class SexSelect extends StatelessWidget {
       items: SexOption.values.map((sex) {
         return DropdownMenuItem<SexOption>(
           value: sex,
-          child: Text(sex.label(l10n)),
+          child: Text(sex.label(l10n), overflow: TextOverflow.ellipsis),
         );
       }).toList(),
       onChanged: (sex) {
@@ -153,6 +154,7 @@ class FitnessLevelSelect extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return DropdownButtonFormField<FitnessLevelOption>(
+      isExpanded: true,
       initialValue: value,
       decoration: InputDecoration(
         labelText: l10n.fitnessLevel,
@@ -162,7 +164,7 @@ class FitnessLevelSelect extends StatelessWidget {
       items: FitnessLevelOption.values.map((level) {
         return DropdownMenuItem<FitnessLevelOption>(
           value: level,
-          child: Text(level.label(l10n)),
+          child: Text(level.label(l10n), overflow: TextOverflow.ellipsis),
         );
       }).toList(),
       onChanged: (level) {

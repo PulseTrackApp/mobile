@@ -6,6 +6,7 @@ import '../../../core/api/api_formatters.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
+import '../../../core/ui/email_verification_dialog.dart';
 import '../../../core/ui/app_panel.dart';
 import '../../../core/ui/pulse_track_logo.dart';
 import '../../../core/user/current_user_provider.dart';
@@ -38,6 +39,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final Set<GoalOption> _selectedGoals = {GoalOption.loseWeight};
   SportMode _favoriteSport = SportMode.run;
   bool _useExistingAccount = false;
+  bool _existingAccountNeedsProfile = false;
   bool _isSubmitting = false;
 
   @override
@@ -89,8 +91,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       sex: _sex,
                       fitnessLevel: _fitnessLevel,
                       useExistingAccount: _useExistingAccount,
+                      showProfileFields:
+                          !_useExistingAccount || _existingAccountNeedsProfile,
                       onUseExistingAccountChanged: (value) {
-                        setState(() => _useExistingAccount = value);
+                        setState(() {
+                          _useExistingAccount = value;
+                          _existingAccountNeedsProfile = false;
+                        });
                       },
                       onForgotPasswordPressed: _openPasswordResetSheet,
                       onSexChanged: (sex) {
@@ -153,7 +160,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _handleNext() async {
     if (_currentPage == 1) {
       if (_useExistingAccount) {
-        await _verifyExistingAccountBeforeTargets();
+        if (_existingAccountNeedsProfile) {
+          final l10n = AppLocalizations.of(context);
+          if (!_hasRequiredProfileFields(l10n)) return;
+          _goNext();
+        } else {
+          await _loginExistingAccount();
+        }
         return;
       }
 
@@ -183,7 +196,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  Future<void> _verifyExistingAccountBeforeTargets() async {
+  Future<void> _loginExistingAccount() async {
     final l10n = AppLocalizations.of(context);
     if (!_hasRequiredLoginFields(l10n)) return;
 
@@ -191,14 +204,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     try {
       final api = ref.read(pulseTrackApiProvider);
-      await api.login(
+      final session = await api.login(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      await _prefillExistingProfile();
       if (!mounted) return;
-      _goNext();
+      await _continueAfterExistingLogin(
+        profileCompleted: session.profileCompleted,
+      );
     } on ApiProblem catch (problem) {
+      if (problem.isEmailNotVerified) {
+        await _verifyEmailThenRetryLogin(l10n);
+        return;
+      }
       _showMessage('${l10n.apiErrorPrefix} ${problem.message}');
     } catch (_) {
       _showMessage(l10n.apiUnexpectedError);
@@ -252,6 +270,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       if (!mounted) return;
       widget.onComplete();
     } on ApiProblem catch (problem) {
+      if (problem.isEmailNotVerified) {
+        await _openEmailVerificationDialog(l10n);
+        return;
+      }
       _showMessage('${l10n.apiErrorPrefix} ${problem.message}');
     } catch (_) {
       _showMessage(l10n.apiUnexpectedError);
@@ -276,6 +298,62 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     if (!mounted || completed != true) return;
     _showMessage(AppLocalizations.of(context).passwordResetSuccess);
+  }
+
+  Future<void> _verifyEmailThenRetryLogin(AppLocalizations l10n) async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final api = ref.read(pulseTrackApiProvider);
+
+    try {
+      if (email.isNotEmpty) {
+        await api.resendVerificationEmail(email: email);
+      }
+
+      if (!mounted) return;
+      final completed = await showEmailVerificationDialog(
+        context,
+        onSubmit: (code) => api.verifyEmail(code: code),
+      );
+      if (!mounted || completed != true) return;
+
+      final session = await api.login(email: email, password: password);
+      await ref.read(authTokenStoreProvider).markEmailVerified();
+      if (!mounted) return;
+      _showMessage(l10n.emailVerificationSuccess);
+      await _continueAfterExistingLogin(
+        profileCompleted: session.profileCompleted,
+      );
+    } on ApiProblem catch (problem) {
+      _showMessage('${l10n.apiErrorPrefix} ${problem.message}');
+    } catch (_) {
+      _showMessage(l10n.apiUnexpectedError);
+    }
+  }
+
+  Future<void> _openEmailVerificationDialog(AppLocalizations l10n) async {
+    final api = ref.read(pulseTrackApiProvider);
+    final completed = await showEmailVerificationDialog(
+      context,
+      onSubmit: (code) => api.verifyEmail(code: code),
+    );
+    if (!mounted || completed != true) return;
+    await ref.read(authTokenStoreProvider).markEmailVerified();
+    _showMessage(l10n.emailVerificationSuccess);
+  }
+
+  Future<void> _continueAfterExistingLogin({
+    required bool profileCompleted,
+  }) async {
+    ref.invalidate(currentUserProvider);
+    if (profileCompleted) {
+      widget.onComplete();
+      return;
+    }
+
+    await _prefillExistingProfile();
+    if (!mounted) return;
+    setState(() => _existingAccountNeedsProfile = true);
   }
 
   bool _hasRequiredLoginFields(AppLocalizations l10n) {
@@ -483,6 +561,7 @@ class _ProfilePage extends StatelessWidget {
     required this.sex,
     required this.fitnessLevel,
     required this.useExistingAccount,
+    required this.showProfileFields,
     required this.onUseExistingAccountChanged,
     required this.onForgotPasswordPressed,
     required this.onSexChanged,
@@ -498,6 +577,7 @@ class _ProfilePage extends StatelessWidget {
   final SexOption sex;
   final FitnessLevelOption fitnessLevel;
   final bool useExistingAccount;
+  final bool showProfileFields;
   final ValueChanged<bool> onUseExistingAccountChanged;
   final VoidCallback onForgotPasswordPressed;
   final ValueChanged<SexOption> onSexChanged;
@@ -554,49 +634,67 @@ class _ProfilePage extends StatelessWidget {
                     ),
                   ),
                 ],
-                const SizedBox(height: 18),
-                _OnboardingField(
-                  controller: displayNameController,
-                  label: l10n.displayName,
-                  hint: l10n.displayNameHint,
-                  icon: Icons.badge_outlined,
-                ),
-                const SizedBox(height: 14),
-                SexSelect(value: sex, onChanged: onSexChanged),
-                const SizedBox(height: 14),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _OnboardingField(
-                        controller: weightController,
-                        label: l10n.weightKg,
-                        hint: '82',
-                        icon: Icons.monitor_weight_outlined,
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _OnboardingField(
-                        controller: heightController,
-                        label: l10n.heightCm,
-                        hint: '178',
-                        icon: Icons.height_rounded,
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                _BmiPreview(
-                  weightController: weightController,
-                  heightController: heightController,
-                ),
-                const SizedBox(height: 14),
-                FitnessLevelSelect(
-                  value: fitnessLevel,
-                  onChanged: onFitnessLevelChanged,
-                ),
+                if (showProfileFields) ...[
+                  const SizedBox(height: 18),
+                  _OnboardingField(
+                    controller: displayNameController,
+                    label: l10n.displayName,
+                    hint: l10n.displayNameHint,
+                    icon: Icons.badge_outlined,
+                  ),
+                  const SizedBox(height: 14),
+                  SexSelect(value: sex, onChanged: onSexChanged),
+                  const SizedBox(height: 14),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isCompact = constraints.maxWidth < 340;
+                      final fields = [
+                        _OnboardingField(
+                          controller: weightController,
+                          label: l10n.weightKg,
+                          hint: '82',
+                          icon: Icons.monitor_weight_outlined,
+                          keyboardType: TextInputType.number,
+                        ),
+                        _OnboardingField(
+                          controller: heightController,
+                          label: l10n.heightCm,
+                          hint: '178',
+                          icon: Icons.height_rounded,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ];
+
+                      if (isCompact) {
+                        return Column(
+                          children: [
+                            fields.first,
+                            const SizedBox(height: 14),
+                            fields.last,
+                          ],
+                        );
+                      }
+
+                      return Row(
+                        children: [
+                          Expanded(child: fields.first),
+                          const SizedBox(width: 12),
+                          Expanded(child: fields.last),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 14),
+                  _BmiPreview(
+                    weightController: weightController,
+                    heightController: heightController,
+                  ),
+                  const SizedBox(height: 14),
+                  FitnessLevelSelect(
+                    value: fitnessLevel,
+                    onChanged: onFitnessLevelChanged,
+                  ),
+                ],
               ],
             ),
           ),

@@ -7,6 +7,7 @@ import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/ui/app_refresh_scroll_view.dart';
 import '../../../l10n/app_localizations.dart';
 
 class SuperCoachScreen extends ConsumerStatefulWidget {
@@ -40,7 +41,8 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.coachTitle)),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: AppRefreshScrollView(
+          onRefresh: _refresh,
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,6 +189,15 @@ class _SuperCoachScreenState extends ConsumerState<SuperCoachScreen> {
       settingsUsable: settings['usable'] == true,
       latestMessage: jsonString(latest, 'content'),
     );
+  }
+
+  Future<void> _refresh() async {
+    final future = _loadCoach();
+    setState(() => _future = future);
+
+    try {
+      await future;
+    } catch (_) {}
   }
 
   Future<Map<String, dynamic>?> _ignoreLatestMessageError(

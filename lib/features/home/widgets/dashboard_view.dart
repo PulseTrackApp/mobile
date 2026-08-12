@@ -6,8 +6,10 @@ import '../../../core/api/api_providers.dart';
 import '../../../core/modules/app_module.dart';
 import '../../../core/modules/module_access_controller.dart';
 import '../../../core/modules/module_providers.dart';
+import '../../../core/ui/app_refresh_scroll_view.dart';
 import '../../../core/ui/app_top_bar.dart';
 import '../../../core/ui/current_user_summary.dart';
+import '../../../core/user/current_user_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../menu/screens/menu_screen.dart';
 import '../../tracking/models/sport_mode.dart';
@@ -56,7 +58,8 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     }
     final workoutsEnabled = moduleAccess.isEnabled(AppModule.workouts);
 
-    return SingleChildScrollView(
+    return AppRefreshScrollView(
+      onRefresh: _refresh,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,6 +218,30 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       coachPreview: jsonString(coach, 'content'),
       coachStatus: _coachStatus(coachEnabled, coachSettings),
     );
+  }
+
+  Future<void> _refresh() async {
+    final tokenStore = ref.read(authTokenStoreProvider);
+    if (!tokenStore.isAuthenticated) return;
+
+    await ref.read(moduleAccessControllerProvider).refresh();
+    ref.invalidate(currentUserProvider);
+    if (!mounted) return;
+
+    final moduleAccess = ref.read(moduleAccessControllerProvider).state;
+    if (moduleAccess.isLoading) return;
+
+    final future = _loadDashboard(moduleAccess);
+    setState(() {
+      _moduleAccessSignature = _signature(moduleAccess);
+      _future = future;
+    });
+
+    try {
+      await future;
+    } catch (_) {
+      // Le FutureBuilder affiche deja l'etat d'erreur.
+    }
   }
 
   Future<Object?> _ignoreCoachError(Future<Object?> request) async {

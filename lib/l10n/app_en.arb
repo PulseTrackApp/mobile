@@ -24,6 +24,7 @@
   "passwordResetCode": "Received code",
   "passwordResetCodeHint": "Ex: ABCD1234",
   "newPassword": "New password",
+  "currentPassword": "Current password",
   "requestResetCode": "Get code",
   "resetPassword": "Change password",
   "passwordResetSending": "Sending...",
@@ -32,6 +33,27 @@
   "passwordResetRequiredFields": "Enter the email, code and new password.",
   "passwordResetCodeSent": "If this account exists, a code has just been sent.",
   "passwordResetSuccess": "Password updated. You can sign in.",
+  "changePasswordTitle": "Change password",
+  "changePassword": "Change password",
+  "changePasswordSuccess": "Password changed. The session was secured.",
+  "changePasswordRequiredFields": "Enter the current password and the new password.",
+  "emailVerified": "Email address confirmed",
+  "emailNotVerified": "Email address not confirmed",
+  "emailVerificationTitle": "Confirm email address",
+  "emailVerificationBody": "Enter the code received by email to confirm your address.",
+  "verificationCode": "Confirmation code",
+  "resendVerificationCode": "Resend code",
+  "verifyEmail": "Confirm address",
+  "emailVerificationCodeSent": "If the address exists, a code has just been sent.",
+  "emailVerificationSuccess": "Email address confirmed.",
+  "emailVerificationRequiredFields": "Enter the code received by email.",
+  "deleteAccount": "Delete account",
+  "deleteAccountTitle": "Delete account",
+  "deleteAccountBody": "This action permanently deletes the profile, workouts, routes, goals and tracking data.",
+  "deleteAccountConfirmLabel": "I understand this action is permanent.",
+  "deleteAccountFinalButton": "Delete permanently",
+  "deleteAccountSuccess": "Account deleted.",
+  "deleteAccountRequiredFields": "Enter your password and confirm the action.",
   "close": "Close",
   "moduleLockedTitle": "Module locked",
   "moduleLockedShort": "Feature locked",
@@ -131,6 +153,54 @@
   "movingTime": "Moving time",
   "recentSessions": "Recent sessions",
   "noSessionsYet": "No workout saved yet.",
+  "openWorkoutDetails": "View route and highlights",
+  "workoutDetailTitle": "Workout details",
+  "loadingWorkout": "Loading workout...",
+  "routeReplay": "Saved route",
+  "workoutHighlights": "Highlights",
+  "routeTimeline": "Route markers",
+  "startedAtLabel": "Start",
+  "midRouteLabel": "Mid-route",
+  "endedAtLabel": "Finish",
+  "workoutDetails": "Workout data",
+  "gpsTraceMissing": "No GPS trace was saved for this workout.",
+  "shareSavedWorkout": "Share workout",
+  "fastestMoment": "Peak speed",
+  "speedPeakMarker": "Peak",
+  "midRouteMarker": "Mid-route",
+  "fastestMomentAt": "At {time}",
+  "@fastestMomentAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutNoteEmpty": "No note for this workout.",
+  "routePointCount": "{count} points",
+  "@routePointCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "effortValue": "{value}/10",
+  "@effortValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "routeDistanceAt": "{distance} from start",
+  "@routeDistanceAt": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
   "filters": "Filters",
   "goalsTitle": "Targets",
   "goalsSubtitle": "Weekly and performance goals",
@@ -218,6 +288,11 @@
   "workoutSavedDraft": "Review the metrics, add how it felt, then save the workout.",
   "perceivedEffort": "Perceived effort",
   "feeling": "Feeling",
+  "feelingGreat": "Great",
+  "feelingGood": "Good",
+  "feelingOk": "OK",
+  "feelingTired": "Tired",
+  "feelingExhausted": "Exhausted",
   "sessionNote": "Workout note",
   "sessionNotesHint": "How did you feel?",
   "saveWorkout": "Save workout",
@@ -227,6 +302,12 @@
   "shareWorkoutImage": "Share image",
   "sharingWorkoutImage": "Preparing image...",
   "shareWorkoutTitle": "My GymFlow workout",
+  "shareWorkoutChoiceTitle": "What do you want to share?",
+  "shareRouteOnlyTitle": "Map only",
+  "shareRouteOnlySubtitle": "The route, markers and speed peaks.",
+  "shareRouteWithDataTitle": "Map + data",
+  "shareRouteWithDataSubtitle": "Route, distance, timer, pace and speed.",
+  "shareRouteOnlyText": "My GymFlow route",
   "shareWorkoutUnavailable": "Unable to prepare the image for now.",
   "notConnectedYet": "GPS is active. You can pause, resume or finish the workout.",
   "statsThisWeek": "This week",

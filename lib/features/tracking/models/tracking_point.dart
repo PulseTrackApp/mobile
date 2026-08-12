@@ -31,6 +31,17 @@ class TrackingPoint {
 
   LatLng get latLng => LatLng(latitude, longitude);
 
+  TrackingPoint copyWith({DateTime? recordedAt}) {
+    return TrackingPoint(
+      latitude: latitude,
+      longitude: longitude,
+      recordedAt: recordedAt ?? this.recordedAt,
+      altitude: altitude,
+      accuracy: accuracy,
+      speed: speed,
+    );
+  }
+
   Map<String, dynamic> toApiJson() {
     return {
       'latitude': latitude,

@@ -7,6 +7,7 @@ import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/ui/app_refresh_scroll_view.dart';
 import '../../../l10n/app_localizations.dart';
 
 class GoalsScreen extends ConsumerStatefulWidget {
@@ -41,7 +42,8 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.goalsTitle)),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: AppRefreshScrollView(
+          onRefresh: _refresh,
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,6 +150,15 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
 
   Future<List<Map<String, dynamic>>> _loadGoals() {
     return ref.read(pulseTrackApiProvider).getGoals();
+  }
+
+  Future<void> _refresh() async {
+    final future = _loadGoals();
+    setState(() => _future = future);
+
+    try {
+      await future;
+    } catch (_) {}
   }
 
   Future<void> _createGoal() async {

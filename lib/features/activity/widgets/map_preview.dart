@@ -18,6 +18,10 @@ class MapPreview extends StatefulWidget {
     this.framed = true,
     this.interactive = true,
     this.showLocateButton = true,
+    this.showCurrentMarker = true,
+    this.fitRoute = false,
+    this.aspectRatio = 1.25,
+    this.highlightMarkers = const [],
   });
 
   final String? label;
@@ -27,6 +31,10 @@ class MapPreview extends StatefulWidget {
   final bool framed;
   final bool interactive;
   final bool showLocateButton;
+  final bool showCurrentMarker;
+  final bool fitRoute;
+  final double aspectRatio;
+  final List<MapHighlightMarker> highlightMarkers;
 
   @override
   State<MapPreview> createState() => _MapPreviewState();
@@ -49,7 +57,14 @@ class _MapPreviewState extends State<MapPreview> {
         oldWidget.currentPosition ?? _lastPoint(oldWidget.routePoints);
     if (latestPoint != null && latestPoint != previousPoint) {
       _currentPosition = latestPoint;
-      _mapController.move(latestPoint, widget.routePoints.length > 1 ? 16 : 15);
+      if (widget.fitRoute && widget.routePoints.length >= 2) {
+        _fitRoute();
+      } else {
+        _mapController.move(
+          latestPoint,
+          widget.routePoints.length > 1 ? 16 : 15,
+        );
+      }
     }
 
     if (widget.isLive && !_autoLocationRequested) {
@@ -68,11 +83,18 @@ class _MapPreviewState extends State<MapPreview> {
     ).colorScheme.surface.withValues(alpha: 0.9);
     final routePoints = widget.routePoints;
     final hasRoute = routePoints.length >= 2;
+    final routeFit = widget.fitRoute && hasRoute
+        ? CameraFit.bounds(
+            bounds: LatLngBounds.fromPoints(routePoints),
+            padding: const EdgeInsets.all(44),
+            maxZoom: 16,
+          )
+        : null;
     final currentPosition =
         widget.currentPosition ?? _lastPoint(routePoints) ?? _currentPosition;
 
     final map = AspectRatio(
-      aspectRatio: 1.25,
+      aspectRatio: widget.aspectRatio,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: FlutterMap(
@@ -80,6 +102,7 @@ class _MapPreviewState extends State<MapPreview> {
           options: MapOptions(
             initialCenter: currentPosition ?? _burkinaCenter,
             initialZoom: currentPosition == null ? 13 : 15,
+            initialCameraFit: routeFit,
             interactionOptions: InteractionOptions(
               flags: widget.interactive
                   ? InteractiveFlag.drag |
@@ -105,7 +128,7 @@ class _MapPreviewState extends State<MapPreview> {
                   ),
               ],
             ),
-            if (currentPosition != null)
+            if (widget.showCurrentMarker && currentPosition != null)
               MarkerLayer(
                 markers: [
                   Marker(
@@ -132,6 +155,20 @@ class _MapPreviewState extends State<MapPreview> {
                     child: const _RouteMarker(color: AppColors.danger),
                   ),
                 ],
+              ),
+            if (widget.highlightMarkers.isNotEmpty)
+              MarkerLayer(
+                markers: widget.highlightMarkers
+                    .map((highlight) {
+                      return Marker(
+                        point: highlight.point,
+                        width: 108,
+                        height: 54,
+                        alignment: Alignment.bottomCenter,
+                        child: _HighlightMarker(highlight: highlight),
+                      );
+                    })
+                    .toList(growable: false),
               ),
             SimpleAttributionWidget(
               source: Text(
@@ -176,6 +213,18 @@ class _MapPreviewState extends State<MapPreview> {
     if (!widget.framed) return map;
 
     return AppPanel(padding: EdgeInsets.zero, child: map);
+  }
+
+  void _fitRoute() {
+    final routePoints = widget.routePoints;
+    if (routePoints.length < 2) return;
+    _mapController.fitCamera(
+      CameraFit.bounds(
+        bounds: LatLngBounds.fromPoints(routePoints),
+        padding: const EdgeInsets.all(44),
+        maxZoom: 16,
+      ),
+    );
   }
 
   Future<void> _centerOnCurrentPosition({bool showError = true}) async {
@@ -230,8 +279,81 @@ class _MapPreviewState extends State<MapPreview> {
   }
 }
 
+class MapHighlightMarker {
+  const MapHighlightMarker({
+    required this.point,
+    required this.label,
+    required this.icon,
+    this.color = AppColors.accent,
+  });
+
+  final LatLng point;
+  final String label;
+  final IconData icon;
+  final Color color;
+}
+
 LatLng? _lastPoint(List<LatLng> points) {
   return points.isEmpty ? null : points.last;
+}
+
+class _HighlightMarker extends StatelessWidget {
+  const _HighlightMarker({required this.highlight});
+
+  final MapHighlightMarker highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: highlight.color,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.white, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.dark.withValues(alpha: 0.24),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(highlight.icon, color: Colors.white, size: 14),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    highlight.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: highlight.color,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _MapBadge extends StatelessWidget {

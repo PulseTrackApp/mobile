@@ -96,6 +96,25 @@ class PulseTrackApi {
     );
   }
 
+  Future<void> resendVerificationEmail({required String email}) {
+    return _send(
+      () => _dio.post<Object?>(
+        'auth/resend-verification',
+        data: {'email': email},
+      ),
+      (_) {},
+      retryOnUnauthorized: false,
+    );
+  }
+
+  Future<void> verifyEmail({required String code}) {
+    return _send(
+      () => _dio.post<Object?>('auth/verify-email', data: {'code': code}),
+      (_) {},
+      retryOnUnauthorized: false,
+    );
+  }
+
   Future<AuthSession> refreshSession() async {
     final refreshToken = tokenStore.refreshToken;
     if (refreshToken == null || refreshToken.isEmpty) {
@@ -181,6 +200,29 @@ class PulseTrackApi {
 
   Future<JsonMap> saveProfile(JsonMap profile) {
     return _putJson('me/profile', data: profile);
+  }
+
+  Future<AuthSession> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final session = await _send(
+      () => _dio.post<Object?>(
+        'me/password',
+        data: {'currentPassword': currentPassword, 'newPassword': newPassword},
+      ),
+      (response) => AuthSession.fromJson(_asJsonMap(response.data)),
+    );
+    await tokenStore.save(session);
+    return session;
+  }
+
+  Future<void> deleteAccount({required String password}) async {
+    await _send(
+      () => _dio.delete<Object?>('me', data: {'password': password}),
+      (_) {},
+    );
+    await tokenStore.clear();
   }
 
   Future<List<JsonMap>> getModules() {
