@@ -6,17 +6,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/api/api_error.dart';
+import '../../../core/api/api_contract.dart';
 import '../../../core/api/api_formatters.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/ui/celebration_overlay.dart';
 import '../../../core/ui/pulse_track_logo.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../history/screens/workout_detail_screen.dart';
 import '../../tracking/models/calorie_estimator.dart';
 import '../../tracking/models/sport_mode.dart';
 import '../../tracking/models/tracking_session_draft.dart';
+import '../models/workout_challenge.dart';
+import '../models/workout_rating.dart';
 import '../models/workout_share_mode.dart';
 import '../widgets/map_preview.dart';
 import '../widgets/workout_share_choice_sheet.dart';
@@ -26,10 +30,12 @@ class SessionSummaryScreen extends ConsumerStatefulWidget {
     super.key,
     required this.selectedSport,
     required this.track,
+    this.challenge,
   });
 
   final SportMode selectedSport;
   final TrackingSessionDraft track;
+  final WorkoutChallenge? challenge;
 
   @override
   ConsumerState<SessionSummaryScreen> createState() =>
@@ -45,11 +51,29 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
   bool _isSharing = false;
   WorkoutShareMode _shareMode = WorkoutShareMode.routeWithData;
   late final Future<double?> _weightFuture;
+  PersonalRecordSnapshot? _records;
 
   @override
   void initState() {
     super.initState();
     _weightFuture = _loadWeightKg();
+    _loadRecords();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final challenge = widget.challenge;
+      if (challenge?.isCompletedBy(
+            distanceMeters: widget.track.distanceMeters,
+            elapsed: widget.track.elapsed,
+          ) ==
+          true) {
+        final l10n = AppLocalizations.of(context);
+        showCelebration(
+          context,
+          title: l10n.challengeTargetReachedTitle,
+          message: l10n.challengeTargetReachedBody,
+        );
+      }
+    });
   }
 
   @override
@@ -92,6 +116,12 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
                     ),
                   );
                 },
+              ),
+              const SizedBox(height: 18),
+              _WorkoutAppreciationPanel(
+                track: widget.track,
+                challenge: widget.challenge,
+                records: _records,
               ),
               const SizedBox(height: 18),
               AppPanel(
@@ -189,6 +219,43 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
       return weight > 0 ? weight : null;
     } catch (_) {
       return null;
+    }
+  }
+
+  Future<void> _loadRecords() async {
+    if (!ref.read(authTokenStoreProvider).isAuthenticated) return;
+
+    try {
+      final stats = await ref
+          .read(pulseTrackApiProvider)
+          .getStats(period: ApiStatsPeriod.lifetime, zone: gymFlowDefaultZone);
+      final records = PersonalRecordSnapshot.fromStats(stats);
+      if (!mounted) return;
+      setState(() => _records = records);
+      final rating = WorkoutRating.evaluate(
+        distanceMeters: widget.track.distanceMeters,
+        elapsed: widget.track.elapsed,
+        paceSecondsPerKm: widget.track.paceSecondsPerKm,
+        challenge: widget.challenge,
+        records: records,
+      );
+      if (rating.distanceRecord) {
+        final l10n = AppLocalizations.of(context);
+        showCelebration(
+          context,
+          title: l10n.recordCelebrationTitle,
+          message: l10n.distanceRecordCelebrationBody,
+        );
+      } else if (rating.paceRecord) {
+        final l10n = AppLocalizations.of(context);
+        showCelebration(
+          context,
+          title: l10n.recordCelebrationTitle,
+          message: l10n.paceRecordCelebrationBody,
+        );
+      }
+    } catch (_) {
+      // Les records enrichissent le resume, la sauvegarde reste prioritaire.
     }
   }
 
@@ -327,6 +394,171 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+class _WorkoutAppreciationPanel extends StatelessWidget {
+  const _WorkoutAppreciationPanel({
+    required this.track,
+    required this.challenge,
+    required this.records,
+  });
+
+  final TrackingSessionDraft track;
+  final WorkoutChallenge? challenge;
+  final PersonalRecordSnapshot? records;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final rating = WorkoutRating.evaluate(
+      distanceMeters: track.distanceMeters,
+      elapsed: track.elapsed,
+      paceSecondsPerKm: track.paceSecondsPerKm,
+      challenge: challenge,
+      records: records,
+    );
+    final title = _ratingTitle(rating.score, l10n);
+    final body = _ratingBody(rating, l10n);
+
+    return AppPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: _ratingColor(rating.score).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.stars_rounded,
+                  color: _ratingColor(rating.score),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.workoutAppreciationTitle,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(title, style: Theme.of(context).textTheme.bodyMedium),
+                  ],
+                ),
+              ),
+              Text(
+                l10n.workoutScore(rating.score),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: _ratingColor(rating.score),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(body, style: Theme.of(context).textTheme.bodyMedium),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (rating.distanceRecord)
+                _AppreciationBadge(
+                  label: l10n.workoutDistanceRecordBadge,
+                  color: AppColors.danger,
+                  icon: Icons.route_rounded,
+                ),
+              if (rating.paceRecord)
+                _AppreciationBadge(
+                  label: l10n.workoutPaceRecordBadge,
+                  color: AppColors.gps,
+                  icon: Icons.speed_rounded,
+                ),
+              if (challenge?.hasDistanceTarget == true)
+                _AppreciationBadge(
+                  label: rating.challengeCompleted
+                      ? l10n.workoutChallengeCompletedBadge
+                      : l10n.workoutChallengeProgressBadge(
+                          (rating.challengeProgress * 100).round(),
+                        ),
+                  color: rating.challengeCompleted
+                      ? AppColors.primary
+                      : AppColors.accent,
+                  icon: Icons.flag_rounded,
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _ratingTitle(int score, AppLocalizations l10n) {
+    if (score >= 85) return l10n.workoutRatingExcellent;
+    if (score >= 70) return l10n.workoutRatingGood;
+    if (score >= 50) return l10n.workoutRatingOk;
+    return l10n.workoutRatingLow;
+  }
+
+  String _ratingBody(WorkoutRating rating, AppLocalizations l10n) {
+    if (rating.hasRecord) return l10n.workoutRatingRecordBody;
+    if (rating.challengeCompleted) return l10n.workoutRatingChallengeBody;
+    if (rating.score >= 70) return l10n.workoutRatingGoodBody;
+    if (rating.score >= 50) return l10n.workoutRatingOkBody;
+    return l10n.workoutRatingLowBody;
+  }
+
+  Color _ratingColor(int score) {
+    if (score >= 85) return AppColors.primary;
+    if (score >= 70) return AppColors.gps;
+    if (score >= 50) return AppColors.accent;
+    return AppColors.danger;
+  }
+}
+
+class _AppreciationBadge extends StatelessWidget {
+  const _AppreciationBadge({
+    required this.label,
+    required this.color,
+    required this.icon,
+  });
+
+  final String label;
+  final Color color;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: 16),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

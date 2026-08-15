@@ -1052,6 +1052,12 @@ abstract class AppLocalizations {
   /// **'{distance} depuis le départ'**
   String routeDistanceAt(String distance);
 
+  /// No description provided for @replayRouteAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refaire ce parcours'**
+  String get replayRouteAction;
+
   /// No description provided for @filters.
   ///
   /// In fr, this message translates to:
@@ -1454,6 +1460,108 @@ abstract class AppLocalizations {
   /// **'Parcours en direct'**
   String get liveRoute;
 
+  /// No description provided for @challengeRouteGuide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcours guide'**
+  String get challengeRouteGuide;
+
+  /// No description provided for @challengeModeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode défi'**
+  String get challengeModeTitle;
+
+  /// No description provided for @challengeEnabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer le défi'**
+  String get challengeEnabled;
+
+  /// No description provided for @challengeDistanceTarget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distance cible'**
+  String get challengeDistanceTarget;
+
+  /// No description provided for @challengeTimeLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Temps limite'**
+  String get challengeTimeLimit;
+
+  /// No description provided for @challengeFieldsRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseigne une distance cible et un temps limite valides.'**
+  String get challengeFieldsRequired;
+
+  /// No description provided for @challengeLiveTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Défi en cours'**
+  String get challengeLiveTitle;
+
+  /// No description provided for @challengeProgressLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'{distance} / {target}'**
+  String challengeProgressLabel(String distance, String target);
+
+  /// No description provided for @challengeRemainingTime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste {time}'**
+  String challengeRemainingTime(String time);
+
+  /// No description provided for @challengeHalfway.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu as déjà passé la mi-distance. Garde ce rythme.'**
+  String get challengeHalfway;
+
+  /// No description provided for @challengeDeadlineApproaching.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échéance proche : reste concentré, tu peux finir fort.'**
+  String get challengeDeadlineApproaching;
+
+  /// No description provided for @challengeDeadlineMissed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Temps limite dépassé. Termine proprement la distance.'**
+  String get challengeDeadlineMissed;
+
+  /// No description provided for @challengeTargetReachedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Défi réussi'**
+  String get challengeTargetReachedTitle;
+
+  /// No description provided for @challengeTargetReachedBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectif atteint dans le temps. Très belle séance.'**
+  String get challengeTargetReachedBody;
+
+  /// No description provided for @challengeRouteReplayActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcours à refaire actif'**
+  String get challengeRouteReplayActive;
+
+  /// No description provided for @challengeRouteReplayBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'ancien tracé est affiché sur la carte.'**
+  String get challengeRouteReplayBody;
+
+  /// No description provided for @minutesUnit.
+  ///
+  /// In fr, this message translates to:
+  /// **'min'**
+  String get minutesUnit;
+
   /// No description provided for @currentLocation.
   ///
   /// In fr, this message translates to:
@@ -1640,6 +1748,114 @@ abstract class AppLocalizations {
   /// **'Impossible de préparer l\'image pour le moment.'**
   String get shareWorkoutUnavailable;
 
+  /// No description provided for @workoutAppreciationTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appréciation GymFlow'**
+  String get workoutAppreciationTitle;
+
+  /// No description provided for @workoutScore.
+  ///
+  /// In fr, this message translates to:
+  /// **'{score}/100'**
+  String workoutScore(int score);
+
+  /// No description provided for @workoutRatingExcellent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Performance excellente'**
+  String get workoutRatingExcellent;
+
+  /// No description provided for @workoutRatingGood.
+  ///
+  /// In fr, this message translates to:
+  /// **'Très bonne séance'**
+  String get workoutRatingGood;
+
+  /// No description provided for @workoutRatingOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séance utile'**
+  String get workoutRatingOk;
+
+  /// No description provided for @workoutRatingLow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Base posée'**
+  String get workoutRatingLow;
+
+  /// No description provided for @workoutRatingRecordBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu as dépassé une référence personnelle. On garde cette dynamique.'**
+  String get workoutRatingRecordBody;
+
+  /// No description provided for @workoutRatingChallengeBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu as respecté ton défi : objectif clair, exécution propre.'**
+  String get workoutRatingChallengeBody;
+
+  /// No description provided for @workoutRatingGoodBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le volume et le rythme vont dans le bon sens. Continue comme ça.'**
+  String get workoutRatingGoodBody;
+
+  /// No description provided for @workoutRatingOkBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séance validée. La prochaine étape : un peu plus de régularité ou de distance.'**
+  String get workoutRatingOkBody;
+
+  /// No description provided for @workoutRatingLowBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Même courte, une séance compte. Repars simple et régulier.'**
+  String get workoutRatingLowBody;
+
+  /// No description provided for @workoutChallengeCompletedBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Défi réussi'**
+  String get workoutChallengeCompletedBadge;
+
+  /// No description provided for @workoutChallengeProgressBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'{percent}% du défi'**
+  String workoutChallengeProgressBadge(int percent);
+
+  /// No description provided for @workoutDistanceRecordBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Record distance'**
+  String get workoutDistanceRecordBadge;
+
+  /// No description provided for @workoutPaceRecordBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Record allure'**
+  String get workoutPaceRecordBadge;
+
+  /// No description provided for @recordCelebrationTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau record'**
+  String get recordCelebrationTitle;
+
+  /// No description provided for @distanceRecordCelebrationBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu viens de dépasser ta plus longue distance.'**
+  String get distanceRecordCelebrationBody;
+
+  /// No description provided for @paceRecordCelebrationBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu viens d\'améliorer ta meilleure allure.'**
+  String get paceRecordCelebrationBody;
+
   /// No description provided for @notConnectedYet.
   ///
   /// In fr, this message translates to:
@@ -1795,6 +2011,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'0 / 20 km'**
   String get weeklyGoalProgress;
+
+  /// No description provided for @weeklyGoalReached.
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectif atteint. Tu peux consolider ou viser un bonus.'**
+  String get weeklyGoalReached;
+
+  /// No description provided for @weeklyGoalAlmost.
+  ///
+  /// In fr, this message translates to:
+  /// **'Presque terminé. Une petite sortie peut boucler la semaine.'**
+  String get weeklyGoalAlmost;
+
+  /// No description provided for @weeklyGoalStrong.
+  ///
+  /// In fr, this message translates to:
+  /// **'Très bien parti. Continue sur ce rythme.'**
+  String get weeklyGoalStrong;
+
+  /// No description provided for @weeklyGoalRemaining.
+  ///
+  /// In fr, this message translates to:
+  /// **'Il reste {distance} cette semaine.'**
+  String weeklyGoalRemaining(String distance);
+
+  /// No description provided for @weeklyGoalNoTarget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoute un objectif pour suivre ta progression.'**
+  String get weeklyGoalNoTarget;
+
+  /// No description provided for @goalNeedsWork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encore loin de la cible. Une séance courte peut déjà relancer la progression.'**
+  String get goalNeedsWork;
 
   /// No description provided for @performance.
   ///

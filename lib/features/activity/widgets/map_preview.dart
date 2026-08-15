@@ -14,6 +14,7 @@ class MapPreview extends StatefulWidget {
     this.label,
     this.isLive = false,
     this.routePoints = const [],
+    this.referenceRoutePoints = const [],
     this.currentPosition,
     this.framed = true,
     this.interactive = true,
@@ -27,6 +28,7 @@ class MapPreview extends StatefulWidget {
   final String? label;
   final bool isLive;
   final List<LatLng> routePoints;
+  final List<LatLng> referenceRoutePoints;
   final LatLng? currentPosition;
   final bool framed;
   final bool interactive;
@@ -57,7 +59,7 @@ class _MapPreviewState extends State<MapPreview> {
         oldWidget.currentPosition ?? _lastPoint(oldWidget.routePoints);
     if (latestPoint != null && latestPoint != previousPoint) {
       _currentPosition = latestPoint;
-      if (widget.fitRoute && widget.routePoints.length >= 2) {
+      if (widget.fitRoute && _fitPoints.length >= 2) {
         _fitRoute();
       } else {
         _mapController.move(
@@ -82,10 +84,13 @@ class _MapPreviewState extends State<MapPreview> {
       context,
     ).colorScheme.surface.withValues(alpha: 0.9);
     final routePoints = widget.routePoints;
+    final referenceRoutePoints = widget.referenceRoutePoints;
     final hasRoute = routePoints.length >= 2;
-    final routeFit = widget.fitRoute && hasRoute
+    final hasReferenceRoute = referenceRoutePoints.length >= 2;
+    final fitPoints = _fitPoints;
+    final routeFit = widget.fitRoute && fitPoints.length >= 2
         ? CameraFit.bounds(
-            bounds: LatLngBounds.fromPoints(routePoints),
+            bounds: LatLngBounds.fromPoints(fitPoints),
             padding: const EdgeInsets.all(44),
             maxZoom: 16,
           )
@@ -118,6 +123,14 @@ class _MapPreviewState extends State<MapPreview> {
             ),
             PolylineLayer(
               polylines: [
+                if (hasReferenceRoute)
+                  Polyline(
+                    points: referenceRoutePoints,
+                    strokeWidth: 5,
+                    color: AppColors.gps.withValues(alpha: 0.58),
+                    borderStrokeWidth: 2,
+                    borderColor: Colors.white.withValues(alpha: 0.88),
+                  ),
                 if (hasRoute)
                   Polyline(
                     points: routePoints,
@@ -153,6 +166,23 @@ class _MapPreviewState extends State<MapPreview> {
                     width: 34,
                     height: 34,
                     child: const _RouteMarker(color: AppColors.danger),
+                  ),
+                ],
+              ),
+            if (!hasRoute && hasReferenceRoute)
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: referenceRoutePoints.first,
+                    width: 30,
+                    height: 30,
+                    child: const _RouteMarker(color: AppColors.gps),
+                  ),
+                  Marker(
+                    point: referenceRoutePoints.last,
+                    width: 30,
+                    height: 30,
+                    child: const _RouteMarker(color: AppColors.accent),
                   ),
                 ],
               ),
@@ -216,7 +246,7 @@ class _MapPreviewState extends State<MapPreview> {
   }
 
   void _fitRoute() {
-    final routePoints = widget.routePoints;
+    final routePoints = _fitPoints;
     if (routePoints.length < 2) return;
     _mapController.fitCamera(
       CameraFit.bounds(
@@ -225,6 +255,12 @@ class _MapPreviewState extends State<MapPreview> {
         maxZoom: 16,
       ),
     );
+  }
+
+  List<LatLng> get _fitPoints {
+    if (widget.routePoints.isEmpty) return widget.referenceRoutePoints;
+    if (widget.referenceRoutePoints.isEmpty) return widget.routePoints;
+    return [...widget.referenceRoutePoints, ...widget.routePoints];
   }
 
   Future<void> _centerOnCurrentPosition({bool showError = true}) async {

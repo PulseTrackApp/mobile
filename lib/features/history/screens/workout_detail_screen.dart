@@ -14,6 +14,8 @@ import '../../../core/ui/app_panel.dart';
 import '../../../core/ui/app_refresh_scroll_view.dart';
 import '../../../core/ui/pulse_track_logo.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../activity/models/workout_challenge.dart';
+import '../../activity/screens/activity_screen.dart';
 import '../../activity/models/workout_share_mode.dart';
 import '../../activity/widgets/map_preview.dart';
 import '../../activity/widgets/workout_share_choice_sheet.dart';
@@ -102,6 +104,14 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                     icon: Icons.ios_share_rounded,
                     onPressed: _isSharing ? null : () => _shareWorkout(workout),
                   ),
+                  if (workout.hasRoute) ...[
+                    const SizedBox(height: 10),
+                    AppButton.primary(
+                      label: l10n.replayRouteAction,
+                      icon: Icons.replay_rounded,
+                      onPressed: () => _replayRoute(workout),
+                    ),
+                  ],
                   const SizedBox(height: 18),
                   _HighlightsPanel(workout: workout),
                   const SizedBox(height: 18),
@@ -209,6 +219,26 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _replayRoute(WorkoutDetail workout) {
+    final sport = SportMode.fromApiValue(workout.sportType) ?? SportMode.run;
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          body: SafeArea(
+            child: ActivityScreen(
+              selectedSport: sport,
+              initialChallenge: WorkoutChallenge.routeReplay(
+                referenceRoutePoints: workout.routePoints,
+                sourceWorkoutId: workout.id,
+                sourceTitle: _formatDateTime(context, workout.startedAt),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

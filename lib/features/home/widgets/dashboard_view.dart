@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/app_settings_controller.dart';
+import '../../../core/api/api_contract.dart';
 import '../../../core/api/api_formatters.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/modules/app_module.dart';
@@ -45,13 +47,14 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     final tokenStore = ref.watch(authTokenStoreProvider);
     final moduleAccess = ref.watch(moduleAccessControllerProvider).state;
     final isAuthenticated = tokenStore.isAuthenticated;
+    final fallbackWeeklyTargetKm = AppSettingsScope.of(context).weeklyTargetKm;
     if (isAuthenticated && !moduleAccess.isLoading) {
       final signature = _signature(moduleAccess);
       if (_moduleAccessSignature != signature) {
         _moduleAccessSignature = signature;
         _future = null;
       }
-      _future ??= _loadDashboard(moduleAccess);
+      _future ??= _loadDashboard(moduleAccess, fallbackWeeklyTargetKm, l10n);
     } else {
       _moduleAccessSignature = null;
       _future = null;
@@ -142,6 +145,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                     return WeeklyTargetCard(
                       progressLabel: data?.goalLabel,
                       progress: data?.goalProgress ?? 0,
+                      appreciation: data?.goalAppreciation,
                     );
                   },
                 )
@@ -169,13 +173,25 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     );
   }
 
-  Future<_DashboardData> _loadDashboard(ModuleAccessState moduleAccess) async {
+  Future<_DashboardData> _loadDashboard(
+    ModuleAccessState moduleAccess,
+    int fallbackWeeklyTargetKm,
+    AppLocalizations l10n,
+  ) async {
     final api = ref.read(pulseTrackApiProvider);
     final coachEnabled = moduleAccess.isEnabled(AppModule.coach);
     final results = await Future.wait<Object?>([
       moduleAccess.isEnabled(AppModule.weeklySummary)
-          ? api.getWeeklySummary(zone: gymFlowDefaultZone)
+          ? _ignoreDashboardError(
+              api.getWeeklySummary(zone: gymFlowDefaultZone),
+            )
           : Future<Map<String, dynamic>>.value(const {}),
+      _ignoreDashboardError(
+        api.getStats(period: ApiStatsPeriod.week, zone: gymFlowDefaultZone),
+      ),
+      moduleAccess.isEnabled(AppModule.goals)
+          ? _ignoreDashboardError(api.getGoals())
+          : Future<List<Map<String, dynamic>>>.value(const []),
       moduleAccess.isEnabled(AppModule.bodyCheckins)
           ? api.getBodyProgress()
           : Future<Map<String, dynamic>>.value(const {}),
@@ -187,31 +203,60 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           : Future<Map<String, dynamic>?>.value(null),
     ]);
 
-    final summary = results[0] as Map<String, dynamic>;
-    final body = results[1] as Map<String, dynamic>;
-    final coachSettings = results[2] as Map<String, dynamic>?;
-    final coach = results[3] as Map<String, dynamic>?;
+    final summary = (results[0] as Map<String, dynamic>?) ?? const {};
+    final weekStats = results[1] as Map<String, dynamic>?;
+    final activeGoals = (results[2] as List<Map<String, dynamic>>?) ?? const [];
+    final body = results[3] as Map<String, dynamic>;
+    final coachSettings = results[4] as Map<String, dynamic>?;
+    final coach = results[5] as Map<String, dynamic>?;
+    final summaryTotals = jsonMap(summary, 'totals') ?? summary;
+    final statsTotals = jsonMap(weekStats, 'totals') ?? weekStats;
     final goals = jsonList(summary, 'goals');
-    final firstGoal = goals.isEmpty ? null : goals.first;
+    final firstGoal =
+        _weeklyDistanceGoal(goals) ?? _weeklyDistanceGoal(activeGoals);
+    final weeklyDistanceMeters = _firstPositiveDouble([
+      jsonDouble(summaryTotals, 'distanceMeters'),
+      jsonDouble(summary, 'distanceMeters'),
+      jsonDouble(statsTotals, 'distanceMeters'),
+      _currentGoalDistanceMeters(firstGoal),
+    ]);
+    final movingDurationSeconds = _firstPositiveInt([
+      jsonInt(summaryTotals, 'movingDurationSeconds'),
+      jsonInt(summary, 'movingDurationSeconds'),
+      jsonInt(statsTotals, 'movingDurationSeconds'),
+    ]);
+    final caloriesBurned = _firstPositiveInt([
+      jsonInt(summaryTotals, 'caloriesBurned'),
+      jsonInt(summary, 'caloriesBurned'),
+      jsonInt(statsTotals, 'caloriesBurned'),
+    ]);
     final currentValue = firstGoal == null
-        ? 0.0
+        ? weeklyDistanceMeters / 1000
         : jsonDouble(firstGoal, 'currentValue');
     final targetValue = firstGoal == null
-        ? 0.0
+        ? fallbackWeeklyTargetKm.toDouble()
         : jsonDouble(firstGoal, 'targetValue');
     final unit = jsonString(firstGoal, 'unit') ?? '';
     final completionPercent = firstGoal == null
-        ? 0.0
+        ? (fallbackWeeklyTargetKm <= 0
+              ? 0.0
+              : weeklyDistanceMeters / (fallbackWeeklyTargetKm * 1000))
         : jsonDouble(firstGoal, 'completionPercent') / 100;
 
     return _DashboardData(
-      distanceMeters: jsonDouble(summary, 'distanceMeters'),
-      movingDurationSeconds: jsonInt(summary, 'movingDurationSeconds'),
-      caloriesBurned: jsonInt(summary, 'caloriesBurned'),
+      distanceMeters: weeklyDistanceMeters,
+      movingDurationSeconds: movingDurationSeconds,
+      caloriesBurned: caloriesBurned,
       goalProgress: completionPercent,
       goalLabel: firstGoal == null
-          ? null
+          ? '${formatKm(weeklyDistanceMeters)} / $fallbackWeeklyTargetKm ${l10n.kilometersUnit}'
           : '${currentValue.toStringAsFixed(1)} / ${targetValue.toStringAsFixed(1)} $unit',
+      goalAppreciation: _goalAppreciation(
+        l10n: l10n,
+        progress: completionPercent,
+        currentKm: currentValue,
+        targetKm: targetValue,
+      ),
       currentWeightKg: jsonDouble(body, 'currentWeightKg') == 0
           ? null
           : jsonDouble(body, 'currentWeightKg'),
@@ -231,7 +276,11 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     final moduleAccess = ref.read(moduleAccessControllerProvider).state;
     if (moduleAccess.isLoading) return;
 
-    final future = _loadDashboard(moduleAccess);
+    final future = _loadDashboard(
+      moduleAccess,
+      AppSettingsScope.of(context).weeklyTargetKm,
+      AppLocalizations.of(context),
+    );
     setState(() {
       _moduleAccessSignature = _signature(moduleAccess);
       _future = future;
@@ -250,6 +299,56 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     } catch (_) {
       return null;
     }
+  }
+
+  Future<Object?> _ignoreDashboardError(Future<Object?> request) async {
+    try {
+      return await request;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic>? _weeklyDistanceGoal(List<Map<String, dynamic>> goals) {
+    for (final goal in goals) {
+      if (jsonString(goal, 'type') == 'WEEKLY_DISTANCE') return goal;
+    }
+    return goals.isEmpty ? null : goals.first;
+  }
+
+  double _currentGoalDistanceMeters(Map<String, dynamic>? goal) {
+    if (goal == null || jsonString(goal, 'type') != 'WEEKLY_DISTANCE') return 0;
+    final current = jsonDouble(goal, 'currentValue');
+    final unit = (jsonString(goal, 'unit') ?? '').toLowerCase();
+    return unit == 'm' ? current : current * 1000;
+  }
+
+  double _firstPositiveDouble(List<double> values) {
+    for (final value in values) {
+      if (value > 0) return value;
+    }
+    return 0;
+  }
+
+  int _firstPositiveInt(List<int> values) {
+    for (final value in values) {
+      if (value > 0) return value;
+    }
+    return 0;
+  }
+
+  String _goalAppreciation({
+    required AppLocalizations l10n,
+    required double progress,
+    required double currentKm,
+    required double targetKm,
+  }) {
+    if (targetKm <= 0) return l10n.weeklyGoalNoTarget;
+    if (progress >= 1) return l10n.weeklyGoalReached;
+    if (progress >= 0.75) return l10n.weeklyGoalAlmost;
+    if (progress >= 0.45) return l10n.weeklyGoalStrong;
+    final remaining = (targetKm - currentKm).clamp(0, targetKm).toDouble();
+    return l10n.weeklyGoalRemaining('${remaining.toStringAsFixed(1)} km');
   }
 
   CoachPreviewStatus _coachStatus(
@@ -276,6 +375,7 @@ class _DashboardData {
     required this.caloriesBurned,
     required this.goalProgress,
     required this.goalLabel,
+    required this.goalAppreciation,
     required this.currentWeightKg,
     required this.coachPreview,
     required this.coachStatus,
@@ -286,6 +386,7 @@ class _DashboardData {
   final int caloriesBurned;
   final double goalProgress;
   final String? goalLabel;
+  final String? goalAppreciation;
   final double? currentWeightKg;
   final String? coachPreview;
   final CoachPreviewStatus coachStatus;

@@ -201,6 +201,7 @@
       }
     }
   },
+  "replayRouteAction": "Refaire ce parcours",
   "filters": "Filtres",
   "goalsTitle": "Targets",
   "goalsSubtitle": "Objectifs semaine et performance",
@@ -278,6 +279,40 @@
   "estimatedCalories": "Calories estimées",
   "routePreview": "Aperçu parcours",
   "liveRoute": "Parcours en direct",
+  "challengeRouteGuide": "Parcours guide",
+  "challengeModeTitle": "Mode défi",
+  "challengeEnabled": "Activer le défi",
+  "challengeDistanceTarget": "Distance cible",
+  "challengeTimeLimit": "Temps limite",
+  "challengeFieldsRequired": "Renseigne une distance cible et un temps limite valides.",
+  "challengeLiveTitle": "Défi en cours",
+  "challengeProgressLabel": "{distance} / {target}",
+  "@challengeProgressLabel": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeRemainingTime": "Reste {time}",
+  "@challengeRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeHalfway": "Tu as déjà passé la mi-distance. Garde ce rythme.",
+  "challengeDeadlineApproaching": "Échéance proche : reste concentré, tu peux finir fort.",
+  "challengeDeadlineMissed": "Temps limite dépassé. Termine proprement la distance.",
+  "challengeTargetReachedTitle": "Défi réussi",
+  "challengeTargetReachedBody": "Objectif atteint dans le temps. Très belle séance.",
+  "challengeRouteReplayActive": "Parcours à refaire actif",
+  "challengeRouteReplayBody": "L'ancien tracé est affiché sur la carte.",
+  "minutesUnit": "min",
   "currentLocation": "Ma position",
   "locationPermissionDenied": "Autorise la localisation pour démarrer le tracking.",
   "currentLocationUnavailable": "Position indisponible. Vérifie l'autorisation GPS.",
@@ -309,6 +344,38 @@
   "shareRouteWithDataSubtitle": "Parcours, distance, chrono, allure et vitesse.",
   "shareRouteOnlyText": "Mon parcours GymFlow",
   "shareWorkoutUnavailable": "Impossible de préparer l'image pour le moment.",
+  "workoutAppreciationTitle": "Appréciation GymFlow",
+  "workoutScore": "{score}/100",
+  "@workoutScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRatingExcellent": "Performance excellente",
+  "workoutRatingGood": "Très bonne séance",
+  "workoutRatingOk": "Séance utile",
+  "workoutRatingLow": "Base posée",
+  "workoutRatingRecordBody": "Tu as dépassé une référence personnelle. On garde cette dynamique.",
+  "workoutRatingChallengeBody": "Tu as respecté ton défi : objectif clair, exécution propre.",
+  "workoutRatingGoodBody": "Le volume et le rythme vont dans le bon sens. Continue comme ça.",
+  "workoutRatingOkBody": "Séance validée. La prochaine étape : un peu plus de régularité ou de distance.",
+  "workoutRatingLowBody": "Même courte, une séance compte. Repars simple et régulier.",
+  "workoutChallengeCompletedBadge": "Défi réussi",
+  "workoutChallengeProgressBadge": "{percent}% du défi",
+  "@workoutChallengeProgressBadge": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDistanceRecordBadge": "Record distance",
+  "workoutPaceRecordBadge": "Record allure",
+  "recordCelebrationTitle": "Nouveau record",
+  "distanceRecordCelebrationBody": "Tu viens de dépasser ta plus longue distance.",
+  "paceRecordCelebrationBody": "Tu viens d'améliorer ta meilleure allure.",
   "notConnectedYet": "GPS actif. Tu peux mettre en pause, reprendre ou terminer la séance.",
   "statsThisWeek": "Cette semaine",
   "statsThisMonth": "Ce mois",
@@ -335,6 +402,19 @@
   "pace": "Allure",
   "weeklyGoal": "Objectif semaine",
   "weeklyGoalProgress": "0 / 20 km",
+  "weeklyGoalReached": "Objectif atteint. Tu peux consolider ou viser un bonus.",
+  "weeklyGoalAlmost": "Presque terminé. Une petite sortie peut boucler la semaine.",
+  "weeklyGoalStrong": "Très bien parti. Continue sur ce rythme.",
+  "weeklyGoalRemaining": "Il reste {distance} cette semaine.",
+  "@weeklyGoalRemaining": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyGoalNoTarget": "Ajoute un objectif pour suivre ta progression.",
+  "goalNeedsWork": "Encore loin de la cible. Une séance courte peut déjà relancer la progression.",
   "performance": "Performance",
   "record5k": "Record 5 km",
   "averagePace": "Allure moyenne",

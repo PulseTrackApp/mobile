@@ -126,6 +126,16 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
                     children: goals.map((goal) {
                       final type = jsonString(goal, 'type') ?? '';
                       final value = jsonDouble(goal, 'targetValue');
+                      final currentValue = jsonDouble(goal, 'currentValue');
+                      final completionPercent = jsonDouble(
+                        goal,
+                        'completionPercent',
+                      );
+                      final progress = completionPercent > 0
+                          ? completionPercent / 100
+                          : value <= 0
+                          ? 0.0
+                          : currentValue / value;
                       final unit = jsonString(goal, 'unit') ?? '';
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
@@ -133,8 +143,11 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
                           icon: _goalIcon(type),
                           color: _goalColor(type),
                           title: goalTitle(type, l10n),
-                          value: '${value.toStringAsFixed(1)} $unit',
-                          progress: 0,
+                          value: currentValue > 0
+                              ? '${currentValue.toStringAsFixed(1)} / ${value.toStringAsFixed(1)} $unit'
+                              : '${value.toStringAsFixed(1)} $unit',
+                          progress: progress,
+                          appreciation: _goalAppreciation(progress, l10n),
                         ),
                       );
                     }).toList(),
@@ -239,6 +252,7 @@ class _GoalCard extends StatelessWidget {
     required this.title,
     required this.value,
     required this.progress,
+    required this.appreciation,
   });
 
   final IconData icon;
@@ -246,6 +260,7 @@ class _GoalCard extends StatelessWidget {
   final String title;
   final String value;
   final double progress;
+  final String appreciation;
 
   @override
   Widget build(BuildContext context) {
@@ -270,14 +285,29 @@ class _GoalCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
-              value: progress,
+              value: progress.clamp(0, 1),
               minHeight: 8,
               backgroundColor: Theme.of(context).colorScheme.outlineVariant,
               valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            appreciation,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
       ),
     );
   }
+}
+
+String _goalAppreciation(double progress, AppLocalizations l10n) {
+  if (progress >= 1) return l10n.weeklyGoalReached;
+  if (progress >= 0.75) return l10n.weeklyGoalAlmost;
+  if (progress >= 0.45) return l10n.weeklyGoalStrong;
+  return l10n.goalNeedsWork;
 }

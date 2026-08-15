@@ -40,21 +40,8 @@ class TrackingSessionDraft {
   TrackingPoint? get fastestPoint {
     TrackingPoint? fastest;
     var maxSpeedMps = 0.0;
-    final distance = Distance();
-    for (var index = 0; index < points.length; index++) {
-      final point = points[index];
-      var speed = point.speed ?? 0;
-      if (index > 0) {
-        final previous = points[index - 1];
-        final seconds = point.recordedAt
-            .difference(previous.recordedAt)
-            .inSeconds;
-        if (seconds > 0) {
-          final segmentSpeed =
-              distance(previous.latLng, point.latLng) / seconds;
-          if (segmentSpeed > speed) speed = segmentSpeed;
-        }
-      }
+    for (final point in points) {
+      final speed = point.speed ?? 0;
       if (speed > maxSpeedMps) {
         maxSpeedMps = speed;
         fastest = point;

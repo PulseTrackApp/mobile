@@ -201,6 +201,7 @@
       }
     }
   },
+  "replayRouteAction": "Replay this route",
   "filters": "Filters",
   "goalsTitle": "Targets",
   "goalsSubtitle": "Weekly and performance goals",
@@ -278,6 +279,40 @@
   "estimatedCalories": "Estimated calories",
   "routePreview": "Route preview",
   "liveRoute": "Live route",
+  "challengeRouteGuide": "Route guide",
+  "challengeModeTitle": "Challenge mode",
+  "challengeEnabled": "Enable challenge",
+  "challengeDistanceTarget": "Target distance",
+  "challengeTimeLimit": "Time limit",
+  "challengeFieldsRequired": "Enter a valid target distance and time limit.",
+  "challengeLiveTitle": "Challenge in progress",
+  "challengeProgressLabel": "{distance} / {target}",
+  "@challengeProgressLabel": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeRemainingTime": "{time} left",
+  "@challengeRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeHalfway": "You are already halfway. Keep this rhythm.",
+  "challengeDeadlineApproaching": "Deadline is close: stay focused, finish strong.",
+  "challengeDeadlineMissed": "Time limit passed. Finish the distance cleanly.",
+  "challengeTargetReachedTitle": "Challenge completed",
+  "challengeTargetReachedBody": "Target reached in time. Great session.",
+  "challengeRouteReplayActive": "Route replay active",
+  "challengeRouteReplayBody": "The previous track is shown on the map.",
+  "minutesUnit": "min",
   "currentLocation": "My location",
   "locationPermissionDenied": "Allow location access to start tracking.",
   "currentLocationUnavailable": "Location unavailable. Check GPS permission.",
@@ -309,6 +344,38 @@
   "shareRouteWithDataSubtitle": "Route, distance, timer, pace and speed.",
   "shareRouteOnlyText": "My GymFlow route",
   "shareWorkoutUnavailable": "Unable to prepare the image for now.",
+  "workoutAppreciationTitle": "GymFlow rating",
+  "workoutScore": "{score}/100",
+  "@workoutScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRatingExcellent": "Excellent performance",
+  "workoutRatingGood": "Very good session",
+  "workoutRatingOk": "Useful session",
+  "workoutRatingLow": "Base set",
+  "workoutRatingRecordBody": "You beat a personal reference. Keep that momentum.",
+  "workoutRatingChallengeBody": "You matched your challenge: clear target, clean execution.",
+  "workoutRatingGoodBody": "Volume and rhythm are moving in the right direction. Keep going.",
+  "workoutRatingOkBody": "Session saved. Next step: a little more consistency or distance.",
+  "workoutRatingLowBody": "Even a short workout counts. Restart simple and steady.",
+  "workoutChallengeCompletedBadge": "Challenge done",
+  "workoutChallengeProgressBadge": "{percent}% of challenge",
+  "@workoutChallengeProgressBadge": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDistanceRecordBadge": "Distance record",
+  "workoutPaceRecordBadge": "Pace record",
+  "recordCelebrationTitle": "New record",
+  "distanceRecordCelebrationBody": "You just beat your longest distance.",
+  "paceRecordCelebrationBody": "You just improved your best pace.",
   "notConnectedYet": "GPS is active. You can pause, resume or finish the workout.",
   "statsThisWeek": "This week",
   "statsThisMonth": "This month",
@@ -335,6 +402,19 @@
   "pace": "Pace",
   "weeklyGoal": "Weekly goal",
   "weeklyGoalProgress": "0 / 20 km",
+  "weeklyGoalReached": "Goal reached. You can consolidate or aim for a bonus.",
+  "weeklyGoalAlmost": "Almost done. One short outing can close the week.",
+  "weeklyGoalStrong": "Very good start. Keep this rhythm.",
+  "weeklyGoalRemaining": "{distance} left this week.",
+  "@weeklyGoalRemaining": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyGoalNoTarget": "Add a goal to track your progress.",
+  "goalNeedsWork": "Still far from target. A short session can restart progress.",
   "performance": "Performance",
   "record5k": "5K record",
   "averagePace": "Average pace",

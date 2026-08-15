@@ -5,10 +5,16 @@ import '../../../core/ui/app_panel.dart';
 import '../../../l10n/app_localizations.dart';
 
 class WeeklyTargetCard extends StatelessWidget {
-  const WeeklyTargetCard({super.key, this.progressLabel, this.progress = 0});
+  const WeeklyTargetCard({
+    super.key,
+    this.progressLabel,
+    this.progress = 0,
+    this.appreciation,
+  });
 
   final String? progressLabel;
   final double progress;
+  final String? appreciation;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +42,16 @@ class WeeklyTargetCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           AppProgressBar(value: progress.clamp(0, 1)),
+          if (appreciation != null && appreciation!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(
+              appreciation!,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ],
       ),
     );

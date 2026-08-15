@@ -517,6 +517,9 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get replayRouteAction => 'Refaire ce parcours';
+
+  @override
   String get filters => 'Filtres';
 
   @override
@@ -731,6 +734,67 @@ class AppLocalizationsFr extends AppLocalizations {
   String get liveRoute => 'Parcours en direct';
 
   @override
+  String get challengeRouteGuide => 'Parcours guide';
+
+  @override
+  String get challengeModeTitle => 'Mode défi';
+
+  @override
+  String get challengeEnabled => 'Activer le défi';
+
+  @override
+  String get challengeDistanceTarget => 'Distance cible';
+
+  @override
+  String get challengeTimeLimit => 'Temps limite';
+
+  @override
+  String get challengeFieldsRequired =>
+      'Renseigne une distance cible et un temps limite valides.';
+
+  @override
+  String get challengeLiveTitle => 'Défi en cours';
+
+  @override
+  String challengeProgressLabel(String distance, String target) {
+    return '$distance / $target';
+  }
+
+  @override
+  String challengeRemainingTime(String time) {
+    return 'Reste $time';
+  }
+
+  @override
+  String get challengeHalfway =>
+      'Tu as déjà passé la mi-distance. Garde ce rythme.';
+
+  @override
+  String get challengeDeadlineApproaching =>
+      'Échéance proche : reste concentré, tu peux finir fort.';
+
+  @override
+  String get challengeDeadlineMissed =>
+      'Temps limite dépassé. Termine proprement la distance.';
+
+  @override
+  String get challengeTargetReachedTitle => 'Défi réussi';
+
+  @override
+  String get challengeTargetReachedBody =>
+      'Objectif atteint dans le temps. Très belle séance.';
+
+  @override
+  String get challengeRouteReplayActive => 'Parcours à refaire actif';
+
+  @override
+  String get challengeRouteReplayBody =>
+      'L\'ancien tracé est affiché sur la carte.';
+
+  @override
+  String get minutesUnit => 'min';
+
+  @override
   String get currentLocation => 'Ma position';
 
   @override
@@ -830,6 +894,71 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de préparer l\'image pour le moment.';
 
   @override
+  String get workoutAppreciationTitle => 'Appréciation GymFlow';
+
+  @override
+  String workoutScore(int score) {
+    return '$score/100';
+  }
+
+  @override
+  String get workoutRatingExcellent => 'Performance excellente';
+
+  @override
+  String get workoutRatingGood => 'Très bonne séance';
+
+  @override
+  String get workoutRatingOk => 'Séance utile';
+
+  @override
+  String get workoutRatingLow => 'Base posée';
+
+  @override
+  String get workoutRatingRecordBody =>
+      'Tu as dépassé une référence personnelle. On garde cette dynamique.';
+
+  @override
+  String get workoutRatingChallengeBody =>
+      'Tu as respecté ton défi : objectif clair, exécution propre.';
+
+  @override
+  String get workoutRatingGoodBody =>
+      'Le volume et le rythme vont dans le bon sens. Continue comme ça.';
+
+  @override
+  String get workoutRatingOkBody =>
+      'Séance validée. La prochaine étape : un peu plus de régularité ou de distance.';
+
+  @override
+  String get workoutRatingLowBody =>
+      'Même courte, une séance compte. Repars simple et régulier.';
+
+  @override
+  String get workoutChallengeCompletedBadge => 'Défi réussi';
+
+  @override
+  String workoutChallengeProgressBadge(int percent) {
+    return '$percent% du défi';
+  }
+
+  @override
+  String get workoutDistanceRecordBadge => 'Record distance';
+
+  @override
+  String get workoutPaceRecordBadge => 'Record allure';
+
+  @override
+  String get recordCelebrationTitle => 'Nouveau record';
+
+  @override
+  String get distanceRecordCelebrationBody =>
+      'Tu viens de dépasser ta plus longue distance.';
+
+  @override
+  String get paceRecordCelebrationBody =>
+      'Tu viens d\'améliorer ta meilleure allure.';
+
+  @override
   String get notConnectedYet =>
       'GPS actif. Tu peux mettre en pause, reprendre ou terminer la séance.';
 
@@ -908,6 +1037,30 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get weeklyGoalProgress => '0 / 20 km';
+
+  @override
+  String get weeklyGoalReached =>
+      'Objectif atteint. Tu peux consolider ou viser un bonus.';
+
+  @override
+  String get weeklyGoalAlmost =>
+      'Presque terminé. Une petite sortie peut boucler la semaine.';
+
+  @override
+  String get weeklyGoalStrong => 'Très bien parti. Continue sur ce rythme.';
+
+  @override
+  String weeklyGoalRemaining(String distance) {
+    return 'Il reste $distance cette semaine.';
+  }
+
+  @override
+  String get weeklyGoalNoTarget =>
+      'Ajoute un objectif pour suivre ta progression.';
+
+  @override
+  String get goalNeedsWork =>
+      'Encore loin de la cible. Une séance courte peut déjà relancer la progression.';
 
   @override
   String get performance => 'Performance';
