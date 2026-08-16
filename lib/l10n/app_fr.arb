@@ -517,5 +517,18 @@
   "signOut": "Déconnexion",
   "signedOut": "Tu es déconnecté.",
   "decrease": "Diminuer",
-  "increase": "Augmenter"
+  "increase": "Augmenter",
+  "upgradeRequiredTitle": "Mise à jour requise",
+  "upgradeRequiredBody": "Cette version de l'application n'est plus acceptée par le serveur. Mets-la à jour pour continuer à enregistrer tes séances.",
+  "upgradeRequiredMinimum": "Version minimale attendue : {version}",
+  "upgradeRequiredCopyLink": "Copier le lien du magasin",
+  "upgradeRequiredLinkCopied": "Lien copié dans le presse-papiers",
+  "upgradeRequiredRetry": "Réessayer",
+  "@upgradeRequiredMinimum": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -25,6 +25,9 @@ class AuthTokenStore extends ChangeNotifier {
   bool _profileCompleted = false;
   bool _emailVerified = false;
   bool _paymentRequired = false;
+  bool _upgradeRequired = false;
+  String? _minimumVersion;
+  String? _storeUrl;
   int _sessionExpiredNoticeId = 0;
   int _paymentRequiredNoticeId = 0;
 
@@ -45,6 +48,15 @@ class AuthTokenStore extends ChangeNotifier {
   bool get isAuthenticated => _accessToken != null && _accessToken!.isNotEmpty;
 
   bool get paymentRequired => _paymentRequired;
+
+  /// Vrai quand l'API a refusé cette version de l'application (`426`).
+  bool get upgradeRequired => _upgradeRequired;
+
+  /// Version minimale exigée, telle que le serveur l'a annoncée.
+  String? get minimumVersion => _minimumVersion;
+
+  /// Adresse du magasin ; `null` si le serveur n'en a pas configuré.
+  String? get storeUrl => _storeUrl;
 
   int get sessionExpiredNoticeId => _sessionExpiredNoticeId;
 
@@ -90,6 +102,31 @@ class AuthTokenStore extends ChangeNotifier {
   void markPaymentRequired() {
     _paymentRequired = true;
     _paymentRequiredNoticeId++;
+    notifyListeners();
+  }
+
+  /// L'API refuse cette version de l'application.
+  ///
+  /// Volontairement **non lié à la session** : le refus s'applique aussi à la
+  /// connexion et à l'inscription, donc l'écran de mise à jour doit pouvoir
+  /// s'afficher sur une application où personne n'est connecté.
+  void markUpgradeRequired({String? minimumVersion, String? storeUrl}) {
+    if (_upgradeRequired &&
+        _minimumVersion == minimumVersion &&
+        _storeUrl == storeUrl) {
+      return;
+    }
+    _upgradeRequired = true;
+    _minimumVersion = minimumVersion;
+    _storeUrl = storeUrl;
+    notifyListeners();
+  }
+
+  /// Après une mise à jour, ou pour laisser retenter : rien ne se débloque tant
+  /// que le serveur refuse toujours, mais l'écran ne doit pas être une prison.
+  void clearUpgradeRequired() {
+    if (!_upgradeRequired) return;
+    _upgradeRequired = false;
     notifyListeners();
   }
 

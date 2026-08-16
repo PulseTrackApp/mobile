@@ -1316,4 +1316,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get increase => 'Increase';
+
+  @override
+  String get upgradeRequiredTitle => 'Update required';
+
+  @override
+  String get upgradeRequiredBody =>
+      'This version of the app is no longer accepted by the server. Update it to keep recording your workouts.';
+
+  @override
+  String upgradeRequiredMinimum(String version) {
+    return 'Minimum expected version: $version';
+  }
+
+  @override
+  String get upgradeRequiredCopyLink => 'Copy store link';
+
+  @override
+  String get upgradeRequiredLinkCopied => 'Link copied to clipboard';
+
+  @override
+  String get upgradeRequiredRetry => 'Try again';
 }

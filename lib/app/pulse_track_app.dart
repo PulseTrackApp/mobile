@@ -13,6 +13,7 @@ import '../core/theme/app_theme.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/onboarding/screens/onboarding_screen.dart';
 import '../features/pricing/screens/pricing_screen.dart';
+import '../features/pricing/screens/upgrade_required_screen.dart';
 import '../l10n/app_localizations.dart';
 
 class PulseTrackApp extends ConsumerStatefulWidget {
@@ -97,7 +98,20 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
-            home: tokenStore.paymentRequired && tokenStore.isAuthenticated
+            // L'ordre compte. La mise a jour passe avant le paiement : une
+            // application trop ancienne doit apprendre qu'elle est perimee, pas
+            // qu'il faut payer. Et elle passe avant l'authentification, parce
+            // que le serveur refuse aussi la connexion et l'inscription — sans
+            // quoi un vieil APK contournerait le verrou en creant un compte.
+            home: tokenStore.upgradeRequired
+                ? UpgradeRequiredScreen(
+                    minimumVersion: tokenStore.minimumVersion,
+                    storeUrl: tokenStore.storeUrl,
+                    onRetry: () {
+                      ref.read(authTokenStoreProvider).clearUpgradeRequired();
+                    },
+                  )
+                : tokenStore.paymentRequired && tokenStore.isAuthenticated
                 ? PricingScreen(
                     paymentRequired: true,
                     onRetryAccess: () {

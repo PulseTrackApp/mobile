@@ -1326,4 +1326,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get increase => 'Augmenter';
+
+  @override
+  String get upgradeRequiredTitle => 'Mise à jour requise';
+
+  @override
+  String get upgradeRequiredBody =>
+      'Cette version de l\'application n\'est plus acceptée par le serveur. Mets-la à jour pour continuer à enregistrer tes séances.';
+
+  @override
+  String upgradeRequiredMinimum(String version) {
+    return 'Version minimale attendue : $version';
+  }
+
+  @override
+  String get upgradeRequiredCopyLink => 'Copier le lien du magasin';
+
+  @override
+  String get upgradeRequiredLinkCopied => 'Lien copié dans le presse-papiers';
+
+  @override
+  String get upgradeRequiredRetry => 'Réessayer';
 }

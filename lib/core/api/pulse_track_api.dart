@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import 'api_config.dart';
 import 'api_contract.dart';
 import 'api_error.dart';
 import 'auth_session.dart';
 import 'auth_token_store.dart';
+import 'billing_models.dart';
 
 typedef JsonMap = Map<String, dynamic>;
 
@@ -17,6 +19,23 @@ class PulseTrackApi {
     'GYMFLOW_APP_BUILD',
     defaultValue: '6',
   );
+
+  /// Plateforme annoncee au serveur, telle qu'il l'attend : `ANDROID`, `IOS`,
+  /// `WEB` ou `DESKTOP`.
+  ///
+  /// `defaultTargetPlatform` plutot que `dart:io` : ce fichier doit rester
+  /// compilable pour le web, ou `Platform` n'existe pas.
+  static String get _platform {
+    if (kIsWeb) return 'WEB';
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return 'ANDROID';
+      case TargetPlatform.iOS:
+        return 'IOS';
+      default:
+        return 'DESKTOP';
+    }
+  }
 
   PulseTrackApi({ApiConfig? config, AuthTokenStore? tokenStore, Dio? dio})
     : config = config ?? ApiConfig.fromEnvironment(),
@@ -41,10 +60,15 @@ class PulseTrackApi {
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
+          // Les deux en-tetes que le serveur regarde reellement. Ce sont eux qui
+          // permettront un jour de refuser les APK trop anciennes : le verrou
+          // repose sur leur ABSENCE dans les versions deja distribuees. Les
+          // omettre ici rendrait le dispositif inactivable sans tout casser.
+          options.headers['X-GymFlow-Client-Version'] = _appVersion;
+          options.headers['X-GymFlow-Platform'] = _platform;
+          // Conserves pour le diagnostic : le serveur ne s'en sert pas.
           options.headers['X-GymFlow-Client'] = 'mobile-flutter';
-          options.headers['X-GymFlow-App-Version'] = _appVersion;
           options.headers['X-GymFlow-App-Build'] = _appBuild;
-          options.headers['X-GymFlow-Pricing-Gate'] = '1';
           handler.next(options);
         },
       ),
@@ -401,6 +425,144 @@ class PulseTrackApi {
     return _getJson('me/export');
   }
 
+  Future<JsonMap> patchProfile(JsonMap changes) {
+    return _patchJson('me/profile', data: changes);
+  }
+
+  /// Catalogue des offres. Reste accessible meme a un compte expire : un ecran
+  /// de paiement dont les prix se font refuser n'aurait aucun sens.
+  Future<List<BillingPlan>> getBillingPlans() async {
+    final raw = await _send(
+      () => _dio.get<Object?>('billing/plans'),
+      (response) => _asJsonList(response.data),
+    );
+    return raw.map(BillingPlan.fromJson).toList(growable: false);
+  }
+
+  /// Droit d'usage du compte courant. A appeler au demarrage et a chaque retour
+  /// au premier plan, comme les modules.
+  Future<SubscriptionState> getSubscription() async {
+    return SubscriptionState.fromJson(await _getJson('me/subscription'));
+  }
+
+  /// Version minimale exigee par l'API.
+  ///
+  /// Route ouverte et jamais verrouillee : elle repond meme sans session, et
+  /// meme a une application deja perimee — c'est precisement ce qui lui permet
+  /// d'apprendre qu'elle l'est.
+  Future<ClientRequirements> getClientRequirements() async {
+    return ClientRequirements.fromJson(await _getJson('client/requirements'));
+  }
+
+  /// Records courants, sport par sport.
+  Future<List<JsonMap>> getRecords({ApiSportType? sport}) {
+    return _send(
+      () => _dio.get<Object?>(
+        'workouts/records',
+        queryParameters: _cleanQuery({'sport': sport?.value}),
+      ),
+      (response) => _asJsonList(response.data),
+    );
+  }
+
+  /// Parcours enregistres, pagines et **sans le trace** : `points` y est nul.
+  Future<List<JsonMap>> getRoutes({ApiSportType? sport, int page = 0, int size = 20}) {
+    return _send(
+      () => _dio.get<Object?>(
+        'me/routes',
+        queryParameters: _cleanQuery({
+          'sport': sport?.value,
+          'page': page,
+          'size': size,
+        }),
+      ),
+      (response) => _asJsonPageContent(response.data),
+    );
+  }
+
+  /// Detail d'un parcours, trace compris.
+  Future<JsonMap> getRoute(String id) => _getJson('me/routes/$id');
+
+  /// Enregistre le trace d'une seance sous un nom, pour pouvoir le reprendre.
+  Future<JsonMap> createRoute({required String workoutId, required String name}) {
+    return _postJson('me/routes', data: {'workoutId': workoutId, 'name': name});
+  }
+
+  Future<JsonMap> renameRoute({required String id, required String name}) {
+    return _putJson('me/routes/$id', data: {'name': name});
+  }
+
+  Future<void> deleteRoute(String id) => _deleteNoContent('me/routes/$id');
+
+  /// Classement des passages sur un circuit, du plus rapide au plus lent.
+  Future<List<JsonMap>> getRouteAttempts(String id) {
+    return _send(
+      () => _dio.get<Object?>('me/routes/$id/attempts'),
+      (response) => _asJsonList(response.data),
+    );
+  }
+
+  /// Defis, filtrables par statut : `?status=DRAFT,ACTIVE`.
+  Future<List<JsonMap>> getChallenges({
+    List<String>? statuses,
+    int page = 0,
+    int size = 20,
+  }) {
+    return _send(
+      () => _dio.get<Object?>(
+        'me/challenges',
+        queryParameters: _cleanQuery({
+          'status': statuses == null || statuses.isEmpty
+              ? null
+              : statuses.join(','),
+          'page': page,
+          'size': size,
+        }),
+      ),
+      (response) => _asJsonPageContent(response.data),
+    );
+  }
+
+  Future<JsonMap> getChallenge(String id) => _getJson('me/challenges/$id');
+
+  Future<JsonMap> createChallenge(JsonMap challenge) {
+    return _postJson('me/challenges', data: challenge);
+  }
+
+  /// Arme le chronometre. La reponse porte le `plan` : seuils et messages a
+  /// jouer **localement** pendant la course, sans rappeler le serveur.
+  Future<JsonMap> startChallenge(String id) {
+    return _postJson('me/challenges/$id/start');
+  }
+
+  /// Point d'etape a la demande. N'ecrit rien et ne peut pas faire echouer le
+  /// defi : le plan suffit aux alertes, cet appel est un confort.
+  Future<JsonMap> challengeProgress({
+    required String id,
+    required int elapsedSeconds,
+    required double distanceMeters,
+  }) {
+    return _postJson(
+      'me/challenges/$id/progress',
+      data: {
+        'elapsedSeconds': elapsedSeconds,
+        'distanceMeters': distanceMeters,
+      },
+    );
+  }
+
+  Future<JsonMap> abandonChallenge(String id) {
+    return _postJson('me/challenges/$id/abandon');
+  }
+
+  Future<void> deleteChallenge(String id) =>
+      _deleteNoContent('me/challenges/$id');
+
+  /// Note de l'utilisateur sur vingt-huit jours, et l'encouragement qui va avec.
+  Future<JsonMap> getRating({String? zone}) {
+    return _getJson('me/rating', queryParameters: {'zone': zone});
+  }
+
   Future<JsonMap> _getJson(
     String path, {
     Map<String, dynamic>? queryParameters,
@@ -444,6 +606,24 @@ class PulseTrackApi {
     );
   }
 
+  /// Modification partielle. À préférer au `PUT` partout sauf à l'inscription :
+  /// un remplacement incomplet passe la validation tant que les champs
+  /// obligatoires sont là, et efface au passage la date de naissance et le sexe.
+  Future<JsonMap> _patchJson(
+    String path, {
+    JsonMap? data,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    return _send(
+      () => _dio.patch<Object?>(
+        path,
+        data: data,
+        queryParameters: _cleanQuery(queryParameters),
+      ),
+      (response) => _asJsonMap(response.data),
+    );
+  }
+
   Future<void> _deleteNoContent(String path) {
     return _send(() => _dio.delete<Object?>(path), (_) {});
   }
@@ -458,6 +638,17 @@ class PulseTrackApi {
       return decode(response);
     } on DioException catch (exception) {
       final problem = ApiProblem.fromDioException(exception);
+      // Verifie avant le paiement : une application trop ancienne doit
+      // apprendre qu'elle est perimee, pas qu'il faut payer. Lui montrer un
+      // ecran de paiement qu'elle ne sait peut-etre meme pas afficher
+      // enverrait l'utilisateur dans une impasse.
+      if (problem.isUpgradeRequired) {
+        tokenStore.markUpgradeRequired(
+          minimumVersion: problem.minimumVersion,
+          storeUrl: problem.storeUrl,
+        );
+        throw problem;
+      }
       if (problem.isPaymentRequired) {
         tokenStore.markPaymentRequired();
         throw problem;

@@ -2539,6 +2539,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Augmenter'**
   String get increase;
+
+  /// No description provided for @upgradeRequiredTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mise à jour requise'**
+  String get upgradeRequiredTitle;
+
+  /// No description provided for @upgradeRequiredBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette version de l\'application n\'est plus acceptée par le serveur. Mets-la à jour pour continuer à enregistrer tes séances.'**
+  String get upgradeRequiredBody;
+
+  /// No description provided for @upgradeRequiredMinimum.
+  ///
+  /// In fr, this message translates to:
+  /// **'Version minimale attendue : {version}'**
+  String upgradeRequiredMinimum(String version);
+
+  /// No description provided for @upgradeRequiredCopyLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier le lien du magasin'**
+  String get upgradeRequiredCopyLink;
+
+  /// No description provided for @upgradeRequiredLinkCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien copié dans le presse-papiers'**
+  String get upgradeRequiredLinkCopied;
+
+  /// No description provided for @upgradeRequiredRetry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get upgradeRequiredRetry;
 }
 
 class _AppLocalizationsDelegate
