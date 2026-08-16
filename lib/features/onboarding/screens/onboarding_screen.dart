@@ -263,6 +263,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         );
       }
       await api.saveProfile(profile);
+      final savedProfile = await api.getProfile();
+      if (!_isProfilePersisted(savedProfile)) {
+        _showMessage(l10n.profileSaveVerificationFailed);
+        return;
+      }
       await ref
           .read(authTokenStoreProvider)
           .markProfileCompleted(displayName: _displayNameController.text);
@@ -452,6 +457,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       'fitnessLevel': _fitnessLevel.apiValue,
       'preferredSports': [_favoriteSport.apiValue],
     };
+  }
+
+  bool _isProfilePersisted(Map<String, dynamic> profile) {
+    final displayName = jsonString(profile, 'displayName')?.trim();
+    return displayName != null &&
+        displayName.isNotEmpty &&
+        jsonInt(profile, 'heightCm') > 0 &&
+        jsonDouble(profile, 'currentWeightKg') > 0;
   }
 
   void _showMessage(String message) {

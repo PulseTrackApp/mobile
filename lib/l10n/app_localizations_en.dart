@@ -955,6 +955,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'GPS is active. You can pause, resume or finish the workout.';
 
   @override
+  String get confirmPauseTitle => 'Pause this workout?';
+
+  @override
+  String get confirmPauseBody =>
+      'Active time stops and the route continues when you resume.';
+
+  @override
+  String get confirmPauseAction => 'Pause';
+
+  @override
+  String get confirmFinishTitle => 'Finish this workout?';
+
+  @override
+  String get confirmFinishBody =>
+      'You will leave live tracking and move to the summary. Make sure the workout is really done.';
+
+  @override
+  String get confirmFinishAction => 'Finish';
+
+  @override
   String get statsThisWeek => 'This week';
 
   @override
@@ -1064,6 +1084,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completedGoals => 'Completed goals';
+
+  @override
+  String get pricingTitle => 'Pricing';
+
+  @override
+  String get pricingSubtitle =>
+      'GymFlow plans are coming soon. Access and modules are being prepared.';
+
+  @override
+  String get pricingComingSoon => 'Coming soon';
+
+  @override
+  String get pricingRequiredTitle => 'Payment required';
+
+  @override
+  String get pricingRequiredBody =>
+      'Your access must be activated to continue using these features.';
+
+  @override
+  String get pricingRetryAccess => 'Check access';
+
+  @override
+  String get pricingPlanEssential => 'Essential';
+
+  @override
+  String get pricingPlanPerformance => 'Performance';
+
+  @override
+  String get pricingPlanCoach => 'Super Coach';
+
+  @override
+  String get pricingFeatureTracking =>
+      'GPS tracking, pause and workout summary';
+
+  @override
+  String get pricingFeatureStats => 'Week, month and year stats';
+
+  @override
+  String get pricingFeatureHistory => 'History and saved routes';
+
+  @override
+  String get pricingFeatureChallenges => 'Distance + time challenges';
+
+  @override
+  String get pricingFeatureRouteReplay => 'Replay a saved route';
+
+  @override
+  String get pricingFeatureExports => 'Share map only or map + data';
+
+  @override
+  String get pricingFeatureCoach => 'Personalized advice';
+
+  @override
+  String get pricingFeatureWeeklyReview => 'Weekly review';
+
+  @override
+  String get pricingFeatureMotivation => 'Motivation and celebrations';
+
+  @override
+  String get sessionExpiredToast =>
+      'Your session has expired. Sign in again to continue.';
+
+  @override
+  String get paymentRequiredToast =>
+      'Paid access will be required to continue.';
+
+  @override
+  String get profileSaveVerificationFailed =>
+      'The profile has not been confirmed by the server yet. Try again.';
 
   @override
   String get emptyDuration => '00:00:00';

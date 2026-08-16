@@ -207,9 +207,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     setState(() => _isSaving = true);
 
     try {
-      final savedProfile = await ref
-          .read(pulseTrackApiProvider)
-          .saveProfile(profile);
+      final api = ref.read(pulseTrackApiProvider);
+      await api.saveProfile(profile);
+      final savedProfile = await api.getProfile();
       if (mounted) {
         setState(() => _applyProfile(savedProfile, updateFields: false));
       }
@@ -257,11 +257,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (!updateFields) return;
 
     _displayNameController.text = jsonString(profile, 'displayName') ?? '';
-    _weightController.text = jsonDouble(
-      profile,
-      'currentWeightKg',
-    ).toStringAsFixed(1);
-    _heightController.text = jsonInt(profile, 'heightCm').toString();
+    final weight = jsonDouble(profile, 'currentWeightKg');
+    _weightController.text = weight > 0 ? weight.toStringAsFixed(1) : '';
+    final height = jsonInt(profile, 'heightCm');
+    _heightController.text = height > 0 ? height.toString() : '';
     _fitnessLevel = FitnessLevelOption.fromApiValue(
       jsonString(profile, 'fitnessLevel'),
     );

@@ -1862,6 +1862,42 @@ abstract class AppLocalizations {
   /// **'GPS actif. Tu peux mettre en pause, reprendre ou terminer la séance.'**
   String get notConnectedYet;
 
+  /// No description provided for @confirmPauseTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre la séance en pause ?'**
+  String get confirmPauseTitle;
+
+  /// No description provided for @confirmPauseBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le chrono actif s\'arrête et la trace reprend quand tu relances.'**
+  String get confirmPauseBody;
+
+  /// No description provided for @confirmPauseAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre en pause'**
+  String get confirmPauseAction;
+
+  /// No description provided for @confirmFinishTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer la séance ?'**
+  String get confirmFinishTitle;
+
+  /// No description provided for @confirmFinishBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu vas quitter le suivi en direct et passer au résumé. Vérifie que la séance est bien finie.'**
+  String get confirmFinishBody;
+
+  /// No description provided for @confirmFinishAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer'**
+  String get confirmFinishAction;
+
   /// No description provided for @statsThisWeek.
   ///
   /// In fr, this message translates to:
@@ -2071,6 +2107,132 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Objectifs terminés'**
   String get completedGoals;
+
+  /// No description provided for @pricingTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pricing'**
+  String get pricingTitle;
+
+  /// No description provided for @pricingSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les offres GymFlow arrivent bientôt. Préparation des accès et modules.'**
+  String get pricingSubtitle;
+
+  /// No description provided for @pricingComingSoon.
+  ///
+  /// In fr, this message translates to:
+  /// **'À venir'**
+  String get pricingComingSoon;
+
+  /// No description provided for @pricingRequiredTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement requis'**
+  String get pricingRequiredTitle;
+
+  /// No description provided for @pricingRequiredBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton accès doit être activé pour continuer à utiliser ces fonctionnalités.'**
+  String get pricingRequiredBody;
+
+  /// No description provided for @pricingRetryAccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier l\'accès'**
+  String get pricingRetryAccess;
+
+  /// No description provided for @pricingPlanEssential.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essentiel'**
+  String get pricingPlanEssential;
+
+  /// No description provided for @pricingPlanPerformance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Performance'**
+  String get pricingPlanPerformance;
+
+  /// No description provided for @pricingPlanCoach.
+  ///
+  /// In fr, this message translates to:
+  /// **'Super Coach'**
+  String get pricingPlanCoach;
+
+  /// No description provided for @pricingFeatureTracking.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tracking GPS, pause et résumé de séance'**
+  String get pricingFeatureTracking;
+
+  /// No description provided for @pricingFeatureStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stats semaine, mois et année'**
+  String get pricingFeatureStats;
+
+  /// No description provided for @pricingFeatureHistory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique et parcours enregistrés'**
+  String get pricingFeatureHistory;
+
+  /// No description provided for @pricingFeatureChallenges.
+  ///
+  /// In fr, this message translates to:
+  /// **'Défis distance + temps'**
+  String get pricingFeatureChallenges;
+
+  /// No description provided for @pricingFeatureRouteReplay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refaire un parcours déjà enregistré'**
+  String get pricingFeatureRouteReplay;
+
+  /// No description provided for @pricingFeatureExports.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partage carte seule ou carte + données'**
+  String get pricingFeatureExports;
+
+  /// No description provided for @pricingFeatureCoach.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseils personnalisés'**
+  String get pricingFeatureCoach;
+
+  /// No description provided for @pricingFeatureWeeklyReview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bilan hebdomadaire'**
+  String get pricingFeatureWeeklyReview;
+
+  /// No description provided for @pricingFeatureMotivation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motivations et félicitations'**
+  String get pricingFeatureMotivation;
+
+  /// No description provided for @sessionExpiredToast.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ta session a expiré. Reconnecte-toi pour continuer.'**
+  String get sessionExpiredToast;
+
+  /// No description provided for @paymentRequiredToast.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un accès payant sera requis pour continuer.'**
+  String get paymentRequiredToast;
+
+  /// No description provided for @profileSaveVerificationFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le profil n\'a pas encore été confirmé par le serveur. Réessaie.'**
+  String get profileSaveVerificationFailed;
 
   /// No description provided for @emptyDuration.
   ///

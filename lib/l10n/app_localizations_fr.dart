@@ -963,6 +963,26 @@ class AppLocalizationsFr extends AppLocalizations {
       'GPS actif. Tu peux mettre en pause, reprendre ou terminer la séance.';
 
   @override
+  String get confirmPauseTitle => 'Mettre la séance en pause ?';
+
+  @override
+  String get confirmPauseBody =>
+      'Le chrono actif s\'arrête et la trace reprend quand tu relances.';
+
+  @override
+  String get confirmPauseAction => 'Mettre en pause';
+
+  @override
+  String get confirmFinishTitle => 'Terminer la séance ?';
+
+  @override
+  String get confirmFinishBody =>
+      'Tu vas quitter le suivi en direct et passer au résumé. Vérifie que la séance est bien finie.';
+
+  @override
+  String get confirmFinishAction => 'Terminer';
+
+  @override
   String get statsThisWeek => 'Cette semaine';
 
   @override
@@ -1073,6 +1093,75 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get completedGoals => 'Objectifs terminés';
+
+  @override
+  String get pricingTitle => 'Pricing';
+
+  @override
+  String get pricingSubtitle =>
+      'Les offres GymFlow arrivent bientôt. Préparation des accès et modules.';
+
+  @override
+  String get pricingComingSoon => 'À venir';
+
+  @override
+  String get pricingRequiredTitle => 'Paiement requis';
+
+  @override
+  String get pricingRequiredBody =>
+      'Ton accès doit être activé pour continuer à utiliser ces fonctionnalités.';
+
+  @override
+  String get pricingRetryAccess => 'Vérifier l\'accès';
+
+  @override
+  String get pricingPlanEssential => 'Essentiel';
+
+  @override
+  String get pricingPlanPerformance => 'Performance';
+
+  @override
+  String get pricingPlanCoach => 'Super Coach';
+
+  @override
+  String get pricingFeatureTracking =>
+      'Tracking GPS, pause et résumé de séance';
+
+  @override
+  String get pricingFeatureStats => 'Stats semaine, mois et année';
+
+  @override
+  String get pricingFeatureHistory => 'Historique et parcours enregistrés';
+
+  @override
+  String get pricingFeatureChallenges => 'Défis distance + temps';
+
+  @override
+  String get pricingFeatureRouteReplay => 'Refaire un parcours déjà enregistré';
+
+  @override
+  String get pricingFeatureExports => 'Partage carte seule ou carte + données';
+
+  @override
+  String get pricingFeatureCoach => 'Conseils personnalisés';
+
+  @override
+  String get pricingFeatureWeeklyReview => 'Bilan hebdomadaire';
+
+  @override
+  String get pricingFeatureMotivation => 'Motivations et félicitations';
+
+  @override
+  String get sessionExpiredToast =>
+      'Ta session a expiré. Reconnecte-toi pour continuer.';
+
+  @override
+  String get paymentRequiredToast =>
+      'Un accès payant sera requis pour continuer.';
+
+  @override
+  String get profileSaveVerificationFailed =>
+      'Le profil n\'a pas encore été confirmé par le serveur. Réessaie.';
 
   @override
   String get emptyDuration => '00:00:00';

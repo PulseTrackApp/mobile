@@ -151,9 +151,9 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
           _TrackingControls(
             status: state.status,
             onStart: _start,
-            onPause: _trackingController.pause,
+            onPause: _requestPause,
             onResume: _resume,
-            onFinish: _finish,
+            onFinish: _requestFinish,
           ),
           const SizedBox(height: 18),
           _LiveDetailsPanel(
@@ -226,6 +226,63 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     } on TrackingException catch (error) {
       _showTrackingError(error.issue);
     }
+  }
+
+  Future<void> _requestPause() async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await _confirmTrackingAction(
+      title: l10n.confirmPauseTitle,
+      body: l10n.confirmPauseBody,
+      actionLabel: l10n.confirmPauseAction,
+      actionIcon: Icons.pause_rounded,
+    );
+    if (confirmed != true || !mounted) return;
+    _trackingController.pause();
+  }
+
+  Future<void> _requestFinish() async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await _confirmTrackingAction(
+      title: l10n.confirmFinishTitle,
+      body: l10n.confirmFinishBody,
+      actionLabel: l10n.confirmFinishAction,
+      actionIcon: Icons.stop_rounded,
+      destructive: true,
+    );
+    if (confirmed != true || !mounted) return;
+    _finish();
+  }
+
+  Future<bool?> _confirmTrackingAction({
+    required String title,
+    required String body,
+    required String actionLabel,
+    required IconData actionIcon,
+    bool destructive = false,
+  }) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(body),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            ),
+            FilledButton.icon(
+              style: destructive
+                  ? FilledButton.styleFrom(backgroundColor: AppColors.danger)
+                  : null,
+              onPressed: () => Navigator.of(context).pop(true),
+              icon: Icon(actionIcon),
+              label: Text(actionLabel),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _finish() {

@@ -24,6 +24,9 @@ class AuthTokenStore extends ChangeNotifier {
   String? _displayName;
   bool _profileCompleted = false;
   bool _emailVerified = false;
+  bool _paymentRequired = false;
+  int _sessionExpiredNoticeId = 0;
+  int _paymentRequiredNoticeId = 0;
 
   String? get accessToken => _accessToken;
 
@@ -40,6 +43,12 @@ class AuthTokenStore extends ChangeNotifier {
   bool get emailVerified => _emailVerified;
 
   bool get isAuthenticated => _accessToken != null && _accessToken!.isNotEmpty;
+
+  bool get paymentRequired => _paymentRequired;
+
+  int get sessionExpiredNoticeId => _sessionExpiredNoticeId;
+
+  int get paymentRequiredNoticeId => _paymentRequiredNoticeId;
 
   Future<void> restore() async {
     _accessToken = await _storage.read(key: _accessTokenKey);
@@ -59,6 +68,7 @@ class AuthTokenStore extends ChangeNotifier {
     _userId = session.userId;
     _profileCompleted = session.profileCompleted;
     _emailVerified = session.emailVerified;
+    _paymentRequired = false;
 
     await Future.wait([
       _storage.write(key: _accessTokenKey, value: session.accessToken),
@@ -74,6 +84,18 @@ class AuthTokenStore extends ChangeNotifier {
         value: session.emailVerified.toString(),
       ),
     ]);
+    notifyListeners();
+  }
+
+  void markPaymentRequired() {
+    _paymentRequired = true;
+    _paymentRequiredNoticeId++;
+    notifyListeners();
+  }
+
+  void clearPaymentRequired() {
+    if (!_paymentRequired) return;
+    _paymentRequired = false;
     notifyListeners();
   }
 
@@ -110,6 +132,21 @@ class AuthTokenStore extends ChangeNotifier {
   }
 
   Future<void> clear() async {
+    _clearInMemorySession();
+    _paymentRequired = false;
+    await _deleteStoredSession();
+    notifyListeners();
+  }
+
+  Future<void> expireSession() async {
+    _clearInMemorySession();
+    _paymentRequired = false;
+    _sessionExpiredNoticeId++;
+    await _deleteStoredSession();
+    notifyListeners();
+  }
+
+  void _clearInMemorySession() {
     _accessToken = null;
     _refreshToken = null;
     _email = null;
@@ -117,8 +154,10 @@ class AuthTokenStore extends ChangeNotifier {
     _displayName = null;
     _profileCompleted = false;
     _emailVerified = false;
+  }
 
-    await Future.wait([
+  Future<void> _deleteStoredSession() {
+    return Future.wait([
       _storage.delete(key: _accessTokenKey),
       _storage.delete(key: _refreshTokenKey),
       _storage.delete(key: _emailKey),
@@ -127,6 +166,5 @@ class AuthTokenStore extends ChangeNotifier {
       _storage.delete(key: _profileCompletedKey),
       _storage.delete(key: _emailVerifiedKey),
     ]);
-    notifyListeners();
   }
 }

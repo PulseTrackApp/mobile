@@ -6,11 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_settings_controller.dart';
 import '../core/api/api_providers.dart';
+import '../core/api/auth_token_store.dart';
 import '../core/modules/module_providers.dart';
 import '../core/push/push_providers.dart';
 import '../core/theme/app_theme.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/onboarding/screens/onboarding_screen.dart';
+import '../features/pricing/screens/pricing_screen.dart';
 import '../l10n/app_localizations.dart';
 
 class PulseTrackApp extends ConsumerStatefulWidget {
@@ -26,7 +28,10 @@ class PulseTrackApp extends ConsumerStatefulWidget {
 class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
     with WidgetsBindingObserver {
   late final AppSettingsController _settingsController;
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   late bool _showOnboarding;
+  int _lastSessionExpiredNoticeId = 0;
+  int _lastPaymentRequiredNoticeId = 0;
 
   @override
   void initState() {
@@ -76,6 +81,11 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
           return MaterialApp(
             title: 'GymFlow',
             debugShowCheckedModeBanner: false,
+            scaffoldMessengerKey: _scaffoldMessengerKey,
+            builder: (context, child) {
+              _showGlobalNotices(AppLocalizations.of(context), tokenStore);
+              return child ?? const SizedBox.shrink();
+            },
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: _settingsController.themeMode,
@@ -87,7 +97,17 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
-            home: showOnboarding
+            home: tokenStore.paymentRequired && tokenStore.isAuthenticated
+                ? PricingScreen(
+                    paymentRequired: true,
+                    onRetryAccess: () {
+                      ref.read(authTokenStoreProvider).clearPaymentRequired();
+                      unawaited(
+                        ref.read(moduleAccessControllerProvider).refresh(),
+                      );
+                    },
+                  )
+                : showOnboarding
                 ? OnboardingScreen(
                     onComplete: () {
                       setState(() {
@@ -100,5 +120,27 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
         },
       ),
     );
+  }
+
+  void _showGlobalNotices(AppLocalizations l10n, AuthTokenStore tokenStore) {
+    if (tokenStore.sessionExpiredNoticeId != _lastSessionExpiredNoticeId) {
+      _lastSessionExpiredNoticeId = tokenStore.sessionExpiredNoticeId;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text(l10n.sessionExpiredToast)),
+        );
+      });
+    }
+
+    if (tokenStore.paymentRequiredNoticeId != _lastPaymentRequiredNoticeId) {
+      _lastPaymentRequiredNoticeId = tokenStore.paymentRequiredNoticeId;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text(l10n.paymentRequiredToast)),
+        );
+      });
+    }
   }
 }

@@ -55,20 +55,26 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
             segments: [
               ButtonSegment<_StatsPeriod>(
                 value: _StatsPeriod.week,
-                label: Text(l10n.statsPeriodWeek),
+                label: _PeriodSegmentLabel(l10n.statsPeriodWeek),
                 icon: const Icon(Icons.view_week_outlined),
               ),
               ButtonSegment<_StatsPeriod>(
                 value: _StatsPeriod.month,
-                label: Text(l10n.statsPeriodMonth),
+                label: _PeriodSegmentLabel(l10n.statsPeriodMonth),
                 icon: const Icon(Icons.calendar_view_month_outlined),
               ),
               ButtonSegment<_StatsPeriod>(
                 value: _StatsPeriod.year,
-                label: Text(l10n.statsPeriodYear),
+                label: _PeriodSegmentLabel(l10n.statsPeriodYear),
                 icon: const Icon(Icons.calendar_today_outlined),
               ),
             ],
+            style: const ButtonStyle(
+              visualDensity: VisualDensity.compact,
+              textStyle: WidgetStatePropertyAll(
+                TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+              ),
+            ),
             selected: {_period},
             onSelectionChanged: (selection) {
               setState(() {
@@ -95,9 +101,9 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               }
 
               final stats = snapshot.data;
-              final totals = jsonMap(stats, 'totals');
-              final series = jsonList(stats, 'series');
-              final records = jsonMap(stats, 'records');
+              final totals = _statsTotals(stats);
+              final series = _statsSeries(stats);
+              final records = _statsRecords(stats);
 
               return Column(
                 children: [
@@ -129,7 +135,10 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                     color: AppColors.gps,
                     label: l10n.bestPace,
                     value: formatPace(
-                      jsonInt(records, 'bestPaceSecondsPerKm'),
+                      _firstPositiveInt([
+                        jsonInt(records, 'bestPaceSecondsPerKm'),
+                        jsonInt(stats, 'bestPaceSecondsPerKm'),
+                      ]),
                       l10n,
                     ),
                   ),
@@ -139,7 +148,10 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                     color: AppColors.primary,
                     label: l10n.longestDistance,
                     value: formatMetersAsKm(
-                      jsonDouble(records, 'longestDistanceMeters'),
+                      _firstPositiveDouble([
+                        jsonDouble(records, 'longestDistanceMeters'),
+                        jsonDouble(stats, 'longestDistanceMeters'),
+                      ]),
                       l10n,
                     ),
                   ),
@@ -148,7 +160,11 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                     icon: Icons.flag_rounded,
                     color: AppColors.accent,
                     label: l10n.completedGoals,
-                    value: l10n.zero,
+                    value: _firstPositiveInt([
+                      jsonInt(records, 'completedGoals'),
+                      jsonInt(stats, 'completedGoals'),
+                      jsonInt(totals, 'completedGoals'),
+                    ]).toString(),
                   ),
                 ],
               );
@@ -183,6 +199,24 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   }
 }
 
+class _PeriodSegmentLabel extends StatelessWidget {
+  const _PeriodSegmentLabel(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(
+        label,
+        maxLines: 1,
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+}
+
 class _StatsOverviewGrid extends StatelessWidget {
   const _StatsOverviewGrid({required this.period, required this.totals});
 
@@ -206,7 +240,12 @@ class _StatsOverviewGrid extends StatelessWidget {
               width: itemWidth,
               child: AppMetricTile(
                 label: l10n.distance,
-                value: formatKm(jsonDouble(totals, 'distanceMeters')),
+                value: formatKm(
+                  _firstPositiveDouble([
+                    jsonDouble(totals, 'distanceMeters'),
+                    jsonDouble(totals, 'distance'),
+                  ]),
+                ),
                 unit: l10n.kilometersUnit,
                 color: AppColors.primary,
               ),
@@ -215,7 +254,11 @@ class _StatsOverviewGrid extends StatelessWidget {
               width: itemWidth,
               child: AppMetricTile(
                 label: l10n.sessions,
-                value: jsonInt(totals, 'sessionCount').toString(),
+                value: _firstPositiveInt([
+                  jsonInt(totals, 'sessionCount'),
+                  jsonInt(totals, 'sessionsCount'),
+                  jsonInt(totals, 'workoutsCount'),
+                ]).toString(),
                 unit: '',
                 color: AppColors.gps,
               ),
@@ -225,7 +268,11 @@ class _StatsOverviewGrid extends StatelessWidget {
               child: AppMetricTile(
                 label: l10n.movingTime,
                 value: formatDurationShort(
-                  jsonInt(totals, 'movingDurationSeconds'),
+                  _firstPositiveInt([
+                    jsonInt(totals, 'movingDurationSeconds'),
+                    jsonInt(totals, 'durationSeconds'),
+                    jsonInt(totals, 'activeDurationSeconds'),
+                  ]),
                   l10n,
                 ),
                 unit: '',
@@ -239,8 +286,14 @@ class _StatsOverviewGrid extends StatelessWidget {
                     ? l10n.activeDays
                     : l10n.caloriesBurned,
                 value: period == _StatsPeriod.week
-                    ? jsonInt(totals, 'activeDays').toString()
-                    : jsonInt(totals, 'caloriesBurned').toString(),
+                    ? _firstPositiveInt([
+                        jsonInt(totals, 'activeDays'),
+                        jsonInt(totals, 'daysActive'),
+                      ]).toString()
+                    : _firstPositiveInt([
+                        jsonInt(totals, 'caloriesBurned'),
+                        jsonInt(totals, 'calories'),
+                      ]).toString(),
                 unit: period == _StatsPeriod.week ? '' : 'kcal',
                 color: AppColors.danger,
               ),
@@ -267,9 +320,13 @@ class _PeriodBars extends StatelessWidget {
     };
 
     final maxDistance = series
-        .map(
-          (bucket) => jsonDouble(jsonMap(bucket, 'totals'), 'distanceMeters'),
-        )
+        .map((bucket) {
+          final bucketTotals = jsonMap(bucket, 'totals') ?? bucket;
+          return _firstPositiveDouble([
+            jsonDouble(bucketTotals, 'distanceMeters'),
+            jsonDouble(bucketTotals, 'distance'),
+          ]);
+        })
         .fold<double>(0, (max, value) => value > max ? value : max);
 
     return SizedBox(
@@ -279,10 +336,11 @@ class _PeriodBars extends StatelessWidget {
         children: List.generate(count, (index) {
           final isCurrent = index == count - 1;
           final bucket = index < series.length ? series[index] : null;
-          final distance = jsonDouble(
-            jsonMap(bucket, 'totals'),
-            'distanceMeters',
-          );
+          final bucketTotals = jsonMap(bucket, 'totals') ?? bucket;
+          final distance = _firstPositiveDouble([
+            jsonDouble(bucketTotals, 'distanceMeters'),
+            jsonDouble(bucketTotals, 'distance'),
+          ]);
           final ratio = maxDistance <= 0
               ? 0.08
               : (distance / maxDistance).clamp(0.08, 1.0);
@@ -309,6 +367,36 @@ class _PeriodBars extends StatelessWidget {
       ),
     );
   }
+}
+
+Map<String, dynamic>? _statsTotals(Map<String, dynamic>? stats) {
+  return jsonMap(stats, 'totals') ?? jsonMap(stats, 'summary') ?? stats;
+}
+
+Map<String, dynamic>? _statsRecords(Map<String, dynamic>? stats) {
+  return jsonMap(stats, 'records') ?? jsonMap(stats, 'best') ?? stats;
+}
+
+List<Map<String, dynamic>> _statsSeries(Map<String, dynamic>? stats) {
+  final series = jsonList(stats, 'series');
+  if (series.isNotEmpty) return series;
+  final buckets = jsonList(stats, 'buckets');
+  if (buckets.isNotEmpty) return buckets;
+  return jsonList(stats, 'items');
+}
+
+double _firstPositiveDouble(List<double> values) {
+  for (final value in values) {
+    if (value > 0) return value;
+  }
+  return 0;
+}
+
+int _firstPositiveInt(List<int> values) {
+  for (final value in values) {
+    if (value > 0) return value;
+  }
+  return 0;
 }
 
 enum _StatsPeriod {

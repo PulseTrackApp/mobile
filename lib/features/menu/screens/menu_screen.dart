@@ -13,6 +13,7 @@ import '../../body/screens/body_progress_screen.dart';
 import '../../coach/screens/super_coach_screen.dart';
 import '../../goals/screens/goals_screen.dart';
 import '../../history/screens/workout_history_screen.dart';
+import '../../pricing/screens/pricing_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import '../../settings/screens/settings_screen.dart';
 
@@ -101,6 +102,14 @@ class MenuScreen extends ConsumerWidget {
                   onTap: moduleAccess.isEnabled(AppModule.coach)
                       ? () => _push(context, const SuperCoachScreen())
                       : null,
+                ),
+                const _MenuDivider(),
+                AppMenuTile(
+                  icon: Icons.workspace_premium_outlined,
+                  title: l10n.pricingTitle,
+                  subtitle: l10n.pricingSubtitle,
+                  color: AppColors.accent,
+                  onTap: () => _push(context, const PricingScreen()),
                 ),
                 const _MenuDivider(),
                 AppMenuTile(

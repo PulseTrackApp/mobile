@@ -9,6 +9,15 @@ import 'auth_token_store.dart';
 typedef JsonMap = Map<String, dynamic>;
 
 class PulseTrackApi {
+  static const _appVersion = String.fromEnvironment(
+    'GYMFLOW_APP_VERSION',
+    defaultValue: '1.0.0',
+  );
+  static const _appBuild = String.fromEnvironment(
+    'GYMFLOW_APP_BUILD',
+    defaultValue: '6',
+  );
+
   PulseTrackApi({ApiConfig? config, AuthTokenStore? tokenStore, Dio? dio})
     : config = config ?? ApiConfig.fromEnvironment(),
       tokenStore = tokenStore ?? AuthTokenStore(),
@@ -32,6 +41,10 @@ class PulseTrackApi {
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
+          options.headers['X-GymFlow-Client'] = 'mobile-flutter';
+          options.headers['X-GymFlow-App-Version'] = _appVersion;
+          options.headers['X-GymFlow-App-Build'] = _appBuild;
+          options.headers['X-GymFlow-Pricing-Gate'] = '1';
           handler.next(options);
         },
       ),
@@ -445,6 +458,10 @@ class PulseTrackApi {
       return decode(response);
     } on DioException catch (exception) {
       final problem = ApiProblem.fromDioException(exception);
+      if (problem.isPaymentRequired) {
+        tokenStore.markPaymentRequired();
+        throw problem;
+      }
       if (retryOnUnauthorized &&
           problem.isUnauthorized &&
           await _tryRefreshSession()) {
@@ -452,8 +469,18 @@ class PulseTrackApi {
           final response = await request();
           return decode(response);
         } on DioException catch (retryException) {
-          throw ApiProblem.fromDioException(retryException);
+          final retryProblem = ApiProblem.fromDioException(retryException);
+          if (retryProblem.isPaymentRequired) {
+            tokenStore.markPaymentRequired();
+          }
+          if (retryProblem.isUnauthorized) {
+            await tokenStore.expireSession();
+          }
+          throw retryProblem;
         }
+      }
+      if (retryOnUnauthorized && problem.isUnauthorized) {
+        await tokenStore.expireSession();
       }
       throw problem;
     }
@@ -467,7 +494,7 @@ class PulseTrackApi {
       await refreshSession();
       return true;
     } catch (_) {
-      await tokenStore.clear();
+      await tokenStore.expireSession();
       return false;
     }
   }

@@ -69,6 +69,19 @@ class ApiProblem implements Exception {
 
   bool get isUnauthorized => status == 401;
 
+  bool get isPaymentRequired {
+    final normalizedType = type?.path.toLowerCase() ?? '';
+    final normalizedText = '$title $detail'.toLowerCase();
+    return status == 402 ||
+        normalizedType.endsWith('/payment-required') ||
+        normalizedType.endsWith('/subscription-required') ||
+        normalizedType.endsWith('/pricing-required') ||
+        normalizedText.contains('payment required') ||
+        normalizedText.contains('subscription required') ||
+        normalizedText.contains('abonnement requis') ||
+        normalizedText.contains('paiement requis');
+  }
+
   bool get isModuleLocked =>
       status == 403 && type?.path.endsWith('/module-locked') == true;
 
