@@ -713,5 +713,10 @@
     }
   },
   "supportCopyDiagnostics": "Copy these details",
-  "supportDiagnosticsCopied": "Details copied."
+  "supportDiagnosticsCopied": "Details copied.",
+  "accountDisabledTitle": "Account suspended",
+  "accountDisabledBody": "Access to this account has been closed. Your data is not deleted and the suspension can be lifted.",
+  "accountDisabledContactTitle": "Get in touch",
+  "accountDisabledContactBody": "Write to us if you think this is a mistake, or to ask for your account to be reopened.",
+  "accountDisabledRetry": "Try again"
 }

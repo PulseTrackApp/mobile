@@ -1095,7 +1095,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get completedGoals => 'Objectifs terminés';
 
   @override
-  String get pricingTitle => 'Pricing';
+  String get pricingTitle => 'Tarifs';
 
   @override
   String get pricingSubtitle =>
@@ -1717,4 +1717,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supportDiagnosticsCopied => 'Informations copiées.';
+
+  @override
+  String get accountDisabledTitle => 'Compte suspendu';
+
+  @override
+  String get accountDisabledBody =>
+      'L\'accès à ce compte a été fermé. Tes données ne sont pas effacées et la suspension peut être levée.';
+
+  @override
+  String get accountDisabledContactTitle => 'Faire le point';
+
+  @override
+  String get accountDisabledContactBody =>
+      'Écris-nous si tu penses qu\'il s\'agit d\'une erreur, ou pour demander la réouverture de ton compte.';
+
+  @override
+  String get accountDisabledRetry => 'Réessayer';
 }

@@ -2111,7 +2111,7 @@ abstract class AppLocalizations {
   /// No description provided for @pricingTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Pricing'**
+  /// **'Tarifs'**
   String get pricingTitle;
 
   /// No description provided for @pricingSubtitle.
@@ -3193,6 +3193,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Informations copiées.'**
   String get supportDiagnosticsCopied;
+
+  /// No description provided for @accountDisabledTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte suspendu'**
+  String get accountDisabledTitle;
+
+  /// No description provided for @accountDisabledBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'accès à ce compte a été fermé. Tes données ne sont pas effacées et la suspension peut être levée.'**
+  String get accountDisabledBody;
+
+  /// No description provided for @accountDisabledContactTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire le point'**
+  String get accountDisabledContactTitle;
+
+  /// No description provided for @accountDisabledContactBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écris-nous si tu penses qu\'il s\'agit d\'une erreur, ou pour demander la réouverture de ton compte.'**
+  String get accountDisabledContactBody;
+
+  /// No description provided for @accountDisabledRetry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get accountDisabledRetry;
 }
 
 class _AppLocalizationsDelegate

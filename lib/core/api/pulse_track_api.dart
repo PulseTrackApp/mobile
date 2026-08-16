@@ -17,11 +17,11 @@ class PulseTrackApi {
   // l'on cherche a savoir quelle version tourne.
   static const _appVersion = String.fromEnvironment(
     'GYMFLOW_APP_VERSION',
-    defaultValue: '1.3.0',
+    defaultValue: '1.4.0',
   );
   static const _appBuild = String.fromEnvironment(
     'GYMFLOW_APP_BUILD',
-    defaultValue: '9',
+    defaultValue: '10',
   );
 
   /// Version annoncee au serveur, et affichee par l'ecran « à propos ».
@@ -658,6 +658,13 @@ class PulseTrackApi {
       // apprendre qu'elle est perimee, pas qu'il faut payer. Lui montrer un
       // ecran de paiement qu'elle ne sait peut-etre meme pas afficher
       // enverrait l'utilisateur dans une impasse.
+      // Avant tout le reste : un compte suspendu ne se debloque ni en mettant a
+      // jour l'application ni en payant. Lui proposer l'une ou l'autre
+      // l'enverrait corriger des choses qui ne rouvriront rien.
+      if (problem.isAccountDisabled) {
+        tokenStore.markAccountDisabled(problem.message);
+        throw problem;
+      }
       if (problem.isUpgradeRequired) {
         tokenStore.markUpgradeRequired(
           minimumVersion: problem.minimumVersion,

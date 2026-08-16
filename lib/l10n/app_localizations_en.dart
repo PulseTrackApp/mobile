@@ -1703,4 +1703,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supportDiagnosticsCopied => 'Details copied.';
+
+  @override
+  String get accountDisabledTitle => 'Account suspended';
+
+  @override
+  String get accountDisabledBody =>
+      'Access to this account has been closed. Your data is not deleted and the suspension can be lifted.';
+
+  @override
+  String get accountDisabledContactTitle => 'Get in touch';
+
+  @override
+  String get accountDisabledContactBody =>
+      'Write to us if you think this is a mistake, or to ask for your account to be reopened.';
+
+  @override
+  String get accountDisabledRetry => 'Try again';
 }

@@ -181,9 +181,20 @@ class _PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final color = suggested || plan.highlighted
+    // Une offre qui n'est pas en vente est peinte en gris et **sans son prix**.
+    // Annoncer un montant qu'on ne peut pas encaisser fait deux dégâts : la
+    // question « pourquoi 2 000 et je ne peux pas payer ? », et un chiffre qui
+    // s'installe dans les têtes alors qu'il n'est pas arrêté. « À venir » dit
+    // tout ce qu'il y a à dire aujourd'hui. Le prix réapparaîtra tout seul
+    // quand le serveur passera l'offre en `AVAILABLE`.
+    final color = plan.isComingSoon
+        ? theme.colorScheme.onSurfaceVariant
+        : suggested || plan.highlighted
         ? AppColors.gps
         : AppColors.primary;
+    final textColor = plan.isComingSoon
+        ? theme.colorScheme.onSurfaceVariant
+        : null;
 
     return AppPanel(
       child: Column(
@@ -210,8 +221,13 @@ class _PlanCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(plan.name, style: theme.textTheme.titleMedium),
-                    if (plan.priceLabel.isNotEmpty)
+                    Text(
+                      plan.name,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: textColor,
+                      ),
+                    ),
+                    if (!plan.isComingSoon && plan.priceLabel.isNotEmpty)
                       Text(
                         plan.priceLabel,
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -249,7 +265,10 @@ class _PlanCard extends StatelessWidget {
           ),
           if (plan.description.isNotEmpty) ...[
             const SizedBox(height: 10),
-            Text(plan.description, style: theme.textTheme.bodyMedium),
+            Text(
+              plan.description,
+              style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
+            ),
           ],
           const SizedBox(height: 14),
           ...plan.features.map(
@@ -259,7 +278,14 @@ class _PlanCard extends StatelessWidget {
                 children: [
                   Icon(Icons.check_circle_rounded, size: 18, color: color),
                   const SizedBox(width: 8),
-                  Expanded(child: Text(feature)),
+                  Expanded(
+                    child: Text(
+                      feature,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: textColor,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

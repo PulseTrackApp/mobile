@@ -425,7 +425,7 @@
   "record5k": "Record 5 km",
   "averagePace": "Allure moyenne",
   "completedGoals": "Objectifs terminés",
-  "pricingTitle": "Pricing",
+  "pricingTitle": "Tarifs",
   "pricingSubtitle": "Les offres GymFlow arrivent bientôt. Préparation des accès et modules.",
   "pricingComingSoon": "À venir",
   "pricingRequiredTitle": "Paiement requis",
@@ -713,5 +713,10 @@
     }
   },
   "supportCopyDiagnostics": "Copier ces informations",
-  "supportDiagnosticsCopied": "Informations copiées."
+  "supportDiagnosticsCopied": "Informations copiées.",
+  "accountDisabledTitle": "Compte suspendu",
+  "accountDisabledBody": "L'accès à ce compte a été fermé. Tes données ne sont pas effacées et la suspension peut être levée.",
+  "accountDisabledContactTitle": "Faire le point",
+  "accountDisabledContactBody": "Écris-nous si tu penses qu'il s'agit d'une erreur, ou pour demander la réouverture de ton compte.",
+  "accountDisabledRetry": "Réessayer"
 }

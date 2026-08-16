@@ -26,6 +26,7 @@ class AuthTokenStore extends ChangeNotifier {
   bool _emailVerified = false;
   bool _paymentRequired = false;
   bool _upgradeRequired = false;
+  String? _accountDisabledMessage;
   String? _suggestedPlanCode;
   String? _minimumVersion;
   String? _storeUrl;
@@ -55,6 +56,12 @@ class AuthTokenStore extends ChangeNotifier {
 
   /// Vrai quand l'API a refusé cette version de l'application (`426`).
   bool get upgradeRequired => _upgradeRequired;
+
+  /// Compte suspendu par un administrateur.
+  bool get accountDisabled => _accountDisabledMessage != null;
+
+  /// Explication rédigée côté serveur, raison de la suspension comprise.
+  String? get accountDisabledMessage => _accountDisabledMessage;
 
   /// Version minimale exigée, telle que le serveur l'a annoncée.
   String? get minimumVersion => _minimumVersion;
@@ -127,6 +134,26 @@ class AuthTokenStore extends ChangeNotifier {
     _upgradeRequired = true;
     _minimumVersion = minimumVersion;
     _storeUrl = storeUrl;
+    notifyListeners();
+  }
+
+  /// Le serveur a refusé la requête parce que le compte est suspendu.
+  ///
+  /// Non lié à la session, comme le refus de version : le refus s'applique aussi
+  /// à la connexion, et l'écran doit donc pouvoir s'afficher sur une application
+  /// où personne n'est connecté — c'est même le cas le plus probable, puisque la
+  /// suspension coupe les sessions en cours.
+  void markAccountDisabled(String message) {
+    if (_accountDisabledMessage == message) return;
+    _accountDisabledMessage = message;
+    notifyListeners();
+  }
+
+  /// Laisse retenter. Rien ne se débloque tant que le serveur refuse toujours,
+  /// mais l'écran ne doit pas être une prison sans bouton.
+  void clearAccountDisabled() {
+    if (_accountDisabledMessage == null) return;
+    _accountDisabledMessage = null;
     notifyListeners();
   }
 

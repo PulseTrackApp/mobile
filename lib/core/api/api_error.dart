@@ -142,6 +142,15 @@ class ApiProblem implements Exception {
   bool get isEmailNotVerified =>
       status == 403 && type?.path.endsWith('/email-not-verified') == true;
 
+  /// Le compte a ete suspendu par un administrateur.
+  ///
+  /// A distinguer des deux autres `403` : une rubrique fermee laisse le reste de
+  /// l'application utilisable, une adresse non verifiee se corrige avec un code.
+  /// Ici rien ne se corrige depuis le telephone — la seule chose juste a faire
+  /// est de dire pourquoi, en citant la raison que le serveur joint au refus.
+  bool get isAccountDisabled =>
+      status == 403 && type?.path.endsWith('/account-disabled') == true;
+
   String get message => detail.isNotEmpty ? detail : title;
 
   @override

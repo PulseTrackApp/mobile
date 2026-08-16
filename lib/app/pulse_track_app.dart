@@ -10,6 +10,7 @@ import '../core/api/auth_token_store.dart';
 import '../core/modules/module_providers.dart';
 import '../core/push/push_providers.dart';
 import '../core/theme/app_theme.dart';
+import '../features/account/screens/account_disabled_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/onboarding/screens/onboarding_screen.dart';
 import '../features/pricing/screens/pricing_screen.dart';
@@ -98,12 +99,21 @@ class _PulseTrackAppState extends ConsumerState<PulseTrackApp>
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
-            // L'ordre compte. La mise a jour passe avant le paiement : une
-            // application trop ancienne doit apprendre qu'elle est perimee, pas
-            // qu'il faut payer. Et elle passe avant l'authentification, parce
-            // que le serveur refuse aussi la connexion et l'inscription — sans
-            // quoi un vieil APK contournerait le verrou en creant un compte.
-            home: tokenStore.upgradeRequired
+            // L'ordre compte, et il est celui du serveur. La suspension passe
+            // devant tout : elle ne se debloque ni en mettant a jour ni en
+            // payant. Puis la mise a jour avant le paiement, parce qu'une
+            // application trop ancienne doit apprendre qu'elle est perimee et
+            // non qu'il faut payer. Les trois passent avant l'authentification :
+            // le serveur refuse aussi la connexion et l'inscription — sans quoi
+            // un vieil APK contournerait le verrou en creant un compte.
+            home: tokenStore.accountDisabled
+                ? AccountDisabledScreen(
+                    message: tokenStore.accountDisabledMessage,
+                    onRetry: () {
+                      ref.read(authTokenStoreProvider).clearAccountDisabled();
+                    },
+                  )
+                : tokenStore.upgradeRequired
                 ? UpgradeRequiredScreen(
                     minimumVersion: tokenStore.minimumVersion,
                     storeUrl: tokenStore.storeUrl,
