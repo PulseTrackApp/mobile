@@ -7,7 +7,26 @@ class WorkoutChallenge {
     this.referenceRoutePoints = const [],
     this.sourceWorkoutId,
     this.sourceTitle,
+    this.challengeId,
+    this.routeId,
   });
+
+  /// Défi tel que le serveur l'a enregistré.
+  ///
+  /// [challengeId] est ce qui permet de le régler à l'arrivée : il part avec la
+  /// séance, et le serveur rend le verdict dans la même réponse. Sans lui, le
+  /// défi resterait ouvert et l'appréciation ne serait jamais calculée.
+  factory WorkoutChallenge.fromServer(Map<String, dynamic> json) {
+    final seconds = (json['targetDurationSeconds'] as num?)?.toInt() ?? 0;
+    return WorkoutChallenge(
+      challengeId: json['id']?.toString(),
+      routeId: json['routeId']?.toString(),
+      sourceTitle: json['title']?.toString(),
+      targetDistanceMeters:
+          (json['targetDistanceMeters'] as num?)?.toDouble() ?? 0,
+      targetDuration: Duration(seconds: seconds),
+    );
+  }
 
   factory WorkoutChallenge.distanceTime({
     required double targetDistanceMeters,
@@ -36,6 +55,14 @@ class WorkoutChallenge {
   final List<LatLng> referenceRoutePoints;
   final String? sourceWorkoutId;
   final String? sourceTitle;
+
+  /// Identifiant du defi cote serveur, quand il en vient un. Nul pour un defi
+  /// improvise depuis l'ecran de course : celui-la n'est pas enregistre, et rien
+  /// ne sera regle a l'arrivee.
+  final String? challengeId;
+
+  /// Parcours rejoue, quand la course reprend un circuit enregistre.
+  final String? routeId;
 
   bool get hasDistanceTarget => targetDistanceMeters > 0;
   bool get hasTimeLimit => targetDuration > Duration.zero;
@@ -76,6 +103,8 @@ class WorkoutChallenge {
     List<LatLng>? referenceRoutePoints,
     String? sourceWorkoutId,
     String? sourceTitle,
+    String? challengeId,
+    String? routeId,
   }) {
     return WorkoutChallenge(
       targetDistanceMeters: targetDistanceMeters ?? this.targetDistanceMeters,
@@ -83,6 +112,8 @@ class WorkoutChallenge {
       referenceRoutePoints: referenceRoutePoints ?? this.referenceRoutePoints,
       sourceWorkoutId: sourceWorkoutId ?? this.sourceWorkoutId,
       sourceTitle: sourceTitle ?? this.sourceTitle,
+      challengeId: challengeId ?? this.challengeId,
+      routeId: routeId ?? this.routeId,
     );
   }
 }

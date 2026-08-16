@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/api/api_contract.dart';
 import '../../../l10n/app_localizations.dart';
 
 enum SportMode {
@@ -25,6 +26,15 @@ enum SportMode {
       SportMode.run => 'RUN',
       SportMode.ride => 'RIDE',
       SportMode.walk => 'WALK',
+    };
+  }
+
+  /// Le meme sport, dans le type attendu par le client d'API.
+  ApiSportType get apiSportType {
+    return switch (this) {
+      SportMode.run => ApiSportType.run,
+      SportMode.ride => ApiSportType.ride,
+      SportMode.walk => ApiSportType.walk,
     };
   }
 

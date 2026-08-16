@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/api/api_contract.dart';
 import '../../../core/api/api_formatters.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
@@ -184,11 +183,16 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     if (!ref.read(authTokenStoreProvider).isAuthenticated) return;
 
     try {
-      final stats = await ref
+      // Les records courants du sport, et non ceux des statistiques : celles-ci
+      // bornent leurs records a une periode et appartiennent au module STATS,
+      // ferme par defaut. L'apercu etait donc vide sur la plupart des comptes.
+      final sports = await ref
           .read(pulseTrackApiProvider)
-          .getStats(period: ApiStatsPeriod.lifetime, zone: gymFlowDefaultZone);
+          .getRecords(sport: widget.selectedSport.apiSportType);
       if (mounted) {
-        setState(() => _records = PersonalRecordSnapshot.fromStats(stats));
+        setState(
+          () => _records = PersonalRecordSnapshot.fromSportRecords(sports),
+        );
       }
     } catch (_) {
       // Les records motivent l'UI, mais ne doivent jamais bloquer le tracking.

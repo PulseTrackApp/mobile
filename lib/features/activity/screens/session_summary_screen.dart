@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/api/api_error.dart';
-import '../../../core/api/api_contract.dart';
 import '../../../core/api/api_formatters.dart';
 import '../../../core/api/api_providers.dart';
 import '../../../core/theme/app_colors.dart';
@@ -20,6 +19,7 @@ import '../../tracking/models/calorie_estimator.dart';
 import '../../tracking/models/sport_mode.dart';
 import '../../tracking/models/tracking_session_draft.dart';
 import '../models/workout_challenge.dart';
+import '../models/workout_outcome.dart';
 import '../models/workout_rating.dart';
 import '../models/workout_share_mode.dart';
 import '../widgets/map_preview.dart';
@@ -58,22 +58,6 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
     super.initState();
     _weightFuture = _loadWeightKg();
     _loadRecords();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final challenge = widget.challenge;
-      if (challenge?.isCompletedBy(
-            distanceMeters: widget.track.distanceMeters,
-            elapsed: widget.track.elapsed,
-          ) ==
-          true) {
-        final l10n = AppLocalizations.of(context);
-        showCelebration(
-          context,
-          title: l10n.challengeTargetReachedTitle,
-          message: l10n.challengeTargetReachedBody,
-        );
-      }
-    });
   }
 
   @override
@@ -222,40 +206,61 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
     }
   }
 
+  /// Records connus avant cette séance, pour l'aperçu affiché **avant**
+  /// l'enregistrement.
+  ///
+  /// Ils ne déclenchent aucune félicitation : c'est le serveur qui décide qu'un
+  /// record est tombé, à l'enregistrement, avec des marges anti-bruit et sur
+  /// tout l'historique du sport. Célébrer ici reviendrait à annoncer un record
+  /// que le serveur pourrait ne pas reconnaître — et sur des chiffres tirés d'un
+  /// module que la plupart des comptes n'ont même pas.
   Future<void> _loadRecords() async {
     if (!ref.read(authTokenStoreProvider).isAuthenticated) return;
 
     try {
-      final stats = await ref
+      final sports = await ref
           .read(pulseTrackApiProvider)
-          .getStats(period: ApiStatsPeriod.lifetime, zone: gymFlowDefaultZone);
-      final records = PersonalRecordSnapshot.fromStats(stats);
+          .getRecords(sport: widget.selectedSport.apiSportType);
       if (!mounted) return;
-      setState(() => _records = records);
-      final rating = WorkoutRating.evaluate(
-        distanceMeters: widget.track.distanceMeters,
-        elapsed: widget.track.elapsed,
-        paceSecondsPerKm: widget.track.paceSecondsPerKm,
-        challenge: widget.challenge,
-        records: records,
-      );
-      if (rating.distanceRecord) {
-        final l10n = AppLocalizations.of(context);
-        showCelebration(
-          context,
-          title: l10n.recordCelebrationTitle,
-          message: l10n.distanceRecordCelebrationBody,
-        );
-      } else if (rating.paceRecord) {
-        final l10n = AppLocalizations.of(context);
-        showCelebration(
-          context,
-          title: l10n.recordCelebrationTitle,
-          message: l10n.paceRecordCelebrationBody,
-        );
-      }
+      setState(() => _records = PersonalRecordSnapshot.fromSportRecords(sports));
     } catch (_) {
-      // Les records enrichissent le resume, la sauvegarde reste prioritaire.
+      // L'aperçu enrichit le résumé ; la sauvegarde reste prioritaire.
+    }
+  }
+
+  /// Célèbre ce que le serveur vient de reconnaître.
+  ///
+  /// Un seul bandeau : enchaîner trois célébrations pour une même sortie les
+  /// rendrait toutes insignifiantes. L'ordre suit ce qui se remarque le plus —
+  /// un record d'abord, puis le défi, puis le parcours.
+  void _celebrate(WorkoutOutcome outcome) {
+    if (!mounted) return;
+
+    final achievement = outcome.headlineAchievement;
+    if (achievement != null) {
+      showCelebration(
+        context,
+        title: achievement.headline,
+        message: achievement.message,
+      );
+      return;
+    }
+
+    if (outcome.shouldCelebrateChallenge) {
+      showCelebration(
+        context,
+        title: outcome.challengeHeadline ?? '',
+        message: outcome.challengeMessage ?? '',
+      );
+      return;
+    }
+
+    if (outcome.isNewRouteBest) {
+      showCelebration(
+        context,
+        title: outcome.routeHeadline ?? '',
+        message: outcome.routeMessage ?? '',
+      );
     }
   }
 
@@ -360,11 +365,22 @@ class _SessionSummaryScreenState extends ConsumerState<SessionSummaryScreen> {
         if (_noteController.text.trim().isNotEmpty)
           'note': _noteController.text.trim(),
         'gpsPoints': widget.track.apiGpsPoints,
+        // Rattachements déclaratifs : le serveur règle le défi et classe le
+        // passage dans le même appel. Un seul aller-retour à l'arrivée, ce qui
+        // compte quand le réseau revient à peine.
+        if (widget.challenge?.challengeId != null)
+          'challengeId': widget.challenge!.challengeId,
+        if (widget.challenge?.routeId != null)
+          'routeId': widget.challenge!.routeId,
       });
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.workoutSavedApi)));
+
+      // Les félicitations viennent du serveur, jamais d'un calcul local.
+      _celebrate(WorkoutOutcome.fromWorkoutResponse(savedWorkout));
+
       final summary = jsonMap(savedWorkout, 'summary') ?? savedWorkout;
       final workoutId = jsonString(summary, 'id');
       if (workoutId == null || workoutId.isEmpty) {

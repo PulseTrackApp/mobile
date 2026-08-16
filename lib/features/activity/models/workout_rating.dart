@@ -7,11 +7,44 @@ class PersonalRecordSnapshot {
     required this.bestPaceSecondsPerKm,
   });
 
-  factory PersonalRecordSnapshot.fromStats(Map<String, dynamic>? stats) {
-    final records = jsonMap(stats, 'records');
+  /// Lit les records **courants** rendus par `GET /workouts/records`.
+  ///
+  /// Remplace la lecture des statistiques, qui posait deux problèmes : leurs
+  /// records sont bornés à une période, et elles appartiennent au module
+  /// `STATS`, fermé par défaut — l'aperçu était donc vide sur la plupart des
+  /// comptes, et faux sur les autres.
+  ///
+  /// La réponse est un tableau, un bloc par sport. On n'en interroge qu'un.
+  factory PersonalRecordSnapshot.fromSportRecords(
+    List<Map<String, dynamic>> sports,
+  ) {
+    if (sports.isEmpty) {
+      return const PersonalRecordSnapshot(
+        longestDistanceMeters: 0,
+        bestPaceSecondsPerKm: 0,
+      );
+    }
+
+    final records = sports.first['records'];
+    var longestDistance = 0.0;
+    var bestPace = 0;
+
+    if (records is List) {
+      for (final entry in records.whereType<Map>()) {
+        final record = Map<String, dynamic>.from(entry);
+        final value = jsonDouble(record, 'value');
+        switch (record['kind']?.toString()) {
+          case 'LONGEST_DISTANCE':
+            longestDistance = value;
+          case 'BEST_AVERAGE_PACE':
+            bestPace = value.round();
+        }
+      }
+    }
+
     return PersonalRecordSnapshot(
-      longestDistanceMeters: jsonDouble(records, 'longestDistanceMeters'),
-      bestPaceSecondsPerKm: jsonInt(records, 'bestPaceSecondsPerKm'),
+      longestDistanceMeters: longestDistance,
+      bestPaceSecondsPerKm: bestPace,
     );
   }
 
