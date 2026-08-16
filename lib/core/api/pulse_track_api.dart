@@ -13,11 +13,11 @@ typedef JsonMap = Map<String, dynamic>;
 class PulseTrackApi {
   static const _appVersion = String.fromEnvironment(
     'GYMFLOW_APP_VERSION',
-    defaultValue: '1.0.0',
+    defaultValue: '1.1.0',
   );
   static const _appBuild = String.fromEnvironment(
     'GYMFLOW_APP_BUILD',
-    defaultValue: '6',
+    defaultValue: '7',
   );
 
   /// Plateforme annoncee au serveur, telle qu'il l'attend : `ANDROID`, `IOS`,
