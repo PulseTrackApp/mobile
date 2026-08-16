@@ -1505,4 +1505,216 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get routeSaved => 'Parcours enregistré';
+
+  @override
+  String subscriptionTrialDays(int days) {
+    return 'Il te reste $days jour(s) d\'essai';
+  }
+
+  @override
+  String get subscriptionUnknown => 'Accès en cours de vérification';
+
+  @override
+  String updateAvailableBanner(String version) {
+    return 'Une version plus récente est disponible ($version). Mets l\'application à jour quand tu peux.';
+  }
+
+  @override
+  String get updateAvailableAction => 'Mettre à jour';
+
+  @override
+  String get weekCalendarTitle => 'Ta semaine';
+
+  @override
+  String weekCalendarDaysDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours de sport',
+      one: '1 jour de sport',
+      zero: 'Aucun jour de sport',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekCalendarStreak(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours d\'affilée',
+      one: '1 jour d\'affilée',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get weekCalendarBestTitle => 'Meilleure perf';
+
+  @override
+  String get weekCalendarNoBest =>
+      'Aucun record pour l\'instant. La première séance en posera un.';
+
+  @override
+  String get weekCalendarToday => 'Aujourd\'hui';
+
+  @override
+  String get menuHelpSection => 'Aide et compte';
+
+  @override
+  String get supportTitle => 'Aide et support';
+
+  @override
+  String get supportSubtitle => 'Poser une question, signaler un souci';
+
+  @override
+  String get aboutTitle => 'À propos';
+
+  @override
+  String get aboutSubtitle => 'Version de l\'application et éditeur';
+
+  @override
+  String get legalTitle => 'Mentions légales';
+
+  @override
+  String get legalSubtitle => 'Confidentialité et conditions d\'utilisation';
+
+  @override
+  String get deleteAccountMenuSubtitle =>
+      'Effacer définitivement ton compte et tes données';
+
+  @override
+  String get supportIntro =>
+      'Décris ce que tu faisais au moment du problème et joins les informations ci-dessous : elles suffisent presque toujours à retrouver la cause.';
+
+  @override
+  String get supportContactTitle => 'Nous écrire';
+
+  @override
+  String get supportCopyEmail => 'Copier l\'adresse';
+
+  @override
+  String get supportEmailCopied => 'Adresse copiée.';
+
+  @override
+  String get supportDiagnosticsTitle => 'Informations à joindre';
+
+  @override
+  String get supportFaqTitle => 'Questions fréquentes';
+
+  @override
+  String get supportFaqGpsQuestion =>
+      'Ma trace GPS est en dents de scie ou s\'arrête';
+
+  @override
+  String get supportFaqGpsAnswer =>
+      'Le GPS a besoin du ciel dégagé et de l\'autorisation de localisation en arrière-plan. Vérifie aussi que l\'économiseur de batterie n\'a pas mis GymFlow en veille : c\'est la cause la plus fréquente d\'une trace coupée en plein milieu.';
+
+  @override
+  String get supportFaqStatsQuestion => 'Mes statistiques semblent fausses';
+
+  @override
+  String get supportFaqStatsAnswer =>
+      'Les distances sont filtrées pour écarter le bruit du GPS, si bien qu\'elles sont souvent un peu plus courtes que celles d\'une montre qui ne filtre pas. Si l\'écart dépasse quelques pour cent, écris-nous avec la date de la séance.';
+
+  @override
+  String get supportFaqLockedQuestion =>
+      'Une fonction est marquée « verrouillée »';
+
+  @override
+  String get supportFaqLockedAnswer =>
+      'Certaines fonctions s\'ouvrent compte par compte. Ce n\'est pas une panne : demande simplement l\'ouverture par courriel.';
+
+  @override
+  String get supportFaqDataQuestion =>
+      'Comment récupérer ou effacer mes données ?';
+
+  @override
+  String get supportFaqDataAnswer =>
+      'L\'export se lance depuis les réglages et te renvoie l\'intégralité de tes séances. La suppression du compte est définitive et efface tout : exporte avant si tu veux garder une trace.';
+
+  @override
+  String get aboutIntro =>
+      'GymFlow enregistre tes séances, en tire des statistiques et t\'aide à tenir tes objectifs.';
+
+  @override
+  String get aboutVersionLabel => 'Version';
+
+  @override
+  String get aboutBuildLabel => 'Build';
+
+  @override
+  String get aboutAccountLabel => 'Compte';
+
+  @override
+  String get aboutServerLabel => 'Serveur';
+
+  @override
+  String get aboutPublisherTitle => 'Éditeur';
+
+  @override
+  String get aboutPublisherBody => 'Liceli Technologies';
+
+  @override
+  String get aboutOpenSourceTitle => 'Logiciels utilisés';
+
+  @override
+  String get aboutOpenSourceButton => 'Voir les licences';
+
+  @override
+  String get legalDraftNotice =>
+      'Ce texte décrit fidèlement ce que fait l\'application, mais il n\'a pas encore été relu par un juriste. À faire avant toute publication.';
+
+  @override
+  String get legalDataTitle => 'Ce que l\'application enregistre';
+
+  @override
+  String get legalDataBody =>
+      'Ton adresse électronique et ton mot de passe, sous forme chiffrée, pour te reconnaître. Tes séances : durée, distance, tracé GPS, dénivelé et dépense estimée. Tes pesées et tes objectifs, si tu en saisis. Un identifiant d\'appareil, uniquement si tu acceptes les notifications.';
+
+  @override
+  String get legalUsageTitle => 'Ce qu\'on en fait';
+
+  @override
+  String get legalUsageBody =>
+      'Ces données servent à t\'afficher tes propres statistiques, tes records et tes bilans. Elles ne sont ni vendues, ni cédées, ni utilisées pour de la publicité. Personne d\'autre que toi ne voit tes séances.';
+
+  @override
+  String get legalHostingTitle => 'Hébergement';
+
+  @override
+  String get legalHostingBody =>
+      'Les données sont hébergées sur un serveur loué par l\'éditeur, en Europe, et les échanges avec l\'application sont chiffrés.';
+
+  @override
+  String get legalRightsTitle => 'Tes droits';
+
+  @override
+  String get legalRightsBody =>
+      'Tu peux exporter l\'intégralité de tes données depuis les réglages, à tout moment et sans rien demander. Tu peux supprimer ton compte depuis l\'application : la suppression est immédiate et définitive, sauvegardes comprises. Pour toute autre demande, écris-nous.';
+
+  @override
+  String get legalTermsTitle => 'Conditions d\'utilisation';
+
+  @override
+  String get legalTermsBody =>
+      'GymFlow est une aide à l\'entraînement, pas un dispositif médical. Les distances, allures et dépenses affichées sont des estimations. En cas de doute sur ton état de santé, demande un avis médical avant de reprendre le sport.';
+
+  @override
+  String get legalContactTitle => 'Nous contacter';
+
+  @override
+  String get deleteAccountScreenIntro =>
+      'Supprimer ton compte efface définitivement tes séances, tes tracés, tes pesées, tes objectifs et tes records. Rien n\'est conservé et rien n\'est récupérable.';
+
+  @override
+  String get deleteAccountExportFirst =>
+      'Si tu veux garder une trace de ton historique, exporte tes données depuis les réglages avant de continuer.';
+
+  @override
+  String get supportCopyDiagnostics => 'Copier ces informations';
+
+  @override
+  String get supportDiagnosticsCopied => 'Informations copiées.';
 }

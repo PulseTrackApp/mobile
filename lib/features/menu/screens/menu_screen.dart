@@ -9,6 +9,10 @@ import '../../../core/ui/app_panel.dart';
 import '../../../core/ui/app_top_bar.dart';
 import '../../../core/ui/current_user_summary.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../account/screens/about_screen.dart';
+import '../../account/screens/delete_account_screen.dart';
+import '../../account/screens/legal_screen.dart';
+import '../../account/screens/support_screen.dart';
 import '../../body/screens/body_progress_screen.dart';
 import '../../coach/screens/super_coach_screen.dart';
 import '../../goals/screens/goals_screen.dart';
@@ -154,6 +158,54 @@ class MenuScreen extends ConsumerWidget {
                   subtitle: l10n.settingsSubtitle,
                   color: AppColors.dark,
                   onTap: () => _push(context, const SettingsScreen()),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          // Section a part, et volontairement en dernier : ce sont les pages
+          // qu'on cherche quand quelque chose ne va pas, pas celles qu'on ouvre
+          // pour s'entrainer. Les melanger aux fonctions sportives allongerait la
+          // liste principale sans rendre celles-ci plus faciles a trouver.
+          Text(
+            l10n.menuHelpSection,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 12),
+          AppPanel(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                AppMenuTile(
+                  icon: Icons.support_agent_rounded,
+                  title: l10n.supportTitle,
+                  subtitle: l10n.supportSubtitle,
+                  color: AppColors.gps,
+                  onTap: () => _push(context, const SupportScreen()),
+                ),
+                const _MenuDivider(),
+                AppMenuTile(
+                  icon: Icons.info_outline_rounded,
+                  title: l10n.aboutTitle,
+                  subtitle: l10n.aboutSubtitle,
+                  color: AppColors.primary,
+                  onTap: () => _push(context, const AboutScreen()),
+                ),
+                const _MenuDivider(),
+                AppMenuTile(
+                  icon: Icons.gavel_rounded,
+                  title: l10n.legalTitle,
+                  subtitle: l10n.legalSubtitle,
+                  color: AppColors.dark,
+                  onTap: () => _push(context, const LegalScreen()),
+                ),
+                const _MenuDivider(),
+                AppMenuTile(
+                  icon: Icons.delete_forever_outlined,
+                  title: l10n.deleteAccount,
+                  subtitle: l10n.deleteAccountMenuSubtitle,
+                  color: AppColors.danger,
+                  onTap: () => _push(context, const DeleteAccountScreen()),
                 ),
               ],
             ),

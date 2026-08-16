@@ -20,6 +20,18 @@ class PulseTrackApi {
     defaultValue: '8',
   );
 
+  /// Version annoncee au serveur, et affichee par l'ecran « à propos ».
+  ///
+  /// Exposee pour qu'il n'existe qu'une seule verite : un ecran qui afficherait
+  /// une version differente de celle envoyee dans l'en-tete rendrait tout
+  /// rapport d'anomalie trompeur.
+  static String get appVersion => _appVersion;
+
+  static String get appBuild => _appBuild;
+
+  /// Adresse du serveur interroge. Utile a joindre a un signalement.
+  String get baseUrl => _dio.options.baseUrl;
+
   /// Plateforme annoncee au serveur, telle qu'il l'attend : `ANDROID`, `IOS`,
   /// `WEB` ou `DESKTOP`.
   ///
@@ -650,7 +662,9 @@ class PulseTrackApi {
         throw problem;
       }
       if (problem.isPaymentRequired) {
-        tokenStore.markPaymentRequired();
+        tokenStore.markPaymentRequired(
+          suggestedPlanCode: problem.suggestedPlan?['code']?.toString(),
+        );
         throw problem;
       }
       if (retryOnUnauthorized &&
@@ -662,7 +676,10 @@ class PulseTrackApi {
         } on DioException catch (retryException) {
           final retryProblem = ApiProblem.fromDioException(retryException);
           if (retryProblem.isPaymentRequired) {
-            tokenStore.markPaymentRequired();
+            tokenStore.markPaymentRequired(
+              suggestedPlanCode:
+                  retryProblem.suggestedPlan?['code']?.toString(),
+            );
           }
           if (retryProblem.isUnauthorized) {
             await tokenStore.expireSession();

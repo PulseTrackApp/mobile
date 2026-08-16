@@ -1494,4 +1494,213 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routeSaved => 'Route saved';
+
+  @override
+  String subscriptionTrialDays(int days) {
+    return '$days day(s) of trial left';
+  }
+
+  @override
+  String get subscriptionUnknown => 'Checking access';
+
+  @override
+  String updateAvailableBanner(String version) {
+    return 'A newer version is available ($version). Update the app when you can.';
+  }
+
+  @override
+  String get updateAvailableAction => 'Update';
+
+  @override
+  String get weekCalendarTitle => 'Your week';
+
+  @override
+  String weekCalendarDaysDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active days',
+      one: '1 active day',
+      zero: 'No active day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekCalendarStreak(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days in a row',
+      one: '1 day in a row',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get weekCalendarBestTitle => 'Best effort';
+
+  @override
+  String get weekCalendarNoBest =>
+      'No record yet. Your first session will set one.';
+
+  @override
+  String get weekCalendarToday => 'Today';
+
+  @override
+  String get menuHelpSection => 'Help and account';
+
+  @override
+  String get supportTitle => 'Help and support';
+
+  @override
+  String get supportSubtitle => 'Ask a question, report an issue';
+
+  @override
+  String get aboutTitle => 'About';
+
+  @override
+  String get aboutSubtitle => 'App version and publisher';
+
+  @override
+  String get legalTitle => 'Legal';
+
+  @override
+  String get legalSubtitle => 'Privacy and terms of use';
+
+  @override
+  String get deleteAccountMenuSubtitle =>
+      'Permanently erase your account and data';
+
+  @override
+  String get supportIntro =>
+      'Describe what you were doing when the problem happened and include the details below: they are almost always enough to find the cause.';
+
+  @override
+  String get supportContactTitle => 'Write to us';
+
+  @override
+  String get supportCopyEmail => 'Copy address';
+
+  @override
+  String get supportEmailCopied => 'Address copied.';
+
+  @override
+  String get supportDiagnosticsTitle => 'Details to include';
+
+  @override
+  String get supportFaqTitle => 'Frequently asked';
+
+  @override
+  String get supportFaqGpsQuestion => 'My GPS track is jagged or stops midway';
+
+  @override
+  String get supportFaqGpsAnswer =>
+      'GPS needs open sky and background location permission. Also check that battery saving has not put GymFlow to sleep: that is the most common cause of a track cut in half.';
+
+  @override
+  String get supportFaqStatsQuestion => 'My statistics look wrong';
+
+  @override
+  String get supportFaqStatsAnswer =>
+      'Distances are filtered to remove GPS noise, so they are often slightly shorter than those from a watch that does not filter. If the gap is more than a few percent, write to us with the session date.';
+
+  @override
+  String get supportFaqLockedQuestion => 'A feature shows as locked';
+
+  @override
+  String get supportFaqLockedAnswer =>
+      'Some features are opened account by account. Nothing is broken: just ask for access by email.';
+
+  @override
+  String get supportFaqDataQuestion => 'How do I get or erase my data?';
+
+  @override
+  String get supportFaqDataAnswer =>
+      'Export runs from the settings screen and returns all of your sessions. Deleting the account is final and erases everything: export first if you want to keep a copy.';
+
+  @override
+  String get aboutIntro =>
+      'GymFlow records your sessions, turns them into statistics and helps you hold your goals.';
+
+  @override
+  String get aboutVersionLabel => 'Version';
+
+  @override
+  String get aboutBuildLabel => 'Build';
+
+  @override
+  String get aboutAccountLabel => 'Account';
+
+  @override
+  String get aboutServerLabel => 'Server';
+
+  @override
+  String get aboutPublisherTitle => 'Publisher';
+
+  @override
+  String get aboutPublisherBody => 'Liceli Technologies';
+
+  @override
+  String get aboutOpenSourceTitle => 'Software used';
+
+  @override
+  String get aboutOpenSourceButton => 'View licences';
+
+  @override
+  String get legalDraftNotice =>
+      'This text faithfully describes what the app does, but it has not been reviewed by a lawyer yet. To be done before any public release.';
+
+  @override
+  String get legalDataTitle => 'What the app records';
+
+  @override
+  String get legalDataBody =>
+      'Your email address and your password, encrypted, to recognise you. Your sessions: duration, distance, GPS track, elevation and estimated energy. Your weigh-ins and goals, if you enter any. A device identifier, only if you accept notifications.';
+
+  @override
+  String get legalUsageTitle => 'What it is used for';
+
+  @override
+  String get legalUsageBody =>
+      'This data is used to show you your own statistics, records and summaries. It is not sold, shared or used for advertising. Nobody but you sees your sessions.';
+
+  @override
+  String get legalHostingTitle => 'Hosting';
+
+  @override
+  String get legalHostingBody =>
+      'Data is hosted on a server rented by the publisher, in Europe, and exchanges with the app are encrypted.';
+
+  @override
+  String get legalRightsTitle => 'Your rights';
+
+  @override
+  String get legalRightsBody =>
+      'You can export all of your data from the settings screen, at any time and without asking. You can delete your account from the app: deletion is immediate and final, backups included. For anything else, write to us.';
+
+  @override
+  String get legalTermsTitle => 'Terms of use';
+
+  @override
+  String get legalTermsBody =>
+      'GymFlow is a training aid, not a medical device. Distances, paces and energy figures are estimates. If you have any doubt about your health, seek medical advice before training.';
+
+  @override
+  String get legalContactTitle => 'Contact us';
+
+  @override
+  String get deleteAccountScreenIntro =>
+      'Deleting your account permanently erases your sessions, tracks, weigh-ins, goals and records. Nothing is kept and nothing can be recovered.';
+
+  @override
+  String get deleteAccountExportFirst =>
+      'If you want to keep a copy of your history, export your data from the settings screen before continuing.';
+
+  @override
+  String get supportCopyDiagnostics => 'Copy these details';
+
+  @override
+  String get supportDiagnosticsCopied => 'Details copied.';
 }

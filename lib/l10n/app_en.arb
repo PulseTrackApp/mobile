@@ -628,5 +628,90 @@
   "ratingComponents": "Breakdown",
   "commonCancel": "Cancel",
   "routeSaveAction": "Save this route",
-  "routeSaved": "Route saved"
+  "routeSaved": "Route saved",
+  "subscriptionTrialDays": "{days} day(s) of trial left",
+  "subscriptionUnknown": "Checking access",
+  "updateAvailableBanner": "A newer version is available ({version}). Update the app when you can.",
+  "@subscriptionTrialDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@updateAvailableBanner": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updateAvailableAction": "Update",
+  "weekCalendarTitle": "Your week",
+  "weekCalendarDaysDone": "{count, plural, =0{No active day} =1{1 active day} other{{count} active days}}",
+  "weekCalendarStreak": "{count, plural, =0{} =1{1 day in a row} other{{count} days in a row}}",
+  "weekCalendarBestTitle": "Best effort",
+  "weekCalendarNoBest": "No record yet. Your first session will set one.",
+  "weekCalendarToday": "Today",
+  "menuHelpSection": "Help and account",
+  "supportTitle": "Help and support",
+  "supportSubtitle": "Ask a question, report an issue",
+  "aboutTitle": "About",
+  "aboutSubtitle": "App version and publisher",
+  "legalTitle": "Legal",
+  "legalSubtitle": "Privacy and terms of use",
+  "deleteAccountMenuSubtitle": "Permanently erase your account and data",
+  "supportIntro": "Describe what you were doing when the problem happened and include the details below: they are almost always enough to find the cause.",
+  "supportContactTitle": "Write to us",
+  "supportCopyEmail": "Copy address",
+  "supportEmailCopied": "Address copied.",
+  "supportDiagnosticsTitle": "Details to include",
+  "supportFaqTitle": "Frequently asked",
+  "supportFaqGpsQuestion": "My GPS track is jagged or stops midway",
+  "supportFaqGpsAnswer": "GPS needs open sky and background location permission. Also check that battery saving has not put GymFlow to sleep: that is the most common cause of a track cut in half.",
+  "supportFaqStatsQuestion": "My statistics look wrong",
+  "supportFaqStatsAnswer": "Distances are filtered to remove GPS noise, so they are often slightly shorter than those from a watch that does not filter. If the gap is more than a few percent, write to us with the session date.",
+  "supportFaqLockedQuestion": "A feature shows as locked",
+  "supportFaqLockedAnswer": "Some features are opened account by account. Nothing is broken: just ask for access by email.",
+  "supportFaqDataQuestion": "How do I get or erase my data?",
+  "supportFaqDataAnswer": "Export runs from the settings screen and returns all of your sessions. Deleting the account is final and erases everything: export first if you want to keep a copy.",
+  "aboutIntro": "GymFlow records your sessions, turns them into statistics and helps you hold your goals.",
+  "aboutVersionLabel": "Version",
+  "aboutBuildLabel": "Build",
+  "aboutAccountLabel": "Account",
+  "aboutServerLabel": "Server",
+  "aboutPublisherTitle": "Publisher",
+  "aboutPublisherBody": "Liceli Technologies",
+  "aboutOpenSourceTitle": "Software used",
+  "aboutOpenSourceButton": "View licences",
+  "legalDraftNotice": "This text faithfully describes what the app does, but it has not been reviewed by a lawyer yet. To be done before any public release.",
+  "legalDataTitle": "What the app records",
+  "legalDataBody": "Your email address and your password, encrypted, to recognise you. Your sessions: duration, distance, GPS track, elevation and estimated energy. Your weigh-ins and goals, if you enter any. A device identifier, only if you accept notifications.",
+  "legalUsageTitle": "What it is used for",
+  "legalUsageBody": "This data is used to show you your own statistics, records and summaries. It is not sold, shared or used for advertising. Nobody but you sees your sessions.",
+  "legalHostingTitle": "Hosting",
+  "legalHostingBody": "Data is hosted on a server rented by the publisher, in Europe, and exchanges with the app are encrypted.",
+  "legalRightsTitle": "Your rights",
+  "legalRightsBody": "You can export all of your data from the settings screen, at any time and without asking. You can delete your account from the app: deletion is immediate and final, backups included. For anything else, write to us.",
+  "legalTermsTitle": "Terms of use",
+  "legalTermsBody": "GymFlow is a training aid, not a medical device. Distances, paces and energy figures are estimates. If you have any doubt about your health, seek medical advice before training.",
+  "legalContactTitle": "Contact us",
+  "deleteAccountScreenIntro": "Deleting your account permanently erases your sessions, tracks, weigh-ins, goals and records. Nothing is kept and nothing can be recovered.",
+  "deleteAccountExportFirst": "If you want to keep a copy of your history, export your data from the settings screen before continuing.",
+  "@weekCalendarDaysDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@weekCalendarStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supportCopyDiagnostics": "Copy these details",
+  "supportDiagnosticsCopied": "Details copied."
 }

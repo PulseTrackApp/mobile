@@ -10,7 +10,9 @@ import '../../../core/user/current_user_provider.dart';
 import '../../../core/ui/app_button.dart';
 import '../../../core/ui/email_verification_dialog.dart';
 import '../../../core/ui/app_panel.dart';
+import '../../../core/ui/app_password_field.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../account/screens/delete_account_screen.dart';
 import '../../tracking/models/sport_mode.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -182,7 +184,7 @@ class SettingsScreen extends ConsumerWidget {
                     onResendVerification: () =>
                         _resendVerificationCode(context, ref),
                     onDeleteAccount: () =>
-                        _openDeleteAccountDialog(context, ref),
+                        _openDeleteAccount(context),
                     onLogout: () => _logout(context, ref),
                   ),
                 ],
@@ -258,24 +260,13 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _openDeleteAccountDialog(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    final api = ref.read(pulseTrackApiProvider);
-    final completed = await showDialog<bool>(
-      context: context,
-      builder: (_) => _DeleteAccountDialog(
-        onSubmit: (password) async {
-          await ref.read(pushRegistrarProvider).unregister();
-          await api.deleteAccount(password: password);
-        },
-      ),
+  /// La suppression a son propre ecran depuis qu'elle doit dire ce qu'elle
+  /// efface et rappeler que l'export existe encore. Une boite de dialogue
+  /// n'avait la place ni de l'un ni de l'autre.
+  void _openDeleteAccount(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const DeleteAccountScreen()),
     );
-
-    if (!context.mounted || completed != true) return;
-    _showMessage(context, AppLocalizations.of(context).deleteAccountSuccess);
-    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   Future<void> _logout(BuildContext context, WidgetRef ref) async {
@@ -659,13 +650,13 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _SettingsPasswordField(
+            AppPasswordField(
               controller: _currentPasswordController,
               label: l10n.currentPassword,
               hint: l10n.passwordHint,
             ),
             const SizedBox(height: 12),
-            _SettingsPasswordField(
+            AppPasswordField(
               controller: _newPasswordController,
               label: l10n.newPassword,
               hint: l10n.passwordHint,
@@ -722,154 +713,6 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
-  }
-}
-
-class _DeleteAccountDialog extends StatefulWidget {
-  const _DeleteAccountDialog({required this.onSubmit});
-
-  final Future<void> Function(String password) onSubmit;
-
-  @override
-  State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
-}
-
-class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
-  final _passwordController = TextEditingController();
-  bool _confirmed = false;
-  bool _isSubmitting = false;
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return AlertDialog(
-      title: Text(l10n.deleteAccountTitle),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.deleteAccountBody),
-            const SizedBox(height: 14),
-            _SettingsPasswordField(
-              controller: _passwordController,
-              label: l10n.password,
-              hint: l10n.passwordHint,
-            ),
-            const SizedBox(height: 8),
-            CheckboxListTile(
-              value: _confirmed,
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              title: Text(l10n.deleteAccountConfirmLabel),
-              onChanged: _isSubmitting
-                  ? null
-                  : (value) => setState(() => _confirmed = value == true),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: Text(l10n.close),
-        ),
-        FilledButton.icon(
-          style: FilledButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.error,
-            foregroundColor: Theme.of(context).colorScheme.onError,
-          ),
-          onPressed: _isSubmitting ? null : _submit,
-          icon: _isSubmitting
-              ? const SizedBox.square(
-                  dimension: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.delete_forever_outlined),
-          label: Text(l10n.deleteAccountFinalButton),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _submit() async {
-    final l10n = AppLocalizations.of(context);
-    final password = _passwordController.text;
-    if (password.isEmpty || !_confirmed) {
-      _showDialogMessage(l10n.deleteAccountRequiredFields);
-      return;
-    }
-
-    setState(() => _isSubmitting = true);
-    try {
-      await widget.onSubmit(password);
-      if (!mounted) return;
-      Navigator.of(context).pop(true);
-    } on ApiProblem catch (problem) {
-      _showDialogMessage('${l10n.apiErrorPrefix} ${problem.message}');
-    } catch (_) {
-      _showDialogMessage(l10n.apiUnexpectedError);
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
-    }
-  }
-
-  void _showDialogMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-}
-
-class _SettingsPasswordField extends StatefulWidget {
-  const _SettingsPasswordField({
-    required this.controller,
-    required this.label,
-    required this.hint,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-
-  @override
-  State<_SettingsPasswordField> createState() => _SettingsPasswordFieldState();
-}
-
-class _SettingsPasswordFieldState extends State<_SettingsPasswordField> {
-  bool _obscure = true;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return TextField(
-      controller: widget.controller,
-      obscureText: _obscure,
-      keyboardType: TextInputType.visiblePassword,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        hintText: widget.hint,
-        prefixIcon: const Icon(Icons.lock_outline_rounded),
-        suffixIcon: IconButton(
-          tooltip: _obscure ? l10n.showPassword : l10n.hidePassword,
-          onPressed: () => setState(() => _obscure = !_obscure),
-          icon: Icon(
-            _obscure
-                ? Icons.visibility_outlined
-                : Icons.visibility_off_outlined,
-          ),
-        ),
-      ),
-    );
   }
 }
 

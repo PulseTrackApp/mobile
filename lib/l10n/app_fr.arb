@@ -628,5 +628,90 @@
   "ratingComponents": "Le détail",
   "commonCancel": "Annuler",
   "routeSaveAction": "Enregistrer ce parcours",
-  "routeSaved": "Parcours enregistré"
+  "routeSaved": "Parcours enregistré",
+  "subscriptionTrialDays": "Il te reste {days} jour(s) d'essai",
+  "subscriptionUnknown": "Accès en cours de vérification",
+  "updateAvailableBanner": "Une version plus récente est disponible ({version}). Mets l'application à jour quand tu peux.",
+  "@subscriptionTrialDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@updateAvailableBanner": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updateAvailableAction": "Mettre à jour",
+  "weekCalendarTitle": "Ta semaine",
+  "weekCalendarDaysDone": "{count, plural, =0{Aucun jour de sport} =1{1 jour de sport} other{{count} jours de sport}}",
+  "weekCalendarStreak": "{count, plural, =0{} =1{1 jour d'affilée} other{{count} jours d'affilée}}",
+  "weekCalendarBestTitle": "Meilleure perf",
+  "weekCalendarNoBest": "Aucun record pour l'instant. La première séance en posera un.",
+  "weekCalendarToday": "Aujourd'hui",
+  "menuHelpSection": "Aide et compte",
+  "supportTitle": "Aide et support",
+  "supportSubtitle": "Poser une question, signaler un souci",
+  "aboutTitle": "À propos",
+  "aboutSubtitle": "Version de l'application et éditeur",
+  "legalTitle": "Mentions légales",
+  "legalSubtitle": "Confidentialité et conditions d'utilisation",
+  "deleteAccountMenuSubtitle": "Effacer définitivement ton compte et tes données",
+  "supportIntro": "Décris ce que tu faisais au moment du problème et joins les informations ci-dessous : elles suffisent presque toujours à retrouver la cause.",
+  "supportContactTitle": "Nous écrire",
+  "supportCopyEmail": "Copier l'adresse",
+  "supportEmailCopied": "Adresse copiée.",
+  "supportDiagnosticsTitle": "Informations à joindre",
+  "supportFaqTitle": "Questions fréquentes",
+  "supportFaqGpsQuestion": "Ma trace GPS est en dents de scie ou s'arrête",
+  "supportFaqGpsAnswer": "Le GPS a besoin du ciel dégagé et de l'autorisation de localisation en arrière-plan. Vérifie aussi que l'économiseur de batterie n'a pas mis GymFlow en veille : c'est la cause la plus fréquente d'une trace coupée en plein milieu.",
+  "supportFaqStatsQuestion": "Mes statistiques semblent fausses",
+  "supportFaqStatsAnswer": "Les distances sont filtrées pour écarter le bruit du GPS, si bien qu'elles sont souvent un peu plus courtes que celles d'une montre qui ne filtre pas. Si l'écart dépasse quelques pour cent, écris-nous avec la date de la séance.",
+  "supportFaqLockedQuestion": "Une fonction est marquée « verrouillée »",
+  "supportFaqLockedAnswer": "Certaines fonctions s'ouvrent compte par compte. Ce n'est pas une panne : demande simplement l'ouverture par courriel.",
+  "supportFaqDataQuestion": "Comment récupérer ou effacer mes données ?",
+  "supportFaqDataAnswer": "L'export se lance depuis les réglages et te renvoie l'intégralité de tes séances. La suppression du compte est définitive et efface tout : exporte avant si tu veux garder une trace.",
+  "aboutIntro": "GymFlow enregistre tes séances, en tire des statistiques et t'aide à tenir tes objectifs.",
+  "aboutVersionLabel": "Version",
+  "aboutBuildLabel": "Build",
+  "aboutAccountLabel": "Compte",
+  "aboutServerLabel": "Serveur",
+  "aboutPublisherTitle": "Éditeur",
+  "aboutPublisherBody": "Liceli Technologies",
+  "aboutOpenSourceTitle": "Logiciels utilisés",
+  "aboutOpenSourceButton": "Voir les licences",
+  "legalDraftNotice": "Ce texte décrit fidèlement ce que fait l'application, mais il n'a pas encore été relu par un juriste. À faire avant toute publication.",
+  "legalDataTitle": "Ce que l'application enregistre",
+  "legalDataBody": "Ton adresse électronique et ton mot de passe, sous forme chiffrée, pour te reconnaître. Tes séances : durée, distance, tracé GPS, dénivelé et dépense estimée. Tes pesées et tes objectifs, si tu en saisis. Un identifiant d'appareil, uniquement si tu acceptes les notifications.",
+  "legalUsageTitle": "Ce qu'on en fait",
+  "legalUsageBody": "Ces données servent à t'afficher tes propres statistiques, tes records et tes bilans. Elles ne sont ni vendues, ni cédées, ni utilisées pour de la publicité. Personne d'autre que toi ne voit tes séances.",
+  "legalHostingTitle": "Hébergement",
+  "legalHostingBody": "Les données sont hébergées sur un serveur loué par l'éditeur, en Europe, et les échanges avec l'application sont chiffrés.",
+  "legalRightsTitle": "Tes droits",
+  "legalRightsBody": "Tu peux exporter l'intégralité de tes données depuis les réglages, à tout moment et sans rien demander. Tu peux supprimer ton compte depuis l'application : la suppression est immédiate et définitive, sauvegardes comprises. Pour toute autre demande, écris-nous.",
+  "legalTermsTitle": "Conditions d'utilisation",
+  "legalTermsBody": "GymFlow est une aide à l'entraînement, pas un dispositif médical. Les distances, allures et dépenses affichées sont des estimations. En cas de doute sur ton état de santé, demande un avis médical avant de reprendre le sport.",
+  "legalContactTitle": "Nous contacter",
+  "deleteAccountScreenIntro": "Supprimer ton compte efface définitivement tes séances, tes tracés, tes pesées, tes objectifs et tes records. Rien n'est conservé et rien n'est récupérable.",
+  "deleteAccountExportFirst": "Si tu veux garder une trace de ton historique, exporte tes données depuis les réglages avant de continuer.",
+  "@weekCalendarDaysDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@weekCalendarStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supportCopyDiagnostics": "Copier ces informations",
+  "supportDiagnosticsCopied": "Informations copiées."
 }

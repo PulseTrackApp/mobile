@@ -2851,6 +2851,348 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Parcours enregistré'**
   String get routeSaved;
+
+  /// No description provided for @subscriptionTrialDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Il te reste {days} jour(s) d\'essai'**
+  String subscriptionTrialDays(int days);
+
+  /// No description provided for @subscriptionUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès en cours de vérification'**
+  String get subscriptionUnknown;
+
+  /// No description provided for @updateAvailableBanner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une version plus récente est disponible ({version}). Mets l\'application à jour quand tu peux.'**
+  String updateAvailableBanner(String version);
+
+  /// No description provided for @updateAvailableAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à jour'**
+  String get updateAvailableAction;
+
+  /// No description provided for @weekCalendarTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ta semaine'**
+  String get weekCalendarTitle;
+
+  /// No description provided for @weekCalendarDaysDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucun jour de sport} =1{1 jour de sport} other{{count} jours de sport}}'**
+  String weekCalendarDaysDone(int count);
+
+  /// No description provided for @weekCalendarStreak.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{} =1{1 jour d\'affilée} other{{count} jours d\'affilée}}'**
+  String weekCalendarStreak(int count);
+
+  /// No description provided for @weekCalendarBestTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meilleure perf'**
+  String get weekCalendarBestTitle;
+
+  /// No description provided for @weekCalendarNoBest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun record pour l\'instant. La première séance en posera un.'**
+  String get weekCalendarNoBest;
+
+  /// No description provided for @weekCalendarToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd\'hui'**
+  String get weekCalendarToday;
+
+  /// No description provided for @menuHelpSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide et compte'**
+  String get menuHelpSection;
+
+  /// No description provided for @supportTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide et support'**
+  String get supportTitle;
+
+  /// No description provided for @supportSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Poser une question, signaler un souci'**
+  String get supportSubtitle;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Version de l\'application et éditeur'**
+  String get aboutSubtitle;
+
+  /// No description provided for @legalTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mentions légales'**
+  String get legalTitle;
+
+  /// No description provided for @legalSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confidentialité et conditions d\'utilisation'**
+  String get legalSubtitle;
+
+  /// No description provided for @deleteAccountMenuSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Effacer définitivement ton compte et tes données'**
+  String get deleteAccountMenuSubtitle;
+
+  /// No description provided for @supportIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décris ce que tu faisais au moment du problème et joins les informations ci-dessous : elles suffisent presque toujours à retrouver la cause.'**
+  String get supportIntro;
+
+  /// No description provided for @supportContactTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nous écrire'**
+  String get supportContactTitle;
+
+  /// No description provided for @supportCopyEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier l\'adresse'**
+  String get supportCopyEmail;
+
+  /// No description provided for @supportEmailCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse copiée.'**
+  String get supportEmailCopied;
+
+  /// No description provided for @supportDiagnosticsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations à joindre'**
+  String get supportDiagnosticsTitle;
+
+  /// No description provided for @supportFaqTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Questions fréquentes'**
+  String get supportFaqTitle;
+
+  /// No description provided for @supportFaqGpsQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma trace GPS est en dents de scie ou s\'arrête'**
+  String get supportFaqGpsQuestion;
+
+  /// No description provided for @supportFaqGpsAnswer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le GPS a besoin du ciel dégagé et de l\'autorisation de localisation en arrière-plan. Vérifie aussi que l\'économiseur de batterie n\'a pas mis GymFlow en veille : c\'est la cause la plus fréquente d\'une trace coupée en plein milieu.'**
+  String get supportFaqGpsAnswer;
+
+  /// No description provided for @supportFaqStatsQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes statistiques semblent fausses'**
+  String get supportFaqStatsQuestion;
+
+  /// No description provided for @supportFaqStatsAnswer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les distances sont filtrées pour écarter le bruit du GPS, si bien qu\'elles sont souvent un peu plus courtes que celles d\'une montre qui ne filtre pas. Si l\'écart dépasse quelques pour cent, écris-nous avec la date de la séance.'**
+  String get supportFaqStatsAnswer;
+
+  /// No description provided for @supportFaqLockedQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une fonction est marquée « verrouillée »'**
+  String get supportFaqLockedQuestion;
+
+  /// No description provided for @supportFaqLockedAnswer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Certaines fonctions s\'ouvrent compte par compte. Ce n\'est pas une panne : demande simplement l\'ouverture par courriel.'**
+  String get supportFaqLockedAnswer;
+
+  /// No description provided for @supportFaqDataQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comment récupérer ou effacer mes données ?'**
+  String get supportFaqDataQuestion;
+
+  /// No description provided for @supportFaqDataAnswer.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'export se lance depuis les réglages et te renvoie l\'intégralité de tes séances. La suppression du compte est définitive et efface tout : exporte avant si tu veux garder une trace.'**
+  String get supportFaqDataAnswer;
+
+  /// No description provided for @aboutIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'GymFlow enregistre tes séances, en tire des statistiques et t\'aide à tenir tes objectifs.'**
+  String get aboutIntro;
+
+  /// No description provided for @aboutVersionLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Version'**
+  String get aboutVersionLabel;
+
+  /// No description provided for @aboutBuildLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Build'**
+  String get aboutBuildLabel;
+
+  /// No description provided for @aboutAccountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte'**
+  String get aboutAccountLabel;
+
+  /// No description provided for @aboutServerLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Serveur'**
+  String get aboutServerLabel;
+
+  /// No description provided for @aboutPublisherTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Éditeur'**
+  String get aboutPublisherTitle;
+
+  /// No description provided for @aboutPublisherBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liceli Technologies'**
+  String get aboutPublisherBody;
+
+  /// No description provided for @aboutOpenSourceTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Logiciels utilisés'**
+  String get aboutOpenSourceTitle;
+
+  /// No description provided for @aboutOpenSourceButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les licences'**
+  String get aboutOpenSourceButton;
+
+  /// No description provided for @legalDraftNotice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce texte décrit fidèlement ce que fait l\'application, mais il n\'a pas encore été relu par un juriste. À faire avant toute publication.'**
+  String get legalDraftNotice;
+
+  /// No description provided for @legalDataTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce que l\'application enregistre'**
+  String get legalDataTitle;
+
+  /// No description provided for @legalDataBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton adresse électronique et ton mot de passe, sous forme chiffrée, pour te reconnaître. Tes séances : durée, distance, tracé GPS, dénivelé et dépense estimée. Tes pesées et tes objectifs, si tu en saisis. Un identifiant d\'appareil, uniquement si tu acceptes les notifications.'**
+  String get legalDataBody;
+
+  /// No description provided for @legalUsageTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce qu\'on en fait'**
+  String get legalUsageTitle;
+
+  /// No description provided for @legalUsageBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ces données servent à t\'afficher tes propres statistiques, tes records et tes bilans. Elles ne sont ni vendues, ni cédées, ni utilisées pour de la publicité. Personne d\'autre que toi ne voit tes séances.'**
+  String get legalUsageBody;
+
+  /// No description provided for @legalHostingTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hébergement'**
+  String get legalHostingTitle;
+
+  /// No description provided for @legalHostingBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les données sont hébergées sur un serveur loué par l\'éditeur, en Europe, et les échanges avec l\'application sont chiffrés.'**
+  String get legalHostingBody;
+
+  /// No description provided for @legalRightsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tes droits'**
+  String get legalRightsTitle;
+
+  /// No description provided for @legalRightsBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu peux exporter l\'intégralité de tes données depuis les réglages, à tout moment et sans rien demander. Tu peux supprimer ton compte depuis l\'application : la suppression est immédiate et définitive, sauvegardes comprises. Pour toute autre demande, écris-nous.'**
+  String get legalRightsBody;
+
+  /// No description provided for @legalTermsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conditions d\'utilisation'**
+  String get legalTermsTitle;
+
+  /// No description provided for @legalTermsBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'GymFlow est une aide à l\'entraînement, pas un dispositif médical. Les distances, allures et dépenses affichées sont des estimations. En cas de doute sur ton état de santé, demande un avis médical avant de reprendre le sport.'**
+  String get legalTermsBody;
+
+  /// No description provided for @legalContactTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nous contacter'**
+  String get legalContactTitle;
+
+  /// No description provided for @deleteAccountScreenIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer ton compte efface définitivement tes séances, tes tracés, tes pesées, tes objectifs et tes records. Rien n\'est conservé et rien n\'est récupérable.'**
+  String get deleteAccountScreenIntro;
+
+  /// No description provided for @deleteAccountExportFirst.
+  ///
+  /// In fr, this message translates to:
+  /// **'Si tu veux garder une trace de ton historique, exporte tes données depuis les réglages avant de continuer.'**
+  String get deleteAccountExportFirst;
+
+  /// No description provided for @supportCopyDiagnostics.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier ces informations'**
+  String get supportCopyDiagnostics;
+
+  /// No description provided for @supportDiagnosticsCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations copiées.'**
+  String get supportDiagnosticsCopied;
 }
 
 class _AppLocalizationsDelegate

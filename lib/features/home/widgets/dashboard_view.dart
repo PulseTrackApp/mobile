@@ -14,11 +14,13 @@ import '../../../core/ui/current_user_summary.dart';
 import '../../../core/user/current_user_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../menu/screens/menu_screen.dart';
+import '../../pricing/widgets/update_available_banner.dart';
 import '../../tracking/models/sport_mode.dart';
 import 'personal_progress_card.dart';
 import 'sport_picker.dart';
 import 'start_workout_card.dart';
 import 'today_metrics.dart';
+import 'week_calendar_card.dart';
 import 'weekly_target_card.dart';
 
 class DashboardView extends ConsumerStatefulWidget {
@@ -49,12 +51,17 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     final isAuthenticated = tokenStore.isAuthenticated;
     final fallbackWeeklyTargetKm = AppSettingsScope.of(context).weeklyTargetKm;
     if (isAuthenticated && !moduleAccess.isLoading) {
-      final signature = _signature(moduleAccess);
+      final signature = _signature(moduleAccess, widget.selectedSport);
       if (_moduleAccessSignature != signature) {
         _moduleAccessSignature = signature;
         _future = null;
       }
-      _future ??= _loadDashboard(moduleAccess, fallbackWeeklyTargetKm, l10n);
+      _future ??= _loadDashboard(
+        moduleAccess,
+        fallbackWeeklyTargetKm,
+        l10n,
+        widget.selectedSport,
+      );
     } else {
       _moduleAccessSignature = null;
       _future = null;
@@ -83,6 +90,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
             ),
           ),
           const SizedBox(height: 18),
+          const UpdateAvailableBanner(),
           const CurrentUserSummary(),
           const SizedBox(height: 24),
           Text(
@@ -142,6 +150,21 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                   future: _future,
                   builder: (context, snapshot) {
                     final data = snapshot.data;
+                    return WeekCalendarCard(
+                      days: data?.weekDays ?? const [],
+                      activeDayCount: data?.activeDayCount ?? 0,
+                      streak: data?.activeDayStreak ?? 0,
+                      best: data?.bestEffort,
+                    );
+                  },
+                )
+              : const WeekCalendarCard(),
+          const SizedBox(height: 18),
+          isAuthenticated
+              ? FutureBuilder<_DashboardData>(
+                  future: _future,
+                  builder: (context, snapshot) {
+                    final data = snapshot.data;
                     return WeeklyTargetCard(
                       progressLabel: data?.goalLabel,
                       progress: data?.goalProgress ?? 0,
@@ -177,6 +200,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     ModuleAccessState moduleAccess,
     int fallbackWeeklyTargetKm,
     AppLocalizations l10n,
+    SportMode sport,
   ) async {
     final api = ref.read(pulseTrackApiProvider);
     final coachEnabled = moduleAccess.isEnabled(AppModule.coach);
@@ -201,6 +225,11 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       coachEnabled
           ? _ignoreCoachError(api.getLatestCoachMessage())
           : Future<Map<String, dynamic>?>.value(null),
+      // Les records vivent sous le module des seances : les demander sans lui
+      // rapporterait un refus de module, pas une liste vide.
+      moduleAccess.isEnabled(AppModule.workouts)
+          ? _ignoreDashboardError(api.getRecords(sport: sport.apiSportType))
+          : Future<List<Map<String, dynamic>>>.value(const []),
     ]);
 
     final summary = (results[0] as Map<String, dynamic>?) ?? const {};
@@ -209,6 +238,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     final body = results[3] as Map<String, dynamic>;
     final coachSettings = results[4] as Map<String, dynamic>?;
     final coach = results[5] as Map<String, dynamic>?;
+    final records = (results[6] as List<Map<String, dynamic>>?) ?? const [];
     final summaryTotals = jsonMap(summary, 'totals') ?? summary;
     final statsTotals = jsonMap(weekStats, 'totals') ?? weekStats;
     final goals = jsonList(summary, 'goals');
@@ -262,7 +292,72 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           : jsonDouble(body, 'currentWeightKg'),
       coachPreview: jsonString(coach, 'content'),
       coachStatus: _coachStatus(coachEnabled, coachSettings),
+      weekDays: _weekDays(summary),
+      activeDayStreak: jsonInt(summary, 'activeDayStreak'),
+      bestEffort: _bestEffort(records, l10n),
     );
+  }
+
+  /// Les sept jours du bilan hebdomadaire.
+  ///
+  /// Le serveur les renvoie toujours tous, du lundi au dimanche, jours vides
+  /// compris. On ne filtre donc rien : c'est justement l'absence de sport qui
+  /// doit se voir.
+  List<WeekDay> _weekDays(Map<String, dynamic> summary) {
+    final days = jsonList(summary, 'days');
+    final parsed = <WeekDay>[];
+    for (final day in days) {
+      final date = DateTime.tryParse(jsonString(day, 'date') ?? '');
+      if (date == null) continue;
+      parsed.add(
+        WeekDay(
+          date: date,
+          sessionCount: jsonInt(day, 'sessionCount'),
+          distanceMeters: jsonDouble(day, 'distanceMeters'),
+        ),
+      );
+    }
+    return parsed;
+  }
+
+  /// Le record a mettre en avant pour le sport affiche.
+  ///
+  /// La plus longue sortie d'abord : c'est le chiffre qu'on retient d'une
+  /// pratique. A defaut la meilleure allure, puis le premier record venu — mieux
+  /// vaut un record moins parlant que pas de record du tout.
+  ///
+  /// Le libelle vient du serveur ; seule la valeur est mise en forme ici, parce
+  /// que son unite depend de la categorie et que le serveur envoie un nombre brut.
+  BestEffort? _bestEffort(
+    List<Map<String, dynamic>> sportRecords,
+    AppLocalizations l10n,
+  ) {
+    if (sportRecords.isEmpty) return null;
+    final entries = jsonList(sportRecords.first, 'records');
+    if (entries.isEmpty) return null;
+
+    Map<String, dynamic>? pick(String kind) {
+      for (final entry in entries) {
+        if (jsonString(entry, 'kind') == kind) return entry;
+      }
+      return null;
+    }
+
+    final record =
+        pick('LONGEST_DISTANCE') ??
+        pick('BEST_AVERAGE_PACE') ??
+        pick('LONGEST_MOVING_DURATION') ??
+        entries.first;
+
+    final value = jsonDouble(record, 'value');
+    final label = jsonString(record, 'label') ?? '';
+    final formatted = switch (jsonString(record, 'unit')) {
+      'm' => formatKm(value),
+      's' => formatDurationShort(value.round(), l10n),
+      's/km' => formatPace(value.round(), l10n),
+      _ => value.toStringAsFixed(0),
+    };
+    return BestEffort(label: label, value: formatted);
   }
 
   Future<void> _refresh() async {
@@ -280,9 +375,10 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       moduleAccess,
       AppSettingsScope.of(context).weeklyTargetKm,
       AppLocalizations.of(context),
+      widget.selectedSport,
     );
     setState(() {
-      _moduleAccessSignature = _signature(moduleAccess);
+      _moduleAccessSignature = _signature(moduleAccess, widget.selectedSport);
       _future = future;
     });
 
@@ -361,10 +457,16 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
         : CoachPreviewStatus.unavailable;
   }
 
-  String _signature(ModuleAccessState moduleAccess) {
-    return AppModule.values
+  /// Ce qui, en changeant, oblige a recharger.
+  ///
+  /// Le sport en fait partie depuis que le tableau de bord affiche un record :
+  /// sans lui, changer de sport laisserait la meilleure performance de la course
+  /// affichee sous le velo.
+  String _signature(ModuleAccessState moduleAccess, SportMode sport) {
+    final modules = AppModule.values
         .map((module) => '${module.apiValue}:${moduleAccess.isEnabled(module)}')
         .join('|');
+    return '$modules|sport:${sport.apiSportType.value}';
   }
 }
 
@@ -379,6 +481,9 @@ class _DashboardData {
     required this.currentWeightKg,
     required this.coachPreview,
     required this.coachStatus,
+    required this.weekDays,
+    required this.activeDayStreak,
+    required this.bestEffort,
   });
 
   final double distanceMeters;
@@ -390,4 +495,10 @@ class _DashboardData {
   final double? currentWeightKg;
   final String? coachPreview;
   final CoachPreviewStatus coachStatus;
+  final List<WeekDay> weekDays;
+  final int activeDayStreak;
+  final BestEffort? bestEffort;
+
+  /// Jours de la semaine ayant vu au moins une seance.
+  int get activeDayCount => weekDays.where((day) => day.isActive).length;
 }

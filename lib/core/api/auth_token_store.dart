@@ -26,6 +26,7 @@ class AuthTokenStore extends ChangeNotifier {
   bool _emailVerified = false;
   bool _paymentRequired = false;
   bool _upgradeRequired = false;
+  String? _suggestedPlanCode;
   String? _minimumVersion;
   String? _storeUrl;
   int _sessionExpiredNoticeId = 0;
@@ -48,6 +49,9 @@ class AuthTokenStore extends ChangeNotifier {
   bool get isAuthenticated => _accessToken != null && _accessToken!.isNotEmpty;
 
   bool get paymentRequired => _paymentRequired;
+
+  /// Code de l'offre que le serveur met en avant dans son refus de paiement.
+  String? get suggestedPlanCode => _suggestedPlanCode;
 
   /// Vrai quand l'API a refusé cette version de l'application (`426`).
   bool get upgradeRequired => _upgradeRequired;
@@ -99,8 +103,12 @@ class AuthTokenStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  void markPaymentRequired() {
+  /// [suggestedPlanCode] vient du refus lui-meme : le serveur y joint l'offre a
+  /// mettre en avant, precisement pour que l'ecran de paiement s'affiche sans
+  /// lancer une seconde requete au moment ou toutes les requetes sont refusees.
+  void markPaymentRequired({String? suggestedPlanCode}) {
     _paymentRequired = true;
+    _suggestedPlanCode = suggestedPlanCode ?? _suggestedPlanCode;
     _paymentRequiredNoticeId++;
     notifyListeners();
   }

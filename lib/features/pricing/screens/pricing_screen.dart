@@ -38,11 +38,19 @@ class PricingScreen extends ConsumerStatefulWidget {
 
 class _PricingScreenState extends ConsumerState<PricingScreen> {
   late Future<List<BillingPlan>> _plans;
+  late Future<SubscriptionState?> _subscription;
 
   @override
   void initState() {
     super.initState();
-    _plans = ref.read(pulseTrackApiProvider).getBillingPlans();
+    final api = ref.read(pulseTrackApiProvider);
+    _plans = api.getBillingPlans();
+    // L'etat d'acces ne doit jamais empecher l'ecran de s'afficher : sans lui on
+    // montre les tarifs, ce qui reste utile. C'est l'inverse qui serait absurde.
+    _subscription = api.getSubscription().then<SubscriptionState?>(
+      (state) => state,
+      onError: (_) => null,
+    );
   }
 
   @override
@@ -100,7 +108,14 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
                 ),
               ),
               const SizedBox(height: 18),
-              _PlanList(plans: _plans),
+              _SubscriptionPanel(subscription: _subscription),
+              const SizedBox(height: 18),
+              _PlanList(
+                plans: _plans,
+                suggestedPlanCode: ref
+                    .watch(authTokenStoreProvider)
+                    .suggestedPlanCode,
+              ),
             ],
           ),
         ),
@@ -110,9 +125,12 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
 }
 
 class _PlanList extends StatelessWidget {
-  const _PlanList({required this.plans});
+  const _PlanList({required this.plans, this.suggestedPlanCode});
 
   final Future<List<BillingPlan>> plans;
+
+  /// Offre mise en avant par le refus de paiement, quand l'ecran vient de la.
+  final String? suggestedPlanCode;
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +155,10 @@ class _PlanList extends StatelessWidget {
         return Column(
           children: [
             for (final plan in catalogue) ...[
-              _PlanCard(plan: plan),
+              _PlanCard(
+                plan: plan,
+                suggested: plan.code == suggestedPlanCode,
+              ),
               const SizedBox(height: 12),
             ],
           ],
@@ -148,15 +169,21 @@ class _PlanList extends StatelessWidget {
 }
 
 class _PlanCard extends StatelessWidget {
-  const _PlanCard({required this.plan});
+  const _PlanCard({required this.plan, this.suggested = false});
 
   final BillingPlan plan;
+
+  /// Offre que le serveur a jointe a son refus : on la souligne, c'est celle
+  /// vers laquelle il oriente.
+  final bool suggested;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final color = plan.highlighted ? AppColors.gps : AppColors.primary;
+    final color = suggested || plan.highlighted
+        ? AppColors.gps
+        : AppColors.primary;
 
     return AppPanel(
       child: Column(
@@ -245,6 +272,67 @@ class _PlanCard extends StatelessWidget {
             AppButton.primary(label: plan.name, onPressed: null),
         ],
       ),
+    );
+  }
+}
+
+
+/// L'etat d'acces du compte, tel que le serveur le decrit.
+///
+/// On affiche ses phrases telles quelles : elles sont redigees cote serveur pour
+/// qu'Android et iOS disent la meme chose, et pour rester encourageantes meme
+/// quand l'acces est perdu.
+class _SubscriptionPanel extends StatelessWidget {
+  const _SubscriptionPanel({required this.subscription});
+
+  final Future<SubscriptionState?> subscription;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<SubscriptionState?>(
+      future: subscription,
+      builder: (context, snapshot) {
+        final state = snapshot.data;
+        // Injoignable : on ne dit rien plutot que d'inventer un etat d'acces.
+        if (state == null) return const SizedBox.shrink();
+
+        final theme = Theme.of(context);
+        final color = state.accessGranted
+            ? AppColors.primary
+            : AppColors.danger;
+
+        return AppPanel(
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  state.accessGranted
+                      ? Icons.verified_outlined
+                      : Icons.lock_clock_outlined,
+                  color: color,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(state.headline, style: theme.textTheme.titleMedium),
+                    const SizedBox(height: 2),
+                    Text(state.message, style: theme.textTheme.bodyMedium),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
