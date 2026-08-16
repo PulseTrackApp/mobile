@@ -41,6 +41,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
   final _shareCardKey = GlobalKey();
   late Future<WorkoutDetail> _future;
   bool _isSharing = false;
+  bool _isSavingRoute = false;
   WorkoutShareMode _shareMode = WorkoutShareMode.routeWithData;
 
   @override
@@ -110,6 +111,14 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                       label: l10n.replayRouteAction,
                       icon: Icons.replay_rounded,
                       onPressed: () => _replayRoute(workout),
+                    ),
+                    const SizedBox(height: 10),
+                    AppButton.secondary(
+                      label: _isSavingRoute
+                          ? l10n.saving
+                          : l10n.routeSaveAction,
+                      icon: Icons.bookmark_add_outlined,
+                      onPressed: _isSavingRoute ? null : _saveAsRoute,
                     ),
                   ],
                   const SizedBox(height: 18),
@@ -219,6 +228,61 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  /// Enregistre le trace de cette seance comme parcours reutilisable.
+  ///
+  /// Le serveur refuse une trace inexploitable — moins de dix points ou moins de
+  /// deux cents metres — et un nom deja pris. Les deux refus sont rendus tels
+  /// quels : ils disent exactement ce qui manque.
+  Future<void> _saveAsRoute() async {
+    final l10n = AppLocalizations.of(context);
+    final name = await _askRouteName(l10n);
+    if (name == null || name.trim().isEmpty || !mounted) return;
+
+    setState(() => _isSavingRoute = true);
+    try {
+      await ref.read(pulseTrackApiProvider).createRoute(
+            workoutId: widget.workoutId,
+            name: name.trim(),
+          );
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.routeSaved)));
+    } on ApiProblem catch (problem) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(problem.message)));
+      }
+    } finally {
+      if (mounted) setState(() => _isSavingRoute = false);
+    }
+  }
+
+  Future<String?> _askRouteName(AppLocalizations l10n) {
+    final controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(labelText: l10n.routeNameLabel),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(controller.text),
+            child: Text(l10n.routeSaveAction),
+          ),
+        ],
+      ),
+    );
   }
 
   void _replayRoute(WorkoutDetail workout) {

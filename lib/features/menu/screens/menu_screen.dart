@@ -13,7 +13,10 @@ import '../../body/screens/body_progress_screen.dart';
 import '../../coach/screens/super_coach_screen.dart';
 import '../../goals/screens/goals_screen.dart';
 import '../../history/screens/workout_history_screen.dart';
+import '../../challenges/screens/challenges_screen.dart';
 import '../../pricing/screens/pricing_screen.dart';
+import '../../rating/screens/rating_screen.dart';
+import '../../routes/screens/routes_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import '../../settings/screens/settings_screen.dart';
 
@@ -79,6 +82,39 @@ class MenuScreen extends ConsumerWidget {
                   locked: !moduleAccess.isEnabled(AppModule.workouts),
                   onTap: moduleAccess.isEnabled(AppModule.workouts)
                       ? () => _push(context, const WorkoutHistoryScreen())
+                      : null,
+                ),
+                const _MenuDivider(),
+                AppMenuTile(
+                  icon: Icons.route_outlined,
+                  title: l10n.routesTitle,
+                  subtitle: l10n.routesSubtitle,
+                  color: AppColors.gps,
+                  locked: !moduleAccess.isEnabled(AppModule.routes),
+                  onTap: moduleAccess.isEnabled(AppModule.routes)
+                      ? () => _push(context, const RoutesScreen())
+                      : null,
+                ),
+                const _MenuDivider(),
+                AppMenuTile(
+                  icon: Icons.outlined_flag_rounded,
+                  title: l10n.challengesTitle,
+                  subtitle: l10n.challengesSubtitle,
+                  color: AppColors.accent,
+                  locked: !moduleAccess.isEnabled(AppModule.challenges),
+                  onTap: moduleAccess.isEnabled(AppModule.challenges)
+                      ? () => _push(context, const ChallengesScreen())
+                      : null,
+                ),
+                const _MenuDivider(),
+                AppMenuTile(
+                  icon: Icons.stars_rounded,
+                  title: l10n.ratingTitle,
+                  subtitle: l10n.ratingSubtitle,
+                  color: AppColors.primary,
+                  locked: !moduleAccess.isEnabled(AppModule.rating),
+                  onTap: moduleAccess.isEnabled(AppModule.rating)
+                      ? () => _push(context, const RatingScreen())
                       : null,
                 ),
                 const _MenuDivider(),

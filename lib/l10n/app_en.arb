@@ -530,5 +530,103 @@
         "type": "String"
       }
     }
-  }
+  },
+  "routesTitle": "Routes",
+  "routesSubtitle": "Your saved circuits, ready to run again",
+  "routesEmpty": "No route yet. Save a workout's track from its detail screen to replay it later.",
+  "routeLoop": "Loop",
+  "routeOneWay": "One way",
+  "routeAttempts": "{count} attempt(s)",
+  "@routeAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routeBestTime": "Best time: {time}",
+  "@routeBestTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "routeNeverRun": "Never replayed",
+  "routeAttemptsTitle": "Attempts",
+  "routeAttemptsEmpty": "This circuit has not been replayed yet.",
+  "routeRank": "#{rank}",
+  "@routeRank": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "routeDelete": "Delete route",
+  "routeDeleteConfirm": "Delete this route? Workouts that replayed it are kept, they only lose the link.",
+  "routeRename": "Rename",
+  "routeNameLabel": "Route name",
+  "challengesTitle": "Challenges",
+  "challengesSubtitle": "Cover a distance within a time",
+  "challengesEmpty": "No challenge yet. Set one: it is what gives you a reason to go out today rather than tomorrow.",
+  "challengeCreate": "Create challenge",
+  "challengeDistanceLabel": "Distance (km)",
+  "challengeMinutesLabel": "Time (minutes)",
+  "challengeRequiredPace": "Required pace: {pace}",
+  "@challengeRequiredPace": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeStart": "Start",
+  "challengeAbandon": "Give up",
+  "challengeAbandonConfirm": "Give up this challenge? It counts as neither a success nor a failure, and frees the slot for another one.",
+  "challengeDelete": "Delete",
+  "challengeStatusDraft": "To take on",
+  "challengeStatusActive": "Running",
+  "challengeStatusSucceeded": "Completed",
+  "challengeStatusFailed": "Missed",
+  "challengeStatusAbandoned": "Given up",
+  "challengeStatusExpired": "Expired",
+  "challengeInvalidTarget": "Enter a distance and a time.",
+  "challengeAlreadyRunning": "A challenge is already running. Finish or give it up first.",
+  "ratingTitle": "My score",
+  "ratingSubtitle": "Over the last four weeks",
+  "ratingWindow": "Over {days} days",
+  "@ratingWindow": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingStreak": "{days} day(s) in a row",
+  "@ratingStreak": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingTrendUp": "Improving",
+  "ratingTrendFlat": "Steady",
+  "ratingTrendDown": "Declining",
+  "ratingNextTier": "{points} more points for the {tier} tier",
+  "@ratingNextTier": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      },
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
+  "ratingComponents": "Breakdown",
+  "commonCancel": "Cancel",
+  "routeSaveAction": "Save this route",
+  "routeSaved": "Route saved"
 }

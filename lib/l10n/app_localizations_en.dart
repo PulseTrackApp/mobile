@@ -1337,4 +1337,161 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get upgradeRequiredRetry => 'Try again';
+
+  @override
+  String get routesTitle => 'Routes';
+
+  @override
+  String get routesSubtitle => 'Your saved circuits, ready to run again';
+
+  @override
+  String get routesEmpty =>
+      'No route yet. Save a workout\'s track from its detail screen to replay it later.';
+
+  @override
+  String get routeLoop => 'Loop';
+
+  @override
+  String get routeOneWay => 'One way';
+
+  @override
+  String routeAttempts(int count) {
+    return '$count attempt(s)';
+  }
+
+  @override
+  String routeBestTime(String time) {
+    return 'Best time: $time';
+  }
+
+  @override
+  String get routeNeverRun => 'Never replayed';
+
+  @override
+  String get routeAttemptsTitle => 'Attempts';
+
+  @override
+  String get routeAttemptsEmpty => 'This circuit has not been replayed yet.';
+
+  @override
+  String routeRank(int rank) {
+    return '#$rank';
+  }
+
+  @override
+  String get routeDelete => 'Delete route';
+
+  @override
+  String get routeDeleteConfirm =>
+      'Delete this route? Workouts that replayed it are kept, they only lose the link.';
+
+  @override
+  String get routeRename => 'Rename';
+
+  @override
+  String get routeNameLabel => 'Route name';
+
+  @override
+  String get challengesTitle => 'Challenges';
+
+  @override
+  String get challengesSubtitle => 'Cover a distance within a time';
+
+  @override
+  String get challengesEmpty =>
+      'No challenge yet. Set one: it is what gives you a reason to go out today rather than tomorrow.';
+
+  @override
+  String get challengeCreate => 'Create challenge';
+
+  @override
+  String get challengeDistanceLabel => 'Distance (km)';
+
+  @override
+  String get challengeMinutesLabel => 'Time (minutes)';
+
+  @override
+  String challengeRequiredPace(String pace) {
+    return 'Required pace: $pace';
+  }
+
+  @override
+  String get challengeStart => 'Start';
+
+  @override
+  String get challengeAbandon => 'Give up';
+
+  @override
+  String get challengeAbandonConfirm =>
+      'Give up this challenge? It counts as neither a success nor a failure, and frees the slot for another one.';
+
+  @override
+  String get challengeDelete => 'Delete';
+
+  @override
+  String get challengeStatusDraft => 'To take on';
+
+  @override
+  String get challengeStatusActive => 'Running';
+
+  @override
+  String get challengeStatusSucceeded => 'Completed';
+
+  @override
+  String get challengeStatusFailed => 'Missed';
+
+  @override
+  String get challengeStatusAbandoned => 'Given up';
+
+  @override
+  String get challengeStatusExpired => 'Expired';
+
+  @override
+  String get challengeInvalidTarget => 'Enter a distance and a time.';
+
+  @override
+  String get challengeAlreadyRunning =>
+      'A challenge is already running. Finish or give it up first.';
+
+  @override
+  String get ratingTitle => 'My score';
+
+  @override
+  String get ratingSubtitle => 'Over the last four weeks';
+
+  @override
+  String ratingWindow(int days) {
+    return 'Over $days days';
+  }
+
+  @override
+  String ratingStreak(int days) {
+    return '$days day(s) in a row';
+  }
+
+  @override
+  String get ratingTrendUp => 'Improving';
+
+  @override
+  String get ratingTrendFlat => 'Steady';
+
+  @override
+  String get ratingTrendDown => 'Declining';
+
+  @override
+  String ratingNextTier(int points, String tier) {
+    return '$points more points for the $tier tier';
+  }
+
+  @override
+  String get ratingComponents => 'Breakdown';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get routeSaveAction => 'Save this route';
+
+  @override
+  String get routeSaved => 'Route saved';
 }

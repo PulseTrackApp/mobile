@@ -530,5 +530,103 @@
         "type": "String"
       }
     }
-  }
+  },
+  "routesTitle": "Parcours",
+  "routesSubtitle": "Tes circuits enregistrés, à reprendre quand tu veux",
+  "routesEmpty": "Aucun parcours pour l'instant. Enregistre le tracé d'une séance depuis son détail pour pouvoir le reprendre.",
+  "routeLoop": "Boucle",
+  "routeOneWay": "Aller simple",
+  "routeAttempts": "{count} passage(s)",
+  "@routeAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "routeBestTime": "Meilleur temps : {time}",
+  "@routeBestTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "routeNeverRun": "Jamais rejoué",
+  "routeAttemptsTitle": "Passages",
+  "routeAttemptsEmpty": "Ce circuit n'a pas encore été rejoué.",
+  "routeRank": "{rank}ᵉ",
+  "@routeRank": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "routeDelete": "Supprimer le parcours",
+  "routeDeleteConfirm": "Supprimer ce parcours ? Les séances qui le rejouaient sont conservées, elles perdent seulement leur rattachement.",
+  "routeRename": "Renommer",
+  "routeNameLabel": "Nom du parcours",
+  "challengesTitle": "Défis",
+  "challengesSubtitle": "Parcourir telle distance en tel temps",
+  "challengesEmpty": "Aucun défi pour l'instant. Fixe-t'en un : c'est ce qui donne une raison de sortir aujourd'hui plutôt que demain.",
+  "challengeCreate": "Créer le défi",
+  "challengeDistanceLabel": "Distance (km)",
+  "challengeMinutesLabel": "Temps (minutes)",
+  "challengeRequiredPace": "Allure à tenir : {pace}",
+  "@challengeRequiredPace": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeStart": "Démarrer",
+  "challengeAbandon": "Abandonner",
+  "challengeAbandonConfirm": "Abandonner ce défi ? Ce n'est ni une réussite ni un échec, et cela libère la place pour un autre.",
+  "challengeDelete": "Supprimer",
+  "challengeStatusDraft": "À relever",
+  "challengeStatusActive": "En cours",
+  "challengeStatusSucceeded": "Relevé",
+  "challengeStatusFailed": "Manqué",
+  "challengeStatusAbandoned": "Abandonné",
+  "challengeStatusExpired": "Expiré",
+  "challengeInvalidTarget": "Indique une distance et un temps.",
+  "challengeAlreadyRunning": "Un défi est déjà en cours. Termine-le ou abandonne-le d'abord.",
+  "ratingTitle": "Ma note",
+  "ratingSubtitle": "Sur les quatre dernières semaines",
+  "ratingWindow": "Sur {days} jours",
+  "@ratingWindow": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingStreak": "{days} jour(s) d'affilée",
+  "@ratingStreak": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingTrendUp": "En progrès",
+  "ratingTrendFlat": "Stable",
+  "ratingTrendDown": "En baisse",
+  "ratingNextTier": "Encore {points} points pour le palier {tier}",
+  "@ratingNextTier": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      },
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
+  "ratingComponents": "Le détail",
+  "commonCancel": "Annuler",
+  "routeSaveAction": "Enregistrer ce parcours",
+  "routeSaved": "Parcours enregistré"
 }

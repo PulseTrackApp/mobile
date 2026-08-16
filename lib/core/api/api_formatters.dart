@@ -69,6 +69,35 @@ String formatDurationShort(Object? longSeconds, AppLocalizations l10n) {
   return '${duration.inMinutes} min';
 }
 
+/// Un temps de chronomètre : `mm:ss`, ou `h:mm:ss` au-delà de l'heure.
+///
+/// Distinct de [formatDurationShort], qui arrondit à la minute. Sur un circuit
+/// qu'on refait, l'écart entre deux passages se compte en secondes — les arrondir
+/// effacerait précisément ce qu'on vient chercher.
+String formatChrono(int seconds) {
+  final total = seconds.abs();
+  final hours = total ~/ 3600;
+  final minutes = (total % 3600) ~/ 60;
+  final rest = total % 60;
+  final paddedSeconds = rest.toString().padLeft(2, '0');
+
+  if (hours > 0) {
+    return '$hours:${minutes.toString().padLeft(2, '0')}:$paddedSeconds';
+  }
+  return '$minutes:$paddedSeconds';
+}
+
+/// Un écart de chronomètre, signé : `−1:00` plus rapide, `+0:45` plus lent.
+///
+/// Le signe est celui du chronomètre et il est contre-intuitif à l'écrit : un
+/// écart négatif est une bonne nouvelle. C'est la convention de tous les sports
+/// de temps, on la garde.
+String formatChronoDelta(int seconds) {
+  if (seconds == 0) return '=';
+  final sign = seconds < 0 ? '−' : '+';
+  return '$sign${formatChrono(seconds)}';
+}
+
 String formatPace(int secondsPerKm, AppLocalizations l10n) {
   if (secondsPerKm <= 0) return l10n.emptyPace;
   final minutes = secondsPerKm ~/ 60;

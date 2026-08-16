@@ -2575,6 +2575,282 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Réessayer'**
   String get upgradeRequiredRetry;
+
+  /// No description provided for @routesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcours'**
+  String get routesTitle;
+
+  /// No description provided for @routesSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tes circuits enregistrés, à reprendre quand tu veux'**
+  String get routesSubtitle;
+
+  /// No description provided for @routesEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun parcours pour l\'instant. Enregistre le tracé d\'une séance depuis son détail pour pouvoir le reprendre.'**
+  String get routesEmpty;
+
+  /// No description provided for @routeLoop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Boucle'**
+  String get routeLoop;
+
+  /// No description provided for @routeOneWay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aller simple'**
+  String get routeOneWay;
+
+  /// No description provided for @routeAttempts.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} passage(s)'**
+  String routeAttempts(int count);
+
+  /// No description provided for @routeBestTime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meilleur temps : {time}'**
+  String routeBestTime(String time);
+
+  /// No description provided for @routeNeverRun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jamais rejoué'**
+  String get routeNeverRun;
+
+  /// No description provided for @routeAttemptsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passages'**
+  String get routeAttemptsTitle;
+
+  /// No description provided for @routeAttemptsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce circuit n\'a pas encore été rejoué.'**
+  String get routeAttemptsEmpty;
+
+  /// No description provided for @routeRank.
+  ///
+  /// In fr, this message translates to:
+  /// **'{rank}ᵉ'**
+  String routeRank(int rank);
+
+  /// No description provided for @routeDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le parcours'**
+  String get routeDelete;
+
+  /// No description provided for @routeDeleteConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer ce parcours ? Les séances qui le rejouaient sont conservées, elles perdent seulement leur rattachement.'**
+  String get routeDeleteConfirm;
+
+  /// No description provided for @routeRename.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renommer'**
+  String get routeRename;
+
+  /// No description provided for @routeNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du parcours'**
+  String get routeNameLabel;
+
+  /// No description provided for @challengesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Défis'**
+  String get challengesTitle;
+
+  /// No description provided for @challengesSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcourir telle distance en tel temps'**
+  String get challengesSubtitle;
+
+  /// No description provided for @challengesEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun défi pour l\'instant. Fixe-t\'en un : c\'est ce qui donne une raison de sortir aujourd\'hui plutôt que demain.'**
+  String get challengesEmpty;
+
+  /// No description provided for @challengeCreate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le défi'**
+  String get challengeCreate;
+
+  /// No description provided for @challengeDistanceLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distance (km)'**
+  String get challengeDistanceLabel;
+
+  /// No description provided for @challengeMinutesLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Temps (minutes)'**
+  String get challengeMinutesLabel;
+
+  /// No description provided for @challengeRequiredPace.
+  ///
+  /// In fr, this message translates to:
+  /// **'Allure à tenir : {pace}'**
+  String challengeRequiredPace(String pace);
+
+  /// No description provided for @challengeStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrer'**
+  String get challengeStart;
+
+  /// No description provided for @challengeAbandon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abandonner'**
+  String get challengeAbandon;
+
+  /// No description provided for @challengeAbandonConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abandonner ce défi ? Ce n\'est ni une réussite ni un échec, et cela libère la place pour un autre.'**
+  String get challengeAbandonConfirm;
+
+  /// No description provided for @challengeDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get challengeDelete;
+
+  /// No description provided for @challengeStatusDraft.
+  ///
+  /// In fr, this message translates to:
+  /// **'À relever'**
+  String get challengeStatusDraft;
+
+  /// No description provided for @challengeStatusActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get challengeStatusActive;
+
+  /// No description provided for @challengeStatusSucceeded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relevé'**
+  String get challengeStatusSucceeded;
+
+  /// No description provided for @challengeStatusFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Manqué'**
+  String get challengeStatusFailed;
+
+  /// No description provided for @challengeStatusAbandoned.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abandonné'**
+  String get challengeStatusAbandoned;
+
+  /// No description provided for @challengeStatusExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expiré'**
+  String get challengeStatusExpired;
+
+  /// No description provided for @challengeInvalidTarget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indique une distance et un temps.'**
+  String get challengeInvalidTarget;
+
+  /// No description provided for @challengeAlreadyRunning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un défi est déjà en cours. Termine-le ou abandonne-le d\'abord.'**
+  String get challengeAlreadyRunning;
+
+  /// No description provided for @ratingTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma note'**
+  String get ratingTitle;
+
+  /// No description provided for @ratingSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur les quatre dernières semaines'**
+  String get ratingSubtitle;
+
+  /// No description provided for @ratingWindow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur {days} jours'**
+  String ratingWindow(int days);
+
+  /// No description provided for @ratingStreak.
+  ///
+  /// In fr, this message translates to:
+  /// **'{days} jour(s) d\'affilée'**
+  String ratingStreak(int days);
+
+  /// No description provided for @ratingTrendUp.
+  ///
+  /// In fr, this message translates to:
+  /// **'En progrès'**
+  String get ratingTrendUp;
+
+  /// No description provided for @ratingTrendFlat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stable'**
+  String get ratingTrendFlat;
+
+  /// No description provided for @ratingTrendDown.
+  ///
+  /// In fr, this message translates to:
+  /// **'En baisse'**
+  String get ratingTrendDown;
+
+  /// No description provided for @ratingNextTier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encore {points} points pour le palier {tier}'**
+  String ratingNextTier(int points, String tier);
+
+  /// No description provided for @ratingComponents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le détail'**
+  String get ratingComponents;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get commonCancel;
+
+  /// No description provided for @routeSaveAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer ce parcours'**
+  String get routeSaveAction;
+
+  /// No description provided for @routeSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcours enregistré'**
+  String get routeSaved;
 }
 
 class _AppLocalizationsDelegate

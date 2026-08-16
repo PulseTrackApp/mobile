@@ -1347,4 +1347,162 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get upgradeRequiredRetry => 'Réessayer';
+
+  @override
+  String get routesTitle => 'Parcours';
+
+  @override
+  String get routesSubtitle =>
+      'Tes circuits enregistrés, à reprendre quand tu veux';
+
+  @override
+  String get routesEmpty =>
+      'Aucun parcours pour l\'instant. Enregistre le tracé d\'une séance depuis son détail pour pouvoir le reprendre.';
+
+  @override
+  String get routeLoop => 'Boucle';
+
+  @override
+  String get routeOneWay => 'Aller simple';
+
+  @override
+  String routeAttempts(int count) {
+    return '$count passage(s)';
+  }
+
+  @override
+  String routeBestTime(String time) {
+    return 'Meilleur temps : $time';
+  }
+
+  @override
+  String get routeNeverRun => 'Jamais rejoué';
+
+  @override
+  String get routeAttemptsTitle => 'Passages';
+
+  @override
+  String get routeAttemptsEmpty => 'Ce circuit n\'a pas encore été rejoué.';
+
+  @override
+  String routeRank(int rank) {
+    return '$rankᵉ';
+  }
+
+  @override
+  String get routeDelete => 'Supprimer le parcours';
+
+  @override
+  String get routeDeleteConfirm =>
+      'Supprimer ce parcours ? Les séances qui le rejouaient sont conservées, elles perdent seulement leur rattachement.';
+
+  @override
+  String get routeRename => 'Renommer';
+
+  @override
+  String get routeNameLabel => 'Nom du parcours';
+
+  @override
+  String get challengesTitle => 'Défis';
+
+  @override
+  String get challengesSubtitle => 'Parcourir telle distance en tel temps';
+
+  @override
+  String get challengesEmpty =>
+      'Aucun défi pour l\'instant. Fixe-t\'en un : c\'est ce qui donne une raison de sortir aujourd\'hui plutôt que demain.';
+
+  @override
+  String get challengeCreate => 'Créer le défi';
+
+  @override
+  String get challengeDistanceLabel => 'Distance (km)';
+
+  @override
+  String get challengeMinutesLabel => 'Temps (minutes)';
+
+  @override
+  String challengeRequiredPace(String pace) {
+    return 'Allure à tenir : $pace';
+  }
+
+  @override
+  String get challengeStart => 'Démarrer';
+
+  @override
+  String get challengeAbandon => 'Abandonner';
+
+  @override
+  String get challengeAbandonConfirm =>
+      'Abandonner ce défi ? Ce n\'est ni une réussite ni un échec, et cela libère la place pour un autre.';
+
+  @override
+  String get challengeDelete => 'Supprimer';
+
+  @override
+  String get challengeStatusDraft => 'À relever';
+
+  @override
+  String get challengeStatusActive => 'En cours';
+
+  @override
+  String get challengeStatusSucceeded => 'Relevé';
+
+  @override
+  String get challengeStatusFailed => 'Manqué';
+
+  @override
+  String get challengeStatusAbandoned => 'Abandonné';
+
+  @override
+  String get challengeStatusExpired => 'Expiré';
+
+  @override
+  String get challengeInvalidTarget => 'Indique une distance et un temps.';
+
+  @override
+  String get challengeAlreadyRunning =>
+      'Un défi est déjà en cours. Termine-le ou abandonne-le d\'abord.';
+
+  @override
+  String get ratingTitle => 'Ma note';
+
+  @override
+  String get ratingSubtitle => 'Sur les quatre dernières semaines';
+
+  @override
+  String ratingWindow(int days) {
+    return 'Sur $days jours';
+  }
+
+  @override
+  String ratingStreak(int days) {
+    return '$days jour(s) d\'affilée';
+  }
+
+  @override
+  String get ratingTrendUp => 'En progrès';
+
+  @override
+  String get ratingTrendFlat => 'Stable';
+
+  @override
+  String get ratingTrendDown => 'En baisse';
+
+  @override
+  String ratingNextTier(int points, String tier) {
+    return 'Encore $points points pour le palier $tier';
+  }
+
+  @override
+  String get ratingComponents => 'Le détail';
+
+  @override
+  String get commonCancel => 'Annuler';
+
+  @override
+  String get routeSaveAction => 'Enregistrer ce parcours';
+
+  @override
+  String get routeSaved => 'Parcours enregistré';
 }
