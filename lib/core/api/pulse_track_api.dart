@@ -11,13 +11,17 @@ import 'billing_models.dart';
 typedef JsonMap = Map<String, dynamic>;
 
 class PulseTrackApi {
+  // Les valeurs par defaut doivent suivre `pubspec.yaml`. Une construction sans
+  // `--dart-define` annoncerait sinon au serveur une version qu'elle n'est pas,
+  // et l'ecran « à propos » afficherait ce meme mensonge — au moment precis ou
+  // l'on cherche a savoir quelle version tourne.
   static const _appVersion = String.fromEnvironment(
     'GYMFLOW_APP_VERSION',
-    defaultValue: '1.2.0',
+    defaultValue: '1.3.0',
   );
   static const _appBuild = String.fromEnvironment(
     'GYMFLOW_APP_BUILD',
-    defaultValue: '8',
+    defaultValue: '9',
   );
 
   /// Version annoncee au serveur, et affichee par l'ecran « à propos ».
