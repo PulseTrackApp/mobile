@@ -1,158 +1,97 @@
-# PulseTrack — Application mobile
+# GymFlow Mobile
 
-Application Flutter de suivi sportif personnel : enregistrement des séances,
-tracé GPS du parcours, suivi de l'évolution physique, objectifs et coach IA.
+Application mobile de suivi sportif : enregistrer une séance de course, de vélo ou de marche avec son tracé GPS, suivre ses progrès, atteindre ses objectifs et relever des défis. Interface en français et en anglais, thèmes clair et sombre.
 
-Elle consomme l'API du dépôt [PulseTrackApp/backend](https://github.com/PulseTrackApp/backend).
+*English: a Flutter sports-tracking app (GPS routes, goals, body progress, challenges, AI coach) backed by a Spring Boot API.*
 
-**Auteur** : Ouettéré Nicolas MILLOGO — nicolasmillogo@yahoo.com
-**Licence** : propriétaire, tous droits réservés (voir [LICENSE](LICENSE))
+Projet personnel, conçu et développé de bout en bout : produit, maquettes, application et API. Le code est visible à titre de démonstration.
 
----
+## Fonctionnalités
 
-## 1. Ce que fait l'application
+- **Séances** : course, vélo et marche, avec chronomètre, distance, allure (vitesse en km/h pour le vélo), dénivelé et calories. Le tracé GPS est filtré pour limiter le bruit du capteur.
+- **Parcours** : carte OpenStreetMap, trace de la séance, mise en évidence des points marquants. Aucune clé de carte payante n'est nécessaire.
+- **Historique** : liste des séances, filtres par sport, détail avec le parcours.
+- **Évolution physique** : poids et mensurations, avec des courbes de progression.
+- **Objectifs et défis** : objectifs hebdomadaires, records, défis et succès.
+- **Coach** : bilan de la semaine et conseils, générés par l'assistant du serveur.
+- **Compte** : inscription, vérification de l'e-mail, abonnement avec période d'essai, notifications.
+- **Interface** : mode clair et sombre, français et anglais, première ouverture guidée une seule fois.
 
-- **Suivi de séance** : course, vélo, marche, avec chronomètre et tracé GPS
-- **Carte du parcours** : tuiles OpenStreetMap via `flutter_map`
-- **Historique** : liste des séances, filtres par sport, détail avec parcours
-- **Évolution physique** : poids, mensurations, courbes de progression
-- **Objectifs** : distance, séances, temps et calories hebdomadaires
-- **Coach IA** : bilan de la semaine et conseils, via l'assistant du backend
-- **Thème clair/sombre** et interface bilingue français/anglais
+## Technologies
 
-## 2. Prérequis
+| Domaine | Choix |
+|---|---|
+| Application | Flutter et Dart |
+| État | Riverpod |
+| Navigation | go_router |
+| Réseau | dio, jetons stockés dans le coffre sécurisé de l'appareil |
+| Cartes | flutter_map avec tuiles OpenStreetMap |
+| Graphiques | fl_chart |
+| Notifications | Firebase Cloud Messaging |
+| Traductions | fichiers ARB, génération `flutter gen-l10n` |
 
-| Outil | Version | Vérifier |
-|---|---|---|
-| Flutter | 3.44 ou plus | `flutter --version` |
-| Dart | 3.12 ou plus | fourni avec Flutter |
-| Android SDK | pour compiler sur téléphone | `flutter doctor` |
+## Architecture
 
-```bash
-flutter doctor
+L'application est découpée par fonctionnalité. Chaque dossier contient ses écrans, ses composants et sa logique.
+
+```
+lib/
+  app/        démarrage, navigation, paramètres
+  core/       client d'API, thème, composants partagés, notifications
+  features/   une fonctionnalité par dossier :
+              tracking, activity, history, routes, body, goals,
+              challenges, coach, stats, account, pricing, onboarding...
+  l10n/       traductions française et anglaise
+test/         tests unitaires et de widgets
 ```
 
-Cette commande signale tout ce qui manque. Corrigez ses avertissements avant
-d'aller plus loin : la plupart des problèmes de compilation viennent de là.
+L'interface ne parle jamais directement au réseau : elle passe par un client d'API unique, qui centralise l'authentification, le renouvellement de session et la gestion des erreurs.
 
-## 3. Démarrer
+## Lancer le projet
+
+Prérequis : Flutter (version stable récente) et un appareil ou un émulateur.
 
 ```bash
-flutter pub get      # installe les dépendances
-flutter run          # lance sur l'appareil ou l'émulateur connecté
+flutter pub get
+flutter run
 ```
 
-Pour vérifier que le projet est sain sans le lancer :
+L'application a besoin de l'API [GymFlow Backend](https://github.com/PulseTrackApp/backend). Indiquez son adresse au lancement :
 
 ```bash
-flutter analyze      # doit afficher « No issues found! »
+flutter run --dart-define=GYMFLOW_API_BASE_URL=http://10.0.2.2:8080
+```
+
+`10.0.2.2` désigne votre ordinateur depuis l'émulateur Android. Sur un téléphone réel, utilisez l'adresse IP locale de l'ordinateur.
+
+Pour produire un APK :
+
+```bash
+flutter build apk --release --dart-define=GYMFLOW_API_BASE_URL=https://votre-api.example.com
+```
+
+## Tests et qualité
+
+```bash
+flutter analyze
 flutter test
 ```
 
-### Se connecter au backend en réseau local
+Les tests couvrent le filtrage du tracé GPS, les calculs de distance et d'allure, la navigation selon l'état de la session, le client d'API et l'enregistrement des notifications.
 
-L'API tourne sur votre ordinateur, l'application sur le téléphone : les deux
-doivent être sur le même Wi-Fi.
+## Documentation
 
-1. Relevez l'adresse IP locale du poste (`ipconfig` sous Windows), du type
-   `192.168.1.42`. **Pas `localhost`** : sur le téléphone, `localhost` désigne
-   le téléphone lui-même. Sur émulateur Android, c'est `10.0.2.2`.
-2. Autorisez le port 8080 en entrée dans le pare-feu Windows.
-3. Android 9 et suivants bloquent le HTTP en clair. Il faut autoriser
-   explicitement cette adresse dans
-   `android/app/src/main/res/xml/network_security_config.xml`, sans quoi toutes
-   les requêtes échouent sans message clair.
+Le guide de développement détaillé (structure, traductions, thème, cartographie, ajout d'une fonctionnalité) est dans [DEVELOPPEMENT.md](DEVELOPPEMENT.md).
 
-## 4. Structure du projet
+## Dépôts liés
 
-Le code est organisé **par domaine fonctionnel**, pas par type technique.
+- [GymFlow Backend](https://github.com/PulseTrackApp/backend) : API Spring Boot et PostgreSQL.
 
-```text
-lib/
-├── main.dart                  Point d'entrée
-├── app/                       Configuration globale
-│   ├── pulse_track_app.dart   MaterialApp, thèmes, langues
-│   └── app_settings_controller Préférences (thème, langue, unités, GPS)
-├── core/
-│   ├── theme/                 Couleurs et thèmes clair/sombre
-│   └── ui/                    Composants réutilisables (AppPanel, AppButton…)
-├── features/                  Une fonctionnalité par dossier
-│   ├── home/                  Accueil et tableau de bord
-│   ├── activity/              Écran de suivi et carte
-│   ├── stats/                 Statistiques
-│   ├── history/               Historique des séances
-│   ├── body/                  Évolution physique
-│   ├── goals/                 Objectifs
-│   ├── coach/                 Assistant IA
-│   ├── profile/               Profil sportif
-│   ├── settings/              Paramètres
-│   ├── menu/                  Menu principal
-│   └── tracking/              Modèles partagés (SportMode…)
-└── l10n/                      Traductions FR/EN et fichiers générés
-```
+## Auteur
 
-Règle simple : `core/ui` contient le générique, `features/<domaine>/widgets` le
-spécifique. Un composant utilisé par une seule fonctionnalité reste chez elle.
+Ouettéré Nicolas MILLOGO, ingénieur logiciel.
+nicolasmillogo3@gmail.com · [Portfolio](https://nicolas-millogo.vercel.app)
 
-## 5. Traductions
+## Licence
 
-Les textes affichés ne sont jamais écrits en dur dans les widgets. Ils vivent
-dans `lib/l10n/app_fr.arb` (référence) et `lib/l10n/app_en.arb`.
-
-Après toute modification d'un fichier `.arb` :
-
-```bash
-flutter gen-l10n
-```
-
-Dans le code :
-
-```dart
-final l10n = AppLocalizations.of(context);
-Text(l10n.startWorkout)
-```
-
-Oublier `flutter gen-l10n` provoque une erreur du type
-« The getter 'maClé' isn't defined for the type 'AppLocalizations' ».
-
-## 6. Thème et identité visuelle
-
-L'application suit automatiquement le mode clair ou sombre du téléphone :
-
-```dart
-theme: AppTheme.light,
-darkTheme: AppTheme.dark,
-themeMode: ThemeMode.system,
-```
-
-Palette : `#00A676` (progression), `#FFB703` (énergie), `#121417` (contraste),
-`#EF476F` (records et alertes), `#3A86FF` (GPS et parcours).
-
-Le logo est dessiné en Flutter dans `lib/core/ui/pulse_track_logo.dart` : il
-combine une ligne de parcours GPS, une pulsation cardio, un point de départ bleu
-et un point d'arrivée rose.
-
-## 7. Cartographie
-
-Les tuiles viennent d'**OpenStreetMap**, sans clé d'API ni compte. Deux
-obligations, respectées dans `MapPreview` :
-
-- renseigner `userAgentPackageName` sur le `TileLayer`, faute de quoi les
-  requêtes sont rejetées ;
-- afficher l'attribution « OpenStreetMap contributors » sur la carte.
-
-## 8. Ajouter une fonctionnalité
-
-1. Créer `lib/features/<domaine>/` avec ses sous-dossiers `screens/` et
-   `widgets/`
-2. Ajouter les textes dans les deux `.arb`, puis lancer `flutter gen-l10n`
-3. Réutiliser les composants de `core/ui` plutôt que de redessiner
-4. Vérifier avec `flutter analyze` avant de commiter
-
-## 9. Avertissement
-
-PulseTrack est une application de suivi personnel. Les estimations qu'elle
-affiche — calories, IMC, tendances de poids — et les suggestions de l'assistant
-sont indicatives et ne constituent pas un avis médical. Consultez un
-professionnel de santé avant d'entreprendre un programme sportif, et en cas de
-douleur ou de malaise.
+Propriétaire, tous droits réservés. Voir [LICENSE](LICENSE).
